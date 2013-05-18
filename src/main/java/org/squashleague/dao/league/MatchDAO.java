@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.squashleague.domain.league.Match;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)

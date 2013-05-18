@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 public class AddBundlingModelToViewModelInterceptor extends HandlerInterceptorAdapter {
 

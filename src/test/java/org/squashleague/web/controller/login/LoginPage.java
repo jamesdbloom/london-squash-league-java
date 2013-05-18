@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 public class LoginPage {
     private final Document html;
@@ -26,14 +26,14 @@ public class LoginPage {
     }
 
     public void hasCorrectUserNameField() {
-        Element usernameElement = html.select("input[name=j_username]").first();
-        assertNotNull(usernameElement);
-        assertEquals("1", usernameElement.attr("tabindex"));
-        assertEquals("email", usernameElement.attr("type"));
+        Element emailElement = html.select("input[name=email]").first();
+        assertNotNull(emailElement);
+        assertEquals("1", emailElement.attr("tabindex"));
+        assertEquals("email", emailElement.attr("type"));
     }
 
     public void hasCorrectPasswordField() {
-        Element passwordElement = html.select("input[name=j_password]").first();
+        Element passwordElement = html.select("input[name=password]").first();
         assertNotNull(passwordElement);
         assertEquals("2", passwordElement.attr("tabindex"));
         assertEquals("password", passwordElement.attr("type"));

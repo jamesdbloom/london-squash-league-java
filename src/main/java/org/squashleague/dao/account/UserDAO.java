@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 import org.squashleague.dao.league.AbstractJpaDAO;
 import org.squashleague.domain.account.User;
 
+import javax.persistence.NoResultException;
+
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -17,4 +19,11 @@ public class UserDAO extends AbstractJpaDAO<User> {
         super(User.class);
     }
 
+    public User findByEmail(String email) {
+        try {
+            return entityManager.createQuery("from User as user where user.email = '" + email + "'", User.class).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

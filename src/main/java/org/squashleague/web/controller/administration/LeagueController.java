@@ -1,4 +1,4 @@
-package org.squashleague.web.controller;
+package org.squashleague.web.controller.administration;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,7 +6,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.League;
 
@@ -22,16 +21,15 @@ public class LeagueController {
     private LeagueDAO leagueDAO;
 
     @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid League league, BindingResult bindingResult, Model uiModel, HttpSession session) {
+    public String create(@Valid League league, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             session.setAttribute("bindingResult", bindingResult);
             session.setAttribute("league", league);
-            return "redirect:/page/administration";
+            return "redirect:/administration";
         }
         session.removeAttribute("bindingResult");
-        uiModel.asMap().clear();
         leagueDAO.save(league);
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
@@ -46,15 +44,13 @@ public class LeagueController {
             uiModel.addAttribute("league", league);
             return "page/league/update";
         }
-        uiModel.asMap().clear();
         leagueDAO.update(league);
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
     @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("delete") Long id, Model uiModel) {
+    public String delete(@PathVariable("id") Long id) {
         leagueDAO.delete(id);
-        uiModel.asMap().clear();
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 }

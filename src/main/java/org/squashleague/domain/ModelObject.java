@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.*;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @MappedSuperclass
 public abstract class ModelObject {

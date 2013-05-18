@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)

@@ -1,4 +1,4 @@
-package org.squashleague.web.controller;
+package org.squashleague.web.controller.administration;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,39 +22,36 @@ public class DivisionController {
     private DivisionDAO divisionDAO;
 
     @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid Division division, BindingResult bindingResult, Model uiModel, HttpSession session) {
+    public String create(@Valid Division division, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             session.setAttribute("bindingResult", bindingResult);
             session.setAttribute("division", division);
-            return "redirect:/page/administration";
+            return "redirect:/administration";
         }
         session.removeAttribute("bindingResult");
-        uiModel.asMap().clear();
         divisionDAO.save(division);
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("division", divisionDAO.findOne(id));
-        return "division/page/update";
+        return "page/division/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Division division, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("division", division);
-            return "division/page/update";
+            return "page/division/update";
         }
-        uiModel.asMap().clear();
         divisionDAO.update(division);
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
     @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("delete") Long id, Model uiModel) {
+    public String delete(@PathVariable("id") Long id) {
         divisionDAO.delete(id);
-        uiModel.asMap().clear();
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 }

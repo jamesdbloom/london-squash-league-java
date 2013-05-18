@@ -1,4 +1,4 @@
-package org.squashleague.web.controller.administration;
+package org.squashleague.web.controller;
 
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;

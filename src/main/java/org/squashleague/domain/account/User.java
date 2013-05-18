@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @Entity
 public class User extends ModelObject {
@@ -34,6 +34,8 @@ public class User extends ModelObject {
     private String mobile;
     @NotNull(message = "{user.mobilePrivate}")
     private MobilePrivacy mobilePrivate;
+    private Role role;
+    private String oneTimeToken;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Player> players;
 
@@ -86,6 +88,32 @@ public class User extends ModelObject {
 
     public User withMobilePrivate(MobilePrivacy mobilePrivate) {
         setMobilePrivate(mobilePrivate);
+        return this;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public User withRole(Role role) {
+        setRole(role);
+        return this;
+    }
+
+    public String getOneTimeToken() {
+        return oneTimeToken;
+    }
+
+    public void setOneTimeToken(String oneTimeToken) {
+        this.oneTimeToken = oneTimeToken;
+    }
+
+    public User withOneTimeToken(String oneTimeToken) {
+        setOneTimeToken(oneTimeToken);
         return this;
     }
 

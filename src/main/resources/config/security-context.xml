@@ -10,19 +10,29 @@
         <security:port-mappings>
             <security:port-mapping http="8080" https="8443"/>
         </security:port-mappings>
-        <security:form-login login-page="/login" />
-        <security:logout logout-url="/logout" logout-success-url="/login"/>
-        <security:intercept-url pattern="/favicon.ico" access="permitAll" requires-channel="https"/>
-        <security:intercept-url pattern="/resources/**" access="permitAll" requires-channel="https"/>
-        <security:intercept-url pattern="/bundle/**" access="permitAll" requires-channel="https"/>
-        <security:intercept-url pattern="/login" access="hasRole('ROLE_ANONYMOUS')" requires-channel="https"/>
-        <security:intercept-url pattern="/logout" access="isAuthenticated" requires-channel="https"/>
-        <security:intercept-url pattern="/user/register" access="permitAll" requires-channel="https"/>
-        <security:intercept-url pattern="/user/update/**" access="hasAnyRole('ROLE_USER')" requires-channel="https"/>
-        <security:intercept-url pattern="/user/delete/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
-        <security:intercept-url pattern="/" access="permitAll" requires-channel="https"/>
-        <security:intercept-url pattern="/administration/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
-        <security:intercept-url pattern="/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" requires-channel="https"/>
+        <security:form-login
+                username-parameter="email"
+                password-parameter="password"
+                login-page="/login" />
+        <security:session-management session-fixation-protection="migrateSession"/>
+        <security:access-denied-handler error-page="/errors/403"/>
+
+        <security:logout logout-url="/logout" logout-success-url="/"/>
+        <!-- ALL -->
+        <security:intercept-url pattern="/favicon.ico"          access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/resources/**"         access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/bundle/**"            access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/"                     access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/register"             access="permitAll()" requires-channel="https"/>
+        <!-- NOT LOGGED IN -->
+        <security:intercept-url pattern="/login"                access="isAnonymous()" requires-channel="https"/>
+        <!-- ANY USER -->
+        <security:intercept-url pattern="/logout"               access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/user/update/**"       access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/**"                   access="isAuthenticated()" requires-channel="https"/>
+        <!-- ADMIN ONLY -->
+        <security:intercept-url pattern="/user/delete/**"       access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/administration/**"    access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <!--<security:intercept-url pattern="/**" access="hasRole('ROLE_ANONYMOUS')" requires-channel="https"/>-->
     </security:http>
 

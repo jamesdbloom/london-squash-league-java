@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 //@Configuration
 @EnableTransactionManagement

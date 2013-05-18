@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 public enum MobilePrivacy {
     SECRET,

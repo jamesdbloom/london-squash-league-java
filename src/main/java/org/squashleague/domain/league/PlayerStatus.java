@@ -1,7 +1,7 @@
 package org.squashleague.domain.league;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 public enum PlayerStatus {
     ACTIVE,

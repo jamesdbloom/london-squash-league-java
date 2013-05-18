@@ -13,11 +13,15 @@
 <ol class="link_list">
     <@security.authorize access='isAnonymous()'>
         <li><a href="/login" title="Login">Login</a></li>
-        <li><a href="/user/register" title="Register">Register</a></li>
+        <li><a href="/register" title="Register">Register</a></li>
         <li><a href="/retrieve_password" title="Lost Password?">Lost Password?</a></li>
     </@security.authorize>
 
     <@security.authorize access='isAuthenticated()'>
+        <#if user??>
+            <p>Hello ${user.name}</p>
+        </#if>
+
         <@security.authorize ifAnyGranted="ROLE_ADMIN">
             <li><a href="/print" title="Print League">Print League</a></li>
         </@security.authorize>

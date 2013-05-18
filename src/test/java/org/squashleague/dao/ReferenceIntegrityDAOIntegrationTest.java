@@ -1,21 +1,22 @@
-package org.squashleague.dao.league;
+package org.squashleague.dao;
 
 import org.joda.time.DateTime;
-import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.account.UserDAO;
-import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.dao.account.UserDAO;
+import org.squashleague.dao.league.*;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -27,10 +28,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = RootConfiguration.class, initializers = HSQLApplicationContextInitializer.class)
-public class MatchDAOIntegrationTest {
+public class ReferenceIntegrityDAOIntegrationTest {
 
-    @Resource
-    private MatchDAO matchDAO;
+
     @Resource
     private ClubDAO clubDAO;
     private Club club;
@@ -51,6 +51,9 @@ public class MatchDAOIntegrationTest {
     private PlayerDAO playerDAO;
     private Player playerOne;
     private Player playerTwo;
+    @Resource
+    private MatchDAO matchDAO;
+    private Match match;
 
     @Before
     public void setupDatabase() {
@@ -91,10 +94,16 @@ public class MatchDAOIntegrationTest {
                 .withUser(userTwo);
         playerDAO.save(playerOne);
         playerDAO.save(playerTwo);
+        match = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
+        matchDAO.save(match);
     }
 
     @After
     public void teardownDatabase() {
+        matchDAO.delete(match);
         playerDAO.delete(playerOne);
         playerDAO.delete(playerTwo);
         userDAO.delete(userOne);
@@ -105,75 +114,43 @@ public class MatchDAOIntegrationTest {
         clubDAO.delete(club);
     }
 
-    @Test
-    public void shouldSaveRequiredFieldsAndRetrieveById() throws Exception {
-        // given
-        Match expectedMatch = new Match()
-                .withPlayerOne(playerOne)
-                .withPlayerTwo(playerTwo)
-                .withRound(round);
-
-        // when
-        matchDAO.save(expectedMatch);
-
-        // then
-        assertEquals(expectedMatch, matchDAO.findOne(expectedMatch.getId()));
-        matchDAO.delete(expectedMatch);
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowPlayerOneWithMatchesToBeDeleted() throws Exception {
+        playerDAO.delete(playerOne);
     }
 
-    @Test
-    public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
-        // given
-        Match expectedMatch = new Match()
-                .withPlayerOne(playerOne)
-                .withPlayerTwo(playerTwo)
-                .withRound(round);
-
-        // when
-        matchDAO.save(expectedMatch);
-
-        // then
-        assertEquals(expectedMatch, matchDAO.findOne(expectedMatch.getId()));
-        matchDAO.delete(expectedMatch);
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowPlayerTwoWithMatchesToBeDeleted() throws Exception {
+        playerDAO.delete(playerOne);
     }
 
-    @Test
-    public void shouldSaveAndRetrieveList() throws Exception {
-        // given
-        Match matchOne = new Match()
-                .withPlayerOne(playerOne)
-                .withPlayerTwo(playerTwo)
-                .withRound(round);
-        Match matchTwo = new Match()
-                .withPlayerOne(playerTwo)
-                .withPlayerTwo(playerOne)
-                .withRound(round);
-
-        // when
-        matchDAO.save(matchOne);
-        matchDAO.save(matchTwo);
-
-        // then
-        assertArrayEquals(new Match[]{matchOne, matchTwo}, matchDAO.findAll().toArray());
-        matchDAO.delete(matchOne);
-        matchDAO.delete(matchTwo);
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowUserOneWithPlayersToBeDeleted() throws Exception {
+        userDAO.delete(userOne);
     }
 
-    @Test
-    public void shouldSaveAndRetrieveAndDelete() throws Exception {
-        // given
-        Match expectedMatch = new Match()
-                .withPlayerOne(playerOne)
-                .withPlayerTwo(playerTwo)
-                .withRound(round);
-        matchDAO.save(expectedMatch);
-        assertEquals(expectedMatch, matchDAO.findOne(expectedMatch.getId()));
-
-        // when
-        matchDAO.delete(expectedMatch);
-
-        // then
-        assertNull(matchDAO.findOne(expectedMatch.getId()));
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowUserTwoWithPlayersToBeDeleted() throws Exception {
+        userDAO.delete(userTwo);
     }
 
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowRoundWithMatchesToBeDeleted() throws Exception {
+        roundDAO.delete(round);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowDivisionWithRoundsToBeDeleted() throws Exception {
+        divisionDAO.delete(division);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowLeagueWithDivisionsToBeDeleted() throws Exception {
+        leagueDAO.delete(league);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowClubWithLeaguesToBeDeleted() throws Exception {
+        clubDAO.delete(club);
+    }
 }

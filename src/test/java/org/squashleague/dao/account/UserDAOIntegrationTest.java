@@ -1,9 +1,11 @@
 package org.squashleague.dao.account;
 
+import com.eaio.uuid.UUID;
 import org.joda.time.DateTime;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.league.*;
 import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 import org.junit.After;
@@ -21,7 +23,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -96,6 +98,8 @@ public class UserDAOIntegrationTest {
                 .withName("user name")
                 .withMobile("07515 900 569")
                 .withMobilePrivate(MobilePrivacy.SECRET)
+                .withRole(Role.ROLE_USER)
+                .withOneTimeToken(new UUID().toString())
                 .withPlayers(
                         new Player()
                                 .withCurrentDivision(division)

@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 public abstract class AbstractJpaDAO<T extends ModelObject> {
 

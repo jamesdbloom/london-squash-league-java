@@ -1,4 +1,4 @@
-package org.squashleague.web.controller;
+package org.squashleague.web.controller.administration;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,16 +22,15 @@ public class PlayerController {
     private PlayerDAO playerDAO;
 
     @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid Player player, BindingResult bindingResult, Model uiModel, HttpSession session) {
+    public String create(@Valid Player player, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             session.setAttribute("bindingResult", bindingResult);
             session.setAttribute("player", player);
-            return "redirect:/page/administration";
+            return "redirect:/administration";
         }
         session.removeAttribute("bindingResult");
-        uiModel.asMap().clear();
         playerDAO.save(player);
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
@@ -46,16 +45,14 @@ public class PlayerController {
             uiModel.addAttribute("player", player);
             return "page/player/update";
         }
-        uiModel.asMap().clear();
         playerDAO.update(player);
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
     @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("delete") Long id, Model uiModel) {
+    public String delete(@PathVariable("id") Long id) {
         playerDAO.delete(id);
-        uiModel.asMap().clear();
-        return "redirect:/page/administration";
+        return "redirect:/administration";
     }
 
 }

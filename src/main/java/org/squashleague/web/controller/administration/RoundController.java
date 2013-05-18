@@ -1,4 +1,4 @@
-package org.squashleague.web.controller;
+package org.squashleague.web.controller.administration;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,55 +7,52 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.squashleague.dao.league.MatchDAO;
-import org.squashleague.domain.league.Match;
+import org.squashleague.dao.league.RoundDAO;
+import org.squashleague.domain.league.Round;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-@RequestMapping("/match")
+@RequestMapping("/round")
 @Controller
-public class MatchController {
+public class RoundController {
 
     @Resource
-    private MatchDAO matchDAO;
+    private RoundDAO roundDAO;
 
     @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid Match match, BindingResult bindingResult, Model uiModel, HttpSession session) {
+    public String create(@Valid Round round, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             session.setAttribute("bindingResult", bindingResult);
-            session.setAttribute("match", match);
-            return "redirect:/page/administration";
+            session.setAttribute("round", round);
+            return "redirect:/administration";
         }
         session.removeAttribute("bindingResult");
-        uiModel.asMap().clear();
-        matchDAO.save(match);
-        return "redirect:/page/administration";
+        roundDAO.save(round);
+        return "redirect:/administration";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("match", matchDAO.findOne(id));
-        return "page/match/update";
+        uiModel.addAttribute("round", roundDAO.findOne(id));
+        return "page/round/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@Valid Match match, BindingResult bindingResult, Model uiModel) {
+    public String update(@Valid Round round, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("match", match);
-            return "page/match/update";
+            uiModel.addAttribute("round", round);
+            return "page/round/update";
         }
-        uiModel.asMap().clear();
-        matchDAO.update(match);
-        return "redirect:/page/administration";
+        roundDAO.update(round);
+        return "redirect:/administration";
     }
 
     @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("delete") Long id, Model uiModel) {
-        matchDAO.delete(id);
-        uiModel.asMap().clear();
-        return "redirect:/page/administration";
+    public String delete(@PathVariable("id") Long id) {
+        roundDAO.delete(id);
+        return "redirect:/administration";
     }
 
 }

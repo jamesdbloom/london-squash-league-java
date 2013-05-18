@@ -1,14 +1,14 @@
-package org.squashleague.web.controller;
+package org.squashleague.web.controller.login;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @Controller
-public class LoginPageController {
+public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getPage() {

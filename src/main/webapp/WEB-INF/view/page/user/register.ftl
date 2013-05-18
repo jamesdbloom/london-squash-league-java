@@ -9,7 +9,7 @@
 </#macro>
 
 <#macro content_section>
-<form action="/user/register" method="POST">
+<form action="/register" method="POST">
 
     <p class="message">Please enter your details and a temporary password will be e-mailed to you.</p>
 

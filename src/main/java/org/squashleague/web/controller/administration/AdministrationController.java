@@ -1,4 +1,4 @@
-package org.squashleague.web.controller;
+package org.squashleague.web.controller.administration;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpSession;
 /**
  * @author jamesdbloom
  */
-@RequestMapping("/administration")
 @Controller
 public class AdministrationController {
 
@@ -34,7 +33,7 @@ public class AdministrationController {
     @Resource
     private UserDAO userDAO;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/administration", method = RequestMethod.GET)
     public String list(Model uiModel, HttpSession session) {
         uiModel.addAttribute("clubs", clubDAO.findAll());
         uiModel.addAttribute("leagues", leagueDAO.findAll());

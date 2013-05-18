@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
- * @author squashleague
+ * @author jamesdbloom
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 name = "dispatcher",
                 classes = WebMvcConfiguration.class)
 })
-public class LoginPageControllerIntegrationTest {
+public class LoginPageIntegrationTest {
 
     @Resource
     private WebApplicationContext webApplicationContext;
