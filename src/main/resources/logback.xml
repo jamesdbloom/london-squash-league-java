@@ -37,10 +37,11 @@
         </encoder>
     </appender>
 
-    <!-- hibernate setup logging -->
+    <!-- hibernate setup logging
     <logger name="org.hibernate.ejb.Ejb3Configuration" level="DEBUG"/>
     <logger name="org.hibernate.cfg.Configuration" level="DEBUG"/>
     <logger name="org.hibernate.persister.entity.AbstractEntityPersister" level="DEBUG"/>
+    -->
 
     <logger name="org.squashleague" level="TRACE"/>
 

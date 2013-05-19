@@ -1,7 +1,6 @@
 package org.squashleague.web.controller.administration;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,7 +8,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.Role;
 import org.squashleague.domain.league.PlayerStatus;
 
 import java.io.UnsupportedEncodingException;
@@ -29,6 +27,26 @@ public class AdministrationPage {
     public void hasErrors(String objectName, int errorCount) {
         Elements errorMessages = html.select("#validation_error_" + objectName + " .validation_error");
         assertEquals(errorCount, errorMessages.size());
+    }
+
+    public void hasRoleFields(String name, String description) {
+        Element nameInputElement = html.select("#create_role #name").first();
+        assertEquals(name, nameInputElement.val());
+        Element addressInputElement = html.select("#create_role #description").first();
+        assertEquals(description, addressInputElement.val());
+    }
+
+    public void hasUserFields(String name, String email, String mobile, MobilePrivacy mobilePrivacy, Long roleId) {
+        Element nameInputElement = html.select("#create_user #name").first();
+        assertEquals(name, nameInputElement.val());
+        Element emailInputElement = html.select("#create_user #email").first();
+        assertEquals(email, emailInputElement.val());
+        Element mobileInputElement = html.select("#create_user #mobile").first();
+        assertEquals(mobile, mobileInputElement.val());
+        Element mobilePrivacyInputElement = html.select("#create_user #mobilePrivacy [selected=selected]").first();
+        assertEquals(mobilePrivacy.name(), mobilePrivacyInputElement.attr("value"));
+        Element roleInputElement = html.select("#create_user #roles [selected=selected]").first();
+        assertEquals(roleId.toString(), roleInputElement.attr("value"));
     }
 
     public void hasClubFields(String name, String address) {
@@ -55,19 +73,6 @@ public class AdministrationPage {
         assertEquals(startDate, startDateInputElement.val());
         Element endDateInputElement = html.select("#create_round #endDate").first();
         assertEquals(endDate, endDateInputElement.val());
-    }
-
-    public void hasUserFields(String name, String email, String mobile, MobilePrivacy mobilePrivacy, Role role) {
-        Element nameInputElement = html.select("#create_user #name").first();
-        assertEquals(name, nameInputElement.val());
-        Element emailInputElement = html.select("#create_user #email").first();
-        assertEquals(email, emailInputElement.val());
-        Element mobileInputElement = html.select("#create_user #mobile").first();
-        assertEquals(mobile, mobileInputElement.val());
-        Element mobilePrivacyInputElement = html.select("#create_user #mobilePrivacy [selected=selected]").first();
-        assertEquals(mobilePrivacy.name(), mobilePrivacyInputElement.attr("value"));
-        Element roleInputElement = html.select("#create_user #role [selected=selected]").first();
-        assertEquals(role.name(), roleInputElement.attr("value"));
     }
 
     public void hasPlayerFields(Long userId, Long divisionId, PlayerStatus playerStatus) {

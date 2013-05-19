@@ -3,6 +3,7 @@ package org.squashleague.web.controller.administration;
 import org.joda.time.DateTime;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
 import org.squashleague.domain.account.MobilePrivacy;
@@ -22,16 +23,32 @@ import static org.mockito.Mockito.when;
 @Configuration
 public class MockDAOConfiguration {
 
+    private static final List<Role> roles = new ArrayList<>();
+    private static final List<User> users = new ArrayList<>();
     private static final List<Club> clubs = new ArrayList<>();
     private static final List<League> leagues = new ArrayList<>();
     private static final List<Division> divisions = new ArrayList<>();
     private static final List<Round> rounds = new ArrayList<>();
-    private static final List<User> users = new ArrayList<>();
     private static final List<Player> players = new ArrayList<>();
     private static final List<Match> matches = new ArrayList<>();
 
     static {
         for (int i = 0; i < 3; i++) {
+            roles.add(
+                    (Role) new Role()
+                            .withName("role " + i)
+                            .withDescription("description " + i)
+                            .withId((long) i)
+            );
+            users.add(
+                    (User) new User()
+                            .withName("user " + i)
+                            .withEmail("user_" + i + "@email.com")
+                            .withMobile("123456789")
+                            .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
+                            .withRole(Role.ROLE_USER)
+                            .withId((long) i)
+            );
             clubs.add(
                     (Club) new Club()
                             .withName("club " + i)
@@ -57,15 +74,6 @@ public class MockDAOConfiguration {
                             .withDivision(divisions.get(i))
                             .withId((long) i)
             );
-            users.add(
-                    (User) new User()
-                            .withName("user " + i)
-                            .withEmail("user_" + i + "@email.com")
-                            .withMobile("123456789")
-                            .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                            .withRole(Role.ROLE_USER)
-                            .withId((long) i)
-            );
             players.add(
                     (Player) new Player()
                             .withUser(users.get(i))
@@ -81,6 +89,20 @@ public class MockDAOConfiguration {
                             .withId((long) i)
             );
         }
+    }
+
+    @Bean
+    public RoleDAO roleDAO() {
+        RoleDAO mock = mock(RoleDAO.class);
+        when(mock.findAll()).thenReturn(roles);
+        return mock;
+    }
+
+    @Bean
+    public UserDAO userDAO() {
+        UserDAO mock = mock(UserDAO.class);
+        when(mock.findAll()).thenReturn(users);
+        return mock;
     }
 
     @Bean
@@ -108,13 +130,6 @@ public class MockDAOConfiguration {
     public RoundDAO roundDAO() {
         RoundDAO mock = mock(RoundDAO.class);
         when(mock.findAll()).thenReturn(rounds);
-        return mock;
-    }
-
-    @Bean
-    public UserDAO userDAO() {
-        UserDAO mock = mock(UserDAO.class);
-        when(mock.findAll()).thenReturn(users);
         return mock;
     }
 

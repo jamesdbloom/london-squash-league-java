@@ -38,7 +38,7 @@
 
     <!-- users - todo: to be replaced with stronger solution -->
     <security:authentication-manager>
-        <security:authentication-provider user-service-ref="loginUserDetailsService"/>
+        <security:authentication-provider ref="springSecurityAuthenticationProvider"/>
     </security:authentication-manager>
 
 </beans:beans>

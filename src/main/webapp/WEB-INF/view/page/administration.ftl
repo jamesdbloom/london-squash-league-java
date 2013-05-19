@@ -9,6 +9,98 @@
 </#macro>
 
 <#macro content_section>
+<h2 class="table_title">Roles</h2>
+
+<form method="post" action="/role/save">
+    <@errors.print_errors "role"/>
+    <table class="action_table">
+        <tbody>
+            <tr>
+                <th class="key">Id</th>
+                <th class="name">Name</th>
+                <th class="description">Description</th>
+                <th class="club">Club</th>
+                <th class="button_column last"></th>
+            </tr>
+            <#list roles as role>
+                <tr>
+                    <td class="key">${role.id}</td>
+                    <td class="name">${role.name}</td>
+                    <td class="description">${role.description}</td>
+                    <td class="club"><#if role.club??>${role.club.name}</#if></td>
+                    <td class="button_column last"><a class="button" href="/role/delete/${role.id}">Delete</a><a class="button" href="/role/update/${role.id}">Modify</a></td>
+                </tr>
+            </#list>
+            <tr class="create_row" id="create_role">
+                <td class="key last"></td>
+                <td class="name last"><@spring.formInput  path="role.name" attributes="pattern='.{3,25}' class='show_validation'"/></td>
+                <td class="description last"><@spring.formInput  path="role.description" attributes="pattern='.{3,25}' class='show_validation'"/></td>
+                <td class="club last">
+                    <#if (clubs?size > 0)>
+                        <select id="club" name="club">
+                            <#list clubs as club>
+                                <option value="${club.id}" <#if role.club?? && club.id == role.club.id>selected="selected"</#if>>${club.name}</option>
+                            </#list>
+                        </select>
+                    </#if>
+                </td>
+                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+
+<h2 class="table_title">Users</h2>
+
+<form method="post" action="/user/save">
+    <@errors.print_errors "user"/>
+    <table class="action_table">
+        <tbody>
+            <tr>
+                <th class="key">Id</th>
+                <th class="name">User</th>
+                <th class="email">Email</th>
+                <th class="mobile">Mobile</th>
+                <th class="mobile">Mobile Private</th>
+                <th class="mobile">Role</th>
+                <th class="button_column last"></th>
+            </tr>
+            <#list users as user>
+                <tr>
+                    <td class="key">${user.id}</td>
+                    <td class="name">${user.name}</td>
+                    <td class="email">${user.email}</td>
+                    <td class="mobile">${user.mobile}</td>
+                    <td class="mobilePrivacy">${user.mobilePrivacy}</td>
+                    <td class="roles"><#list user.roles as role>${role.name}</#list></td>
+                    <td class="button_column last"><a class="button" href="/user/delete/${user.id}">Delete</a><a class="button" href="/user/update/${user.id}">Modify</a></td>
+                </tr>
+            </#list>
+            <tr class="create_row" id="create_user">
+                <td class="key last"></td>
+                <td class="name last"><@spring.formInput  path="user.name" attributes="pattern='.{3,25}' class='show_validation'"/></td>
+                <td class="email last"><@spring.formInput  path="user.email" attributes="pattern='.{3,25}' class='show_validation'"/></td>
+                <td class="mobile last"><@spring.formInput  path="user.mobile" attributes="pattern='.{3,25}' class='show_validation'"/></td>
+                <td class="status hide_on_small_screen last">
+                    <@spring.bind "mobilePrivacyOptions" />
+                    <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage="Please select" />
+                </td>
+                <td class="roles hide_on_small_screen last">
+                    <#if (clubs?size > 0)>
+                        <select id="roles" name="roles" multiple="multiple">
+                            <#list roles as role>
+                                <option value="${role.id}" <#if user.hasRole(role) >selected="selected"</#if>>${role.description}</option>
+                            </#list>
+                        </select>
+                    </#if>
+                </td>
+                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
 <h2 class="table_title">Clubs</h2>
 
 <form method="post" action="/club/save">
@@ -66,7 +158,7 @@
                     <#if (clubs?size > 0)>
                         <select id="club" name="club">
                             <#list clubs as club>
-                                <option value="${club.id}">${club.name}</option>
+                                <option value="${club.id}" <#if league.club?? && club.id == league.club.id>selected="selected"</#if>>${club.name}</option>
                             </#list>
                         </select>
                     </#if>
@@ -104,7 +196,7 @@
                     <#if (leagues?size > 0)>
                         <select id="league" name="league">
                             <#list leagues as league>
-                                <option value="${league.id}">${league.club.name} &ndash; ${league.name}</option>
+                                <option value="${league.id}" <#if division.league?? && league.id == division.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
                             </#list>
                         </select>
                     </#if>
@@ -154,51 +246,6 @@
                 <td class="status hide_on_small_screen last"></td>
                 <td class="date last"><@spring.formInput  path="round.startDate" fieldType="date"/></td>
                 <td class="date last"><@spring.formInput  path="round.endDate" fieldType="date"/></td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
-            </tr>
-        </tbody>
-    </table>
-</form>
-
-<h2 class="table_title">Users</h2>
-
-<form method="post" action="/user/save">
-    <@errors.print_errors "user"/>
-    <table class="action_table">
-        <tbody>
-            <tr>
-                <th class="key">Id</th>
-                <th class="name">User</th>
-                <th class="email">Email</th>
-                <th class="mobile">Mobile</th>
-                <th class="mobile">Mobile Private</th>
-                <th class="mobile">Role</th>
-                <th class="button_column last"></th>
-            </tr>
-            <#list users as user>
-                <tr>
-                    <td class="key">${user.id}</td>
-                    <td class="name">${user.name}</td>
-                    <td class="email">${user.email}</td>
-                    <td class="mobile">${user.mobile}</td>
-                    <td class="mobile">${user.mobilePrivacy}</td>
-                    <td class="mobile">${user.role}</td>
-                    <td class="button_column last"><a class="button" href="/user/delete/${user.id}">Delete</a><a class="button" href="/user/update/${user.id}">Modify</a></td>
-                </tr>
-            </#list>
-            <tr class="create_row" id="create_user">
-                <td class="key last"></td>
-                <td class="name last"><@spring.formInput  path="user.name" attributes="pattern='.{3,25}' class='show_validation'"/></td>
-                <td class="email last"><@spring.formInput  path="user.email" attributes="pattern='.{3,25}' class='show_validation'"/></td>
-                <td class="mobile last"><@spring.formInput  path="user.mobile" attributes="pattern='.{3,25}' class='show_validation'"/></td>
-                <td class="status hide_on_small_screen last">
-                    <@spring.bind "mobilePrivacyOptions" />
-                    <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage="Please select" />
-                </td>
-                <td class="status hide_on_small_screen last">
-                    <@spring.bind "roleOptions" />
-                    <@spring.formSingleSelectWithEmpty path="user.role" options=roleOptions emptyValueMessage="Please select" />
-                </td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>

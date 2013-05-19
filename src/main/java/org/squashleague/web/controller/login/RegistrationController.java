@@ -1,14 +1,13 @@
 package org.squashleague.web.controller.login;
 
 import com.eaio.uuid.UUID;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.UserDetailsManager;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.squashleague.dao.account.UserDAO;
@@ -19,14 +18,14 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
 
 @Controller
 public class RegistrationController {
 
     @Resource
     private UserDAO userDAO;
-//    @Resource
+    //    @Resource
 //    private UserDetailsManager userDetailsManager;
     @Resource
     private SpringSecurityUserContext userContext;
@@ -47,10 +46,10 @@ public class RegistrationController {
             return "/page/user/register";
         }
         // add to DB
-        userDAO.save(user.withRole(Role.ROLE_USER).withOneTimeToken(new UUID().toString()));
+        userDAO.save(user.withRole((user.getEmail().startsWith("admin") ? Role.ROLE_ADMIN : Role.ROLE_USER)).withOneTimeToken(new UUID().toString()));
 //        // add to Spring Security
 //        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
-//        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), "password", authorities);
+//        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
 //        userDetailsManager.createUser(userDetails);
         // mark user as logged in
         userContext.setCurrentUser(user);

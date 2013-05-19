@@ -17,6 +17,10 @@
 
     <input type="hidden" name="redirect_to" value="/">
 
+    <#if SPRING_SECURITY_LAST_EXCEPTION??>
+      <p class="errors_warnings">Login Failed:&nbsp;&nbsp;&nbsp;${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+    </#if>
+
     <div class="login_form">
         <p>
             <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required" pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" size="35" tabindex="1">

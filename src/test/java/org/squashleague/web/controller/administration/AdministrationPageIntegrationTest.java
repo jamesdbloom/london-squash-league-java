@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
@@ -52,6 +53,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public class AdministrationPageIntegrationTest {
 
     @Resource
+    private RoleDAO roleDAO;
+
+    @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
 
@@ -65,6 +69,26 @@ public class AdministrationPageIntegrationTest {
         mockMvc.perform(get("/administration").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"));
+    }
+
+    @Test
+    public void getPageWithRoleErrors() throws Exception {
+        Role object = new Role()
+                .withName("test name")
+                .withDescription("test description");
+        getAdministrationPage("role", 2, object).hasRoleFields("test name", "test description");
+    }
+
+    @Test
+    public void getPageWithUserErrors() throws Exception {
+        Role role = roleDAO.findAll().get(0);
+        User object = new User()
+                .withName("test name")
+                .withEmail("test@email.com")
+                .withMobile("123456789")
+                .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
+                .withRole(role);
+        getAdministrationPage("user", 2, object).hasUserFields("test name", "test@email.com", "123456789", MobilePrivacy.SHOW_ALL, role.getId());
     }
 
     @Test
@@ -92,17 +116,6 @@ public class AdministrationPageIntegrationTest {
                 .withStartDate(new DateTime().plus(1))
                 .withEndDate(new DateTime().plus(2));
         getAdministrationPage("round", 2, object).hasRoundFields(1l, new DateTime().plus(1).toString("yyyy-MM-dd"), new DateTime().plus(2).toString("yyyy-MM-dd"));
-    }
-
-    @Test
-    public void getPageWithUserErrors() throws Exception {
-        User object = new User()
-                .withName("test name")
-                .withEmail("test@email.com")
-                .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                .withRole(Role.ROLE_USER);
-        getAdministrationPage("user", 2, object).hasUserFields("test name", "test@email.com", "123456789", MobilePrivacy.SHOW_ALL, Role.ROLE_USER);
     }
 
     @Test

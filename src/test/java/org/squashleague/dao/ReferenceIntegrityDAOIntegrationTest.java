@@ -10,17 +10,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
 import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 
 import javax.annotation.Resource;
-
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author jamesdbloom
@@ -31,6 +29,13 @@ import static org.junit.Assert.assertEquals;
 public class ReferenceIntegrityDAOIntegrationTest {
 
 
+    @Resource
+    private RoleDAO roleDAO;
+    private Role role;
+    @Resource
+    private UserDAO userDAO;
+    private User userOne;
+    private User userTwo;
     @Resource
     private ClubDAO clubDAO;
     private Club club;
@@ -44,10 +49,6 @@ public class ReferenceIntegrityDAOIntegrationTest {
     private RoundDAO roundDAO;
     private Round round;
     @Resource
-    private UserDAO userDAO;
-    private User userOne;
-    private User userTwo;
-    @Resource
     private PlayerDAO playerDAO;
     private Player playerOne;
     private Player playerTwo;
@@ -57,6 +58,22 @@ public class ReferenceIntegrityDAOIntegrationTest {
 
     @Before
     public void setupDatabase() {
+        role = new Role()
+                .withName("role name")
+                .withDescription("role description");
+        roleDAO.save(role);
+        userOne = new User()
+                .withEmail("user@email.com")
+                .withName("playerOne name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        userTwo = new User()
+                .withEmail("user@email.com")
+                .withName("playerTwo name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        userDAO.save(userOne);
+        userDAO.save(userTwo);
         club = new Club()
                 .withName("club name")
                 .withAddress("address");
@@ -74,16 +91,6 @@ public class ReferenceIntegrityDAOIntegrationTest {
                 .withEndDate(new DateTime().plusDays(2))
                 .withDivision(division);
         roundDAO.save(round);
-        userOne = new User()
-                .withEmail("user@email.com")
-                .withName("playerOne name")
-                .withMobilePrivacy(MobilePrivacy.SECRET);
-        userTwo = new User()
-                .withEmail("user@email.com")
-                .withName("playerTwo name")
-                .withMobilePrivacy(MobilePrivacy.SECRET);
-        userDAO.save(userOne);
-        userDAO.save(userTwo);
         playerOne = new Player()
                 .withCurrentDivision(division)
                 .withPlayerStatus(PlayerStatus.ACTIVE)
@@ -106,12 +113,13 @@ public class ReferenceIntegrityDAOIntegrationTest {
         matchDAO.delete(match);
         playerDAO.delete(playerOne);
         playerDAO.delete(playerTwo);
-        userDAO.delete(userOne);
-        userDAO.delete(userTwo);
         roundDAO.delete(round);
         divisionDAO.delete(division);
         leagueDAO.delete(league);
         clubDAO.delete(club);
+        userDAO.delete(userOne);
+        userDAO.delete(userTwo);
+        roleDAO.delete(role);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -122,16 +130,6 @@ public class ReferenceIntegrityDAOIntegrationTest {
     @Test(expected = DataIntegrityViolationException.class)
     public void shouldNotAllowPlayerTwoWithMatchesToBeDeleted() throws Exception {
         playerDAO.delete(playerOne);
-    }
-
-    @Test(expected = DataIntegrityViolationException.class)
-    public void shouldNotAllowUserOneWithPlayersToBeDeleted() throws Exception {
-        userDAO.delete(userOne);
-    }
-
-    @Test(expected = DataIntegrityViolationException.class)
-    public void shouldNotAllowUserTwoWithPlayersToBeDeleted() throws Exception {
-        userDAO.delete(userTwo);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
@@ -152,5 +150,15 @@ public class ReferenceIntegrityDAOIntegrationTest {
     @Test(expected = DataIntegrityViolationException.class)
     public void shouldNotAllowClubWithLeaguesToBeDeleted() throws Exception {
         clubDAO.delete(club);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowUserOneWithPlayersToBeDeleted() throws Exception {
+        userDAO.delete(userOne);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void shouldNotAllowUserTwoWithPlayersToBeDeleted() throws Exception {
+        userDAO.delete(userTwo);
     }
 }

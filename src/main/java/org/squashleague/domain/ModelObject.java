@@ -14,7 +14,7 @@ import javax.persistence.*;
 public abstract class ModelObject {
 
     static {
-        ReflectionToStringBuilder.setDefaultStyle(ToStringStyle.SHORT_PREFIX_STYLE);
+        ReflectionToStringBuilder.setDefaultStyle(ToStringStyle.MULTI_LINE_STYLE);
     }
 
     protected transient Logger logger = LoggerFactory.getLogger(getClass());

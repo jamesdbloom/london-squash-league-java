@@ -1,11 +1,6 @@
 package org.squashleague.dao.league;
 
 import org.joda.time.DateTime;
-import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.account.UserDAO;
-import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +8,15 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.dao.account.RoleDAO;
+import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -32,6 +33,13 @@ public class PlayerDAOIntegrationTest {
     @Resource
     private PlayerDAO playerDAO;
     @Resource
+    private RoleDAO roleDAO;
+    private Role role;
+    @Resource
+    private UserDAO userDAO;
+    private User userOne;
+    private User userTwo;
+    @Resource
     private ClubDAO clubDAO;
     private Club club;
     @Resource
@@ -43,13 +51,25 @@ public class PlayerDAOIntegrationTest {
     @Resource
     private RoundDAO roundDAO;
     private Round round;
-    @Resource
-    private UserDAO userDAO;
-    private User userOne;
-    private User userTwo;
 
     @Before
     public void setupDatabase() {
+        role = new Role()
+                .withName("role name")
+                .withDescription("role description");
+        roleDAO.save(role);
+        userOne = new User()
+                .withEmail("user@email.com")
+                .withName("playerOne name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        userTwo = new User()
+                .withEmail("user@email.com")
+                .withName("playerTwo name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        userDAO.save(userOne);
+        userDAO.save(userTwo);
         club = new Club()
                 .withName("club name")
                 .withAddress("address");
@@ -67,26 +87,17 @@ public class PlayerDAOIntegrationTest {
                 .withEndDate(new DateTime().plusDays(2))
                 .withDivision(division);
         roundDAO.save(round);
-        userOne = new User()
-                .withEmail("user@email.com")
-                .withName("playerOne name")
-                .withMobilePrivacy(MobilePrivacy.SECRET);
-        userTwo = new User()
-                .withEmail("user@email.com")
-                .withName("playerTwo name")
-                .withMobilePrivacy(MobilePrivacy.SECRET);
-        userDAO.save(userOne);
-        userDAO.save(userTwo);
     }
 
     @After
     public void teardownDatabase() {
-        userDAO.delete(userOne);
-        userDAO.delete(userTwo);
         roundDAO.delete(round);
         divisionDAO.delete(division);
         leagueDAO.delete(league);
         clubDAO.delete(club);
+        userDAO.delete(userOne);
+        userDAO.delete(userTwo);
+        roleDAO.delete(role);
     }
 
     @Test

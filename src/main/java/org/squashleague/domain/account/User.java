@@ -1,5 +1,6 @@
 package org.squashleague.domain.account;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -8,13 +9,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Player;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,8 +34,11 @@ public class User extends ModelObject {
     private String mobile;
     @NotNull(message = "{user.mobilePrivacy}")
     private MobilePrivacy mobilePrivacy;
-    private Role role;
     private String oneTimeToken;
+    @NotNull(message = "{user.role}")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn
+    private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Player> players;
 
@@ -50,6 +53,10 @@ public class User extends ModelObject {
     public User withName(String name) {
         setName(name);
         return this;
+    }
+
+    public String getPassword() {
+        return "password";
     }
 
     public String getEmail() {
@@ -91,20 +98,28 @@ public class User extends ModelObject {
         return this;
     }
 
-    public Role getRole() {
-        // TODO fix this properly once a real DB is being used
-        if (String.valueOf(email).startsWith("admin")) {
-            return Role.ROLE_ADMIN;
+    public String[] getRoleNames() {
+        String[] roleName = new String[roles.size()];
+        for (int i = 0; i < roles.size(); i++) {
+            roleName[i] = roles.get(i).getName();
         }
-        return role;
+        return roleName;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public boolean hasRole(Role role) {
+        return roles != null && roles.contains(role);
     }
 
-    public User withRole(Role role) {
-        setRole(role);
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public User withRole(Role... role) {
+        setRoles(Lists.newArrayList(role));
         return this;
     }
 
@@ -144,7 +159,14 @@ public class User extends ModelObject {
 
     @Override
     public boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other, "players");
+        return other instanceof User && new EqualsBuilder()
+                .append(name, ((User) other).name)
+                .append(email, ((User) other).email)
+                .append(mobile, ((User) other).mobile)
+                .append(mobilePrivacy, ((User) other).mobilePrivacy)
+                .append(oneTimeToken, ((User) other).oneTimeToken)
+                .append(roles.toArray(), ((User) other).roles.toArray())
+                .isEquals();
     }
 
     @Override

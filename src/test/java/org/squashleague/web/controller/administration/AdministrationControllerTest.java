@@ -8,8 +8,11 @@ import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 
@@ -33,6 +36,7 @@ public class AdministrationControllerTest {
     private final List<Match> matches = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
     private final List<User> users = new ArrayList<>();
+    private final List<Role> roles = new ArrayList<>();
     @Mock
     private ClubDAO clubDAO;
     @Mock
@@ -47,6 +51,8 @@ public class AdministrationControllerTest {
     private PlayerDAO playerDAO;
     @Mock
     private UserDAO userDAO;
+    @Mock
+    private RoleDAO roleDAO;
     @InjectMocks
     private AdministrationController administrationController = new AdministrationController();
 
@@ -59,6 +65,7 @@ public class AdministrationControllerTest {
         when(matchDAO.findAll()).thenReturn(matches);
         when(playerDAO.findAll()).thenReturn(players);
         when(userDAO.findAll()).thenReturn(users);
+        when(roleDAO.findAll()).thenReturn(roles);
     }
 
     @Test
@@ -70,14 +77,19 @@ public class AdministrationControllerTest {
         administrationController.list(uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("roles"), same(roles));
+        verify(uiModel).addAttribute(eq("users"), same(users));
+        verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         verify(uiModel).addAttribute(eq("clubs"), same(clubs));
         verify(uiModel).addAttribute(eq("leagues"), same(leagues));
         verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("rounds"), same(rounds));
         verify(uiModel).addAttribute(eq("matches"), same(matches));
         verify(uiModel).addAttribute(eq("players"), same(players));
-        verify(uiModel).addAttribute(eq("users"), same(users));
+        verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
 
+        verify(uiModel).addAttribute("role", new Role());
+        verify(uiModel).addAttribute("user", new User());
         verify(uiModel).addAttribute("club", new Club());
         verify(uiModel).addAttribute("league", new League());
         verify(uiModel).addAttribute("division", new Division());
@@ -90,6 +102,8 @@ public class AdministrationControllerTest {
     public void shouldNotAddDefaultObjectsIfTheyAlreadyExist() throws Exception {
         // given
         Model uiModel = mock(Model.class);
+        when(uiModel.containsAttribute("role")).thenReturn(true);
+        when(uiModel.containsAttribute("user")).thenReturn(true);
         when(uiModel.containsAttribute("club")).thenReturn(true);
         when(uiModel.containsAttribute("league")).thenReturn(true);
         when(uiModel.containsAttribute("division")).thenReturn(true);
@@ -101,6 +115,8 @@ public class AdministrationControllerTest {
         administrationController.list(uiModel);
 
         // then
+        verify(uiModel, atMost(0)).addAttribute("role", new Role());
+        verify(uiModel, atMost(0)).addAttribute("user", new User());
         verify(uiModel, atMost(0)).addAttribute("club", new Club());
         verify(uiModel, atMost(0)).addAttribute("league", new League());
         verify(uiModel, atMost(0)).addAttribute("division", new Division());

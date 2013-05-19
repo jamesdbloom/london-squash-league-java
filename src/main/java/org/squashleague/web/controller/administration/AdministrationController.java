@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
 import org.squashleague.domain.account.MobilePrivacy;
@@ -33,9 +34,14 @@ public class AdministrationController {
     private PlayerDAO playerDAO;
     @Resource
     private UserDAO userDAO;
+    @Resource
+    private RoleDAO roleDAO;
 
     @RequestMapping(value = "/administration", method = RequestMethod.GET)
     public String list(Model uiModel) {
+        uiModel.addAttribute("roles", roleDAO.findAll());
+        uiModel.addAttribute("users", userDAO.findAll());
+        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         uiModel.addAttribute("clubs", clubDAO.findAll());
         uiModel.addAttribute("leagues", leagueDAO.findAll());
         uiModel.addAttribute("divisions", divisionDAO.findAll());
@@ -43,10 +49,13 @@ public class AdministrationController {
         uiModel.addAttribute("matches", matchDAO.findAll());
         uiModel.addAttribute("players", playerDAO.findAll());
         uiModel.addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
-        uiModel.addAttribute("users", userDAO.findAll());
-        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        uiModel.addAttribute("roleOptions", Role.enumToFormOptionMap());
 
+        if (!uiModel.containsAttribute("role")) {
+            uiModel.addAttribute("role", new Role());
+        }
+        if (!uiModel.containsAttribute("user")) {
+            uiModel.addAttribute("user", new User());
+        }
         if (!uiModel.containsAttribute("club")) {
             uiModel.addAttribute("club", new Club());
         }
@@ -64,9 +73,6 @@ public class AdministrationController {
         }
         if (!uiModel.containsAttribute("player")) {
             uiModel.addAttribute("player", new Player());
-        }
-        if (!uiModel.containsAttribute("user")) {
-            uiModel.addAttribute("user", new User());
         }
         return "page/administration";
     }
