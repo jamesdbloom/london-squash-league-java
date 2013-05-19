@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.domain.league.Club;
 
@@ -41,13 +42,12 @@ public class ClubControllerTest {
     public void shouldSaveClubAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         Club club = new Club();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
         // when
-        String page = clubController.create(club, mock(BindingResult.class), session);
+        String page = clubController.create(club, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(session).removeAttribute("bindingResult");
         verify(clubDAO).save(same(club));
         assertEquals("redirect:/administration", page);
     }
@@ -56,16 +56,16 @@ public class ClubControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Club club = new Club();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // when
-        String page = clubController.create(club, bindingResult, session);
+        String page = clubController.create(club, bindingResult, redirectAttributes);
 
         // then
-        verify(session).setAttribute(eq("bindingResult"), same(bindingResult));
-        verify(session).setAttribute(eq("club"), same(club));
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq("club"), same(club));
         assertEquals("redirect:/administration", page);
     }
 

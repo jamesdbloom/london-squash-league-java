@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
@@ -21,14 +22,13 @@ public class UserController {
     @Resource
     private UserDAO userDAO;
 
-    @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid User user, BindingResult bindingResult, HttpSession session) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String create(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            session.setAttribute("bindingResult", bindingResult);
-            session.setAttribute("user", user);
+            redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
+            redirectAttributes.addFlashAttribute("user", user);
             return "redirect:/administration";
         }
-        session.removeAttribute("bindingResult");
         userDAO.save(user);
         return "redirect:/administration";
     }
@@ -52,7 +52,7 @@ public class UserController {
         return "redirect:/account";
     }
 
-    @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         userDAO.delete(id);
         return "redirect:/administration";

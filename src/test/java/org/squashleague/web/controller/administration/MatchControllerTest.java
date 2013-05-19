@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.domain.league.Match;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +41,12 @@ public class MatchControllerTest {
     public void shouldSaveMatchAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         Match match = new Match();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
         // when
-        String page = matchController.create(match, mock(BindingResult.class), session);
+        String page = matchController.create(match, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(session).removeAttribute("bindingResult");
         verify(matchDAO).save(same(match));
         assertEquals("redirect:/administration", page);
     }
@@ -56,16 +55,16 @@ public class MatchControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Match match = new Match();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // when
-        String page = matchController.create(match, bindingResult, session);
+        String page = matchController.create(match, bindingResult, redirectAttributes);
 
         // then
-        verify(session).setAttribute(eq("bindingResult"), same(bindingResult));
-        verify(session).setAttribute(eq("match"), same(match));
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq("match"), same(match));
         assertEquals("redirect:/administration", page);
     }
 

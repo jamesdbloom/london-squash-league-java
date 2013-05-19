@@ -1,11 +1,11 @@
 package org.squashleague.domain.league;
 
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.squashleague.domain.ModelObject;
 
 import javax.persistence.Entity;
@@ -74,8 +74,10 @@ public class Match extends ModelObject {
     }
 
     public void setScore(String score) {
-        this.score = score;
-        this.scoreEntered = DateTime.now();
+        if (!Strings.isNullOrEmpty(score)) {
+            this.score = score;
+            this.scoreEntered = DateTime.now();
+        }
     }
 
     public Match withScore(String score) {

@@ -70,11 +70,11 @@ public class PlayerDAOIntegrationTest {
         userOne = new User()
                 .withEmail("user@email.com")
                 .withName("playerOne name")
-                .withMobilePrivate(MobilePrivacy.SECRET);
+                .withMobilePrivacy(MobilePrivacy.SECRET);
         userTwo = new User()
                 .withEmail("user@email.com")
                 .withName("playerTwo name")
-                .withMobilePrivate(MobilePrivacy.SECRET);
+                .withMobilePrivacy(MobilePrivacy.SECRET);
         userDAO.save(userOne);
         userDAO.save(userTwo);
     }

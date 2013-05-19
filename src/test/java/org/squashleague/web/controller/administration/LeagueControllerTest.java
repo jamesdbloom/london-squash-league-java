@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.League;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +41,12 @@ public class LeagueControllerTest {
     public void shouldSaveLeagueAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         League league = new League();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
         // when
-        String page = leagueController.create(league, mock(BindingResult.class), session);
+        String page = leagueController.create(league, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(session).removeAttribute("bindingResult");
         verify(leagueDAO).save(same(league));
         assertEquals("redirect:/administration", page);
     }
@@ -56,16 +55,16 @@ public class LeagueControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         League league = new League();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // when
-        String page = leagueController.create(league, bindingResult, session);
+        String page = leagueController.create(league, bindingResult, redirectAttributes);
 
         // then
-        verify(session).setAttribute(eq("bindingResult"), same(bindingResult));
-        verify(session).setAttribute(eq("league"), same(league));
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq("league"), same(league));
         assertEquals("redirect:/administration", page);
     }
 

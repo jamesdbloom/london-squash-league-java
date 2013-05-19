@@ -33,6 +33,11 @@ public abstract class ModelObject {
         this.id = id;
     }
 
+    public ModelObject withId(Long id) {
+        setId(id);
+        return this;
+    }
+
     public Integer getVersion() {
         return version;
     }

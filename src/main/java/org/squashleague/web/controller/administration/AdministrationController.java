@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author jamesdbloom
@@ -34,33 +35,39 @@ public class AdministrationController {
     private UserDAO userDAO;
 
     @RequestMapping(value = "/administration", method = RequestMethod.GET)
-    public String list(Model uiModel, HttpSession session) {
+    public String list(Model uiModel) {
         uiModel.addAttribute("clubs", clubDAO.findAll());
         uiModel.addAttribute("leagues", leagueDAO.findAll());
         uiModel.addAttribute("divisions", divisionDAO.findAll());
         uiModel.addAttribute("rounds", roundDAO.findAll());
-        uiModel.addAttribute("roundStatuses", RoundStatus.values());
         uiModel.addAttribute("matches", matchDAO.findAll());
         uiModel.addAttribute("players", playerDAO.findAll());
-        uiModel.addAttribute("playerStatuses", PlayerStatus.values());
+        uiModel.addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
         uiModel.addAttribute("users", userDAO.findAll());
+        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
+        uiModel.addAttribute("roleOptions", Role.enumToFormOptionMap());
 
-        uiModel.addAttribute("bindingResult", session.getAttribute("bindingResult"));
-        uiModel.addAttribute("club", getSessionValueOrDefault(session, "club", new Club()));
-        uiModel.addAttribute("league", getSessionValueOrDefault(session, "league", new League()));
-        uiModel.addAttribute("division", getSessionValueOrDefault(session, "division", new Division()));
-        uiModel.addAttribute("round", getSessionValueOrDefault(session, "round", new Round()));
-        uiModel.addAttribute("match", getSessionValueOrDefault(session, "match", new Match()));
-        uiModel.addAttribute("player", getSessionValueOrDefault(session, "player", new Player()));
-        uiModel.addAttribute("user", getSessionValueOrDefault(session, "user", new User()));
-        return "page/administration";
-    }
-
-    private Object getSessionValueOrDefault(HttpSession session, String key, Object defaultValue) {
-        Object result = session.getAttribute(key);
-        if (result == null) {
-            result = defaultValue;
+        if (!uiModel.containsAttribute("club")) {
+            uiModel.addAttribute("club", new Club());
         }
-        return result;
+        if (!uiModel.containsAttribute("league")) {
+            uiModel.addAttribute("league", new League());
+        }
+        if (!uiModel.containsAttribute("division")) {
+            uiModel.addAttribute("division", new Division());
+        }
+        if (!uiModel.containsAttribute("round")) {
+            uiModel.addAttribute("round", new Round());
+        }
+        if (!uiModel.containsAttribute("match")) {
+            uiModel.addAttribute("match", new Match());
+        }
+        if (!uiModel.containsAttribute("player")) {
+            uiModel.addAttribute("player", new Player());
+        }
+        if (!uiModel.containsAttribute("user")) {
+            uiModel.addAttribute("user", new User());
+        }
+        return "page/administration";
     }
 }

@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.league.Player;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +40,12 @@ public class PlayerControllerTest {
     public void shouldSavePlayerAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         Player player = new Player();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
         // when
-        String page = playerController.create(player, mock(BindingResult.class), session);
+        String page = playerController.create(player, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(session).removeAttribute("bindingResult");
         verify(playerDAO).save(same(player));
         assertEquals("redirect:/administration", page);
     }
@@ -55,16 +54,16 @@ public class PlayerControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Player player = new Player();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // when
-        String page = playerController.create(player, bindingResult, session);
+        String page = playerController.create(player, bindingResult, redirectAttributes);
 
         // then
-        verify(session).setAttribute(eq("bindingResult"), same(bindingResult));
-        verify(session).setAttribute(eq("player"), same(player));
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq("player"), same(player));
         assertEquals("redirect:/administration", page);
     }
 

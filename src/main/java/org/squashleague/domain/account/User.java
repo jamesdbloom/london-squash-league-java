@@ -32,8 +32,8 @@ public class User extends ModelObject {
     private String email;
     @Pattern(regexp = "[\\d\\s]{6,15}", message = "{user.mobile}")
     private String mobile;
-    @NotNull(message = "{user.mobilePrivate}")
-    private MobilePrivacy mobilePrivate;
+    @NotNull(message = "{user.mobilePrivacy}")
+    private MobilePrivacy mobilePrivacy;
     private Role role;
     private String oneTimeToken;
     @OneToMany(cascade = CascadeType.ALL)
@@ -78,20 +78,24 @@ public class User extends ModelObject {
         return this;
     }
 
-    public MobilePrivacy getMobilePrivate() {
-        return mobilePrivate;
+    public MobilePrivacy getMobilePrivacy() {
+        return mobilePrivacy;
     }
 
-    public void setMobilePrivate(MobilePrivacy mobilePrivate) {
-        this.mobilePrivate = mobilePrivate;
+    public void setMobilePrivacy(MobilePrivacy mobilePrivacy) {
+        this.mobilePrivacy = mobilePrivacy;
     }
 
-    public User withMobilePrivate(MobilePrivacy mobilePrivate) {
-        setMobilePrivate(mobilePrivate);
+    public User withMobilePrivacy(MobilePrivacy mobilePrivacy) {
+        setMobilePrivacy(mobilePrivacy);
         return this;
     }
 
     public Role getRole() {
+        // TODO fix this properly once a real DB is being used
+        if (String.valueOf(email).startsWith("admin")) {
+            return Role.ROLE_ADMIN;
+        }
         return role;
     }
 

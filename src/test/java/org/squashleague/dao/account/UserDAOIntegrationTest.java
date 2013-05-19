@@ -80,7 +80,7 @@ public class UserDAOIntegrationTest {
         User expectedUser = new User()
                 .withEmail("user@email.com")
                 .withName("user name")
-                .withMobilePrivate(MobilePrivacy.SECRET);
+                .withMobilePrivacy(MobilePrivacy.SECRET);
 
         // when
         userDAO.save(expectedUser);
@@ -97,7 +97,7 @@ public class UserDAOIntegrationTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobile("07515 900 569")
-                .withMobilePrivate(MobilePrivacy.SECRET)
+                .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(Role.ROLE_USER)
                 .withOneTimeToken(new UUID().toString())
                 .withPlayers(
@@ -123,11 +123,11 @@ public class UserDAOIntegrationTest {
         User userOne = new User()
                 .withEmail("user@email.com")
                 .withName("user name")
-                .withMobilePrivate(MobilePrivacy.SECRET);
+                .withMobilePrivacy(MobilePrivacy.SECRET);
         User userTwo = new User()
                 .withEmail("user@email.com")
                 .withName("user name")
-                .withMobilePrivate(MobilePrivacy.SECRET);
+                .withMobilePrivacy(MobilePrivacy.SECRET);
 
         // when
         userDAO.save(userOne);
@@ -145,7 +145,7 @@ public class UserDAOIntegrationTest {
         User expectedUser = new User()
                 .withEmail("user@email.com")
                 .withName("user name")
-                .withMobilePrivate(MobilePrivacy.SECRET);
+                .withMobilePrivacy(MobilePrivacy.SECRET);
         userDAO.save(expectedUser);
         assertEquals(expectedUser, userDAO.findOne(expectedUser.getId()));
 

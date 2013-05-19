@@ -6,11 +6,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.League;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RequestMapping("/league")
@@ -20,14 +20,13 @@ public class LeagueController {
     @Resource
     private LeagueDAO leagueDAO;
 
-    @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid League league, BindingResult bindingResult, HttpSession session) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String create(@Valid League league, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            session.setAttribute("bindingResult", bindingResult);
-            session.setAttribute("league", league);
+            redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
+            redirectAttributes.addFlashAttribute("league", league);
             return "redirect:/administration";
         }
-        session.removeAttribute("bindingResult");
         leagueDAO.save(league);
         return "redirect:/administration";
     }
@@ -48,7 +47,7 @@ public class LeagueController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         leagueDAO.delete(id);
         return "redirect:/administration";

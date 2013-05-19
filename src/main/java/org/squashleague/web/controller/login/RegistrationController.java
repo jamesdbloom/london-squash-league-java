@@ -26,8 +26,8 @@ public class RegistrationController {
 
     @Resource
     private UserDAO userDAO;
-    @Resource
-    private UserDetailsManager userDetailsManager;
+//    @Resource
+//    private UserDetailsManager userDetailsManager;
     @Resource
     private SpringSecurityUserContext userContext;
 
@@ -48,10 +48,10 @@ public class RegistrationController {
         }
         // add to DB
         userDAO.save(user.withRole(Role.ROLE_USER).withOneTimeToken(new UUID().toString()));
-        // add to Spring Security
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), "password", authorities);
-        userDetailsManager.createUser(userDetails);
+//        // add to Spring Security
+//        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
+//        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), "password", authorities);
+//        userDetailsManager.createUser(userDetails);
         // mark user as logged in
         userContext.setCurrentUser(user);
         return "redirect:/";

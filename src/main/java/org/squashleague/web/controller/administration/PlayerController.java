@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.league.Player;
 
@@ -21,14 +22,13 @@ public class PlayerController {
     @Resource
     private PlayerDAO playerDAO;
 
-    @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid Player player, BindingResult bindingResult, HttpSession session) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String create(@Valid Player player, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            session.setAttribute("bindingResult", bindingResult);
-            session.setAttribute("player", player);
+            redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
+            redirectAttributes.addFlashAttribute("player", player);
             return "redirect:/administration";
         }
-        session.removeAttribute("bindingResult");
         playerDAO.save(player);
         return "redirect:/administration";
     }
@@ -49,7 +49,7 @@ public class PlayerController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         playerDAO.delete(id);
         return "redirect:/administration";

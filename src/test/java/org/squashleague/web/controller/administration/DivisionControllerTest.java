@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.domain.league.Division;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +41,12 @@ public class DivisionControllerTest {
     public void shouldSaveDivisionAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         Division division = new Division();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
         // when
-        String page = divisionController.create(division, mock(BindingResult.class), session);
+        String page = divisionController.create(division, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(session).removeAttribute("bindingResult");
         verify(divisionDAO).save(same(division));
         assertEquals("redirect:/administration", page);
     }
@@ -56,16 +55,16 @@ public class DivisionControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Division division = new Division();
-        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // when
-        String page = divisionController.create(division, bindingResult, session);
+        String page = divisionController.create(division, bindingResult, redirectAttributes);
 
         // then
-        verify(session).setAttribute(eq("bindingResult"), same(bindingResult));
-        verify(session).setAttribute(eq("division"), same(division));
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq("division"), same(division));
         assertEquals("redirect:/administration", page);
     }
 

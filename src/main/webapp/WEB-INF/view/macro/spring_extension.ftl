@@ -67,3 +67,20 @@
     </select>
 </#macro>
 
+<#--
+ * checkSelectedIfMatch
+ *
+ * Check a value in a list to see if it is the currently selected value.
+ * If so, add the 'selected="selected"' text to the output.
+ * Handles values of numeric and string types.
+ * This function is used internally but can be accessed by user code if required.
+ *
+ * @param value the current value in a list iteration
+-->
+<#macro checkSelectedIfMatch optionId value>
+    <!-- ${optionId?is_number?string} && ${optionId} == ${value?number} -->
+    <!-- ${optionId?is_string?string} && ${optionId} == ${value} -->
+    <#if optionId?is_number && optionId == value?number>selected="selected"</#if>
+    <#if optionId?is_string && optionId == value>selected="selected"</#if>
+</#macro>
+

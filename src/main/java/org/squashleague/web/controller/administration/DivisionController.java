@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.domain.league.Division;
 
@@ -21,14 +22,13 @@ public class DivisionController {
     @Resource
     private DivisionDAO divisionDAO;
 
-    @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid Division division, BindingResult bindingResult, HttpSession session) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String create(@Valid Division division, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            session.setAttribute("bindingResult", bindingResult);
-            session.setAttribute("division", division);
+            redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
+            redirectAttributes.addFlashAttribute("division", division);
             return "redirect:/administration";
         }
-        session.removeAttribute("bindingResult");
         divisionDAO.save(division);
         return "redirect:/administration";
     }
@@ -49,7 +49,7 @@ public class DivisionController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         divisionDAO.delete(id);
         return "redirect:/administration";

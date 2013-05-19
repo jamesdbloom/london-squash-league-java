@@ -38,12 +38,7 @@
 
     <!-- users - todo: to be replaced with stronger solution -->
     <security:authentication-manager>
-        <security:authentication-provider>
-            <security:user-service>
-                <security:user name="admin@email.com" password="password" authorities="ROLE_USER, ROLE_ADMIN"/>
-                <security:user name="user@email.com" password="password" authorities="ROLE_USER"/>
-            </security:user-service>
-        </security:authentication-provider>
+        <security:authentication-provider user-service-ref="loginUserDetailsService"/>
     </security:authentication-manager>
 
 </beans:beans>

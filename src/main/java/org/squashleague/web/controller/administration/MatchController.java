@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.domain.league.Match;
 
@@ -21,14 +22,13 @@ public class MatchController {
     @Resource
     private MatchDAO matchDAO;
 
-    @RequestMapping(params = "save", method = RequestMethod.POST)
-    public String create(@Valid Match match, BindingResult bindingResult, HttpSession session) {
+    @RequestMapping(value = "save", method = RequestMethod.POST)
+    public String create(@Valid Match match, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            session.setAttribute("bindingResult", bindingResult);
-            session.setAttribute("match", match);
+            redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
+            redirectAttributes.addFlashAttribute("match", match);
             return "redirect:/administration";
         }
-        session.removeAttribute("bindingResult");
         matchDAO.save(match);
         return "redirect:/administration";
     }
@@ -49,7 +49,7 @@ public class MatchController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(params = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         matchDAO.delete(id);
         return "redirect:/administration";

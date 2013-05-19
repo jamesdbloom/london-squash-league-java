@@ -67,7 +67,7 @@ public class AdministrationControllerTest {
         Model uiModel = mock(Model.class);
 
         // when
-        administrationController.list(uiModel, mock(HttpSession.class));
+        administrationController.list(uiModel);
 
         // then
         verify(uiModel).addAttribute(eq("clubs"), same(clubs));
@@ -77,7 +77,7 @@ public class AdministrationControllerTest {
         verify(uiModel).addAttribute(eq("matches"), same(matches));
         verify(uiModel).addAttribute(eq("players"), same(players));
         verify(uiModel).addAttribute(eq("users"), same(users));
-        verify(uiModel).addAttribute("bindingResult", null);
+
         verify(uiModel).addAttribute("club", new Club());
         verify(uiModel).addAttribute("league", new League());
         verify(uiModel).addAttribute("division", new Division());
@@ -87,36 +87,26 @@ public class AdministrationControllerTest {
     }
 
     @Test
-    public void shouldCreateRetrieveValuesFromSession() throws Exception {
+    public void shouldNotAddDefaultObjectsIfTheyAlreadyExist() throws Exception {
         // given
         Model uiModel = mock(Model.class);
-        HttpSession session = mock(HttpSession.class);
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(session.getAttribute("bindingResult")).thenReturn(bindingResult);
-        Club club = new Club();
-        when(session.getAttribute("club")).thenReturn(club);
-        League league = new League();
-        when(session.getAttribute("league")).thenReturn(league);
-        Division division = new Division();
-        when(session.getAttribute("division")).thenReturn(division);
-        Round round = new Round();
-        when(session.getAttribute("round")).thenReturn(round);
-        Match match = new Match();
-        when(session.getAttribute("match")).thenReturn(match);
-        Player player = new Player();
-        when(session.getAttribute("player")).thenReturn(player);
+        when(uiModel.containsAttribute("club")).thenReturn(true);
+        when(uiModel.containsAttribute("league")).thenReturn(true);
+        when(uiModel.containsAttribute("division")).thenReturn(true);
+        when(uiModel.containsAttribute("round")).thenReturn(true);
+        when(uiModel.containsAttribute("match")).thenReturn(true);
+        when(uiModel.containsAttribute("player")).thenReturn(true);
 
         // when
-        administrationController.list(uiModel, session);
+        administrationController.list(uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("club"), same(club));
-        verify(uiModel).addAttribute(eq("league"), same(league));
-        verify(uiModel).addAttribute(eq("division"), same(division));
-        verify(uiModel).addAttribute(eq("round"), same(round));
-        verify(uiModel).addAttribute(eq("match"), same(match));
-        verify(uiModel).addAttribute(eq("player"), same(player));
+        verify(uiModel, atMost(0)).addAttribute("club", new Club());
+        verify(uiModel, atMost(0)).addAttribute("league", new League());
+        verify(uiModel, atMost(0)).addAttribute("division", new Division());
+        verify(uiModel, atMost(0)).addAttribute("round", new Round());
+        verify(uiModel, atMost(0)).addAttribute("match", new Match());
+        verify(uiModel, atMost(0)).addAttribute("player", new Player());
     }
 
 }

@@ -27,8 +27,8 @@
 
         <@spring.bind "mobilePrivacyOptions" />
         <p class="select">
-            <label class="user_mobile_private" for="mobilePrivate">Mobile Privacy:</label>
-            <@spring.formSingleSelectWithEmpty path="user.mobilePrivate" options=mobilePrivacyOptions emptyValueMessage="Please select" attributes="tabindex='4' required='required'" />
+            <label class="user_mobile_private" for="mobilePrivacy">Mobile Privacy:</label>
+            <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage="Please select" attributes="tabindex='4' required='required'" />
         </p>
 
         <p class="submit">
