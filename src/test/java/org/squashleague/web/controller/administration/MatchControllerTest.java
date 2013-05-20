@@ -26,7 +26,6 @@ import static org.mockito.Mockito.*;
 public class MatchControllerTest {
 
     private final List<Match> matchs = new ArrayList<>();
-
     @Mock
     private MatchDAO matchDAO;
     @InjectMocks
@@ -55,6 +54,7 @@ public class MatchControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Match match = new Match();
+        String objectName = "match";
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -64,8 +64,8 @@ public class MatchControllerTest {
 
         // then
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq("match"), same(match));
-        assertEquals("redirect:/administration", page);
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(match));
+        assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
     @Test

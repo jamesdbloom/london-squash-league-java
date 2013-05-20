@@ -27,7 +27,7 @@ public class DivisionController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("division", division);
-            return "redirect:/administration";
+            return "redirect:/administration#divisions";
         }
         divisionDAO.save(division);
         return "redirect:/administration";

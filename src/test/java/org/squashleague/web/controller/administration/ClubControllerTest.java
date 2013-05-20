@@ -56,6 +56,7 @@ public class ClubControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Club club = new Club();
+        String objectName = "club";
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -65,8 +66,8 @@ public class ClubControllerTest {
 
         // then
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq("club"), same(club));
-        assertEquals("redirect:/administration", page);
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(club));
+        assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
     @Test

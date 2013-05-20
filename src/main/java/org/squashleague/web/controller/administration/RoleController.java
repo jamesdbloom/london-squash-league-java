@@ -26,7 +26,7 @@ public class RoleController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("role", role);
-            return "redirect:/administration";
+            return "redirect:/administration#roles";
         }
         roleDAO.save(role);
         return "redirect:/administration";

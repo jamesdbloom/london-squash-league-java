@@ -1,5 +1,6 @@
 package org.squashleague.domain.account;
 
+import com.eaio.uuid.UUID;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -23,22 +24,25 @@ import java.util.Set;
 @Entity
 public class User extends ModelObject {
 
-    @NotNull(message = "{user.name}")
-    @Size(min = 3, max = 25, message = "{user.name}")
+    // basic properties
+    @NotNull(message = "{validation.user.name}")
+    @Size(min = 3, max = 25, message = "{validation.user.name}")
     private String name;
-    @NotNull(message = "{user.email}")
-    @Email(message = "{user.email}")
-    @NotEmpty(message = "{user.email}")
+    @NotNull(message = "{validation.user.email}")
+    @Email(message = "{validation.user.email}")
+    @NotEmpty(message = "{validation.user.email}")
     private String email;
-    @Pattern(regexp = "[\\d\\s]{6,15}", message = "{user.mobile}")
+    @Pattern(regexp = "[\\d\\s]{6,15}", message = "{validation.user.mobile}")
     private String mobile;
-    @NotNull(message = "{user.mobilePrivacy}")
+    @NotNull(message = "{validation.user.mobilePrivacy}")
     private MobilePrivacy mobilePrivacy;
-    private String oneTimeToken;
-    @NotNull(message = "{user.role}")
+    // login
+    @NotNull(message = "{validation.user.role}")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);
+    private String password;
+    // extra domain traversal
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Player> players;
 
@@ -53,10 +57,6 @@ public class User extends ModelObject {
     public User withName(String name) {
         setName(name);
         return this;
-    }
-
-    public String getPassword() {
-        return "password";
     }
 
     public String getEmail() {
@@ -123,16 +123,16 @@ public class User extends ModelObject {
         return this;
     }
 
-    public String getOneTimeToken() {
-        return oneTimeToken;
+    public String getPassword() {
+        return password;
     }
 
-    public void setOneTimeToken(String oneTimeToken) {
-        this.oneTimeToken = oneTimeToken;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public User withOneTimeToken(String oneTimeToken) {
-        setOneTimeToken(oneTimeToken);
+    public User withPassword(String password) {
+        setPassword(password);
         return this;
     }
 
@@ -164,7 +164,7 @@ public class User extends ModelObject {
                 .append(email, ((User) other).email)
                 .append(mobile, ((User) other).mobile)
                 .append(mobilePrivacy, ((User) other).mobilePrivacy)
-                .append(oneTimeToken, ((User) other).oneTimeToken)
+                .append(password, ((User) other).password)
                 .append(roles.toArray(), ((User) other).roles.toArray())
                 .isEquals();
     }

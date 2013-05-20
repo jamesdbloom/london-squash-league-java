@@ -9,7 +9,7 @@
 </#macro>
 
 <#macro content_section>
-<h2 class="table_title">Roles</h2>
+<h2 id="roles" class="table_title">Roles</h2>
 
 <form method="post" action="/role/save">
     <@errors.print_errors "role"/>
@@ -51,7 +51,7 @@
 </form>
 
 
-<h2 class="table_title">Users</h2>
+<h2 id="users" class="table_title">Users</h2>
 
 <form method="post" action="/user/save">
     <@errors.print_errors "user"/>
@@ -101,7 +101,7 @@
     </table>
 </form>
 
-<h2 class="table_title">Clubs</h2>
+<h2 id="clubs" class="table_title">Clubs</h2>
 
 <form method="post" action="/club/save">
     <@errors.print_errors "club"/>
@@ -132,7 +132,7 @@
 
 </form>
 
-<h2 class="table_title">Leagues</h2>
+<h2 id="leagues" class="table_title">Leagues</h2>
 
 <form method="post" action="/league/save">
     <@errors.print_errors "league"/>
@@ -170,7 +170,7 @@
     </table>
 </form>
 
-<h2 class="table_title">Divisions</h2>
+<h2 id="divisions" class="table_title">Divisions</h2>
 
 <form method="post" action="/division/save">
     <@errors.print_errors "division"/>
@@ -208,7 +208,7 @@
     </table>
 </form>
 
-<h2 class="table_title">Rounds</h2>
+<h2 id="rounds" class="table_title">Rounds</h2>
 
 <form method="post" action="/round/save">
     <@errors.print_errors "round"/>
@@ -252,7 +252,7 @@
     </table>
 </form>
 
-<h2 class="table_title">Players</h2>
+<h2 id="players" class="table_title">Players</h2>
 
 <form method="post" action="/player/save">
     <@errors.print_errors "player"/>
@@ -306,7 +306,7 @@
 
 <p class="num_of_players">Number of Players: ${players?size}</p>
 
-<h2 class="table_title">Matches</h2>
+<h2 id="matches" class="table_title">Matches</h2>
 
 <form method="post" action="/match/save">
     <@errors.print_errors "match"/>

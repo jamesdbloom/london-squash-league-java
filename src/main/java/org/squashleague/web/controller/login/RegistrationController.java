@@ -1,12 +1,12 @@
 package org.squashleague.web.controller.login;
 
 import com.eaio.uuid.UUID;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,39 +18,65 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.Collection;
+import javax.validation.constraints.Pattern;
 
 @Controller
 public class RegistrationController {
 
+    public static final String PASSWORD_PATTERN = "^.*(?=.{8,})(?=.*\\d)(?=.*(\\£|\\!|\\@|\\#|\\$|\\%|\\^|\\&|\\*|\\(|\\)|\\-|\\_|\\[|\\]|\\{|\\}|\\<|\\>|\\~|\\`|\\+|\\=|\\,|\\.|\\;|\\:|\\/|\\?|\\|))(?=.*[a-zA-Z]).*$";
+    public static final String EMAIL_PATTERN = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
     @Resource
     private UserDAO userDAO;
-    //    @Resource
-//    private UserDetailsManager userDetailsManager;
     @Resource
     private SpringSecurityUserContext userContext;
+    @Resource
+    private Environment environment;
+    @Resource
+    private StandardPasswordEncoder passwordEncoder;
+
+    private void setupModel(Model uiModel) {
+        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
+        uiModel.addAttribute("passwordPattern", PASSWORD_PATTERN);
+        uiModel.addAttribute("emailPattern", EMAIL_PATTERN);
+        uiModel.addAttribute("validation_user_name", environment.getProperty("validation.user.name"));
+        uiModel.addAttribute("validation_user_email", environment.getProperty("validation.user.email"));
+        uiModel.addAttribute("validation_user_mobile", environment.getProperty("validation.user.mobile"));
+        uiModel.addAttribute("validation_user_mobilePrivacy", environment.getProperty("validation.user.mobilePrivacy"));
+        uiModel.addAttribute("validation_user_password", environment.getProperty("validation.user.password"));
+        uiModel.addAttribute("validation_user_passwordNonMatching", environment.getProperty("validation.user.passwordNonMatching"));
+    }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerForm(Model uiModel) {
+        setupModel(uiModel);
         uiModel.addAttribute("user", new User());
-        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         return "/page/user/register";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid User user, BindingResult bindingResult, Model uiModel) {
-        if (bindingResult.hasErrors()) {
+    public String register(@Valid User user, BindingResult bindingResult,
+                           @Pattern(regexp = PASSWORD_PATTERN, message = "{validation.user.password}") String passwordOne, BindingResult passwordOneBindingResult,
+                           @Pattern(regexp = PASSWORD_PATTERN, message = "{validation.user.password}") String passwordTwo, BindingResult passwordTwoBindingResult,
+                           Model uiModel) {
+        setupModel(uiModel);
+        if (bindingResult.hasErrors() || passwordOneBindingResult.hasErrors() || passwordTwoBindingResult.hasErrors()) {
+            if (!passwordOne.equals(passwordTwo)) {
+                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.passwordNonMatching")));
+            }
+            bindingResult.addAllErrors(passwordOneBindingResult);
+            bindingResult.addAllErrors(passwordTwoBindingResult);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
-            uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
+            uiModel.addAttribute("passwordOne", passwordOne);
+            uiModel.addAttribute("passwordTwo", passwordTwo);
             return "/page/user/register";
         }
         // add to DB
-        userDAO.save(user.withRole((user.getEmail().startsWith("admin") ? Role.ROLE_ADMIN : Role.ROLE_USER)).withOneTimeToken(new UUID().toString()));
-//        // add to Spring Security
-//        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
-//        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-//        userDetailsManager.createUser(userDetails);
+        String salt = new UUID().toString();
+        userDAO.save(user
+                .withRole((user.getEmail().startsWith("admin") ? Role.ROLE_ADMIN : Role.ROLE_USER))
+                .withPassword(passwordEncoder.encode(passwordOne))
+        );
         // mark user as logged in
         userContext.setCurrentUser(user);
         return "redirect:/";

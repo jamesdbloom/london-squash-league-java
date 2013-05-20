@@ -27,7 +27,7 @@ public class PlayerController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("player", player);
-            return "redirect:/administration";
+            return "redirect:/administration#players";
         }
         playerDAO.save(player);
         return "redirect:/administration";

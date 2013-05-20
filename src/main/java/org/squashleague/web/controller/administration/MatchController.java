@@ -27,7 +27,7 @@ public class MatchController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("match", match);
-            return "redirect:/administration";
+            return "redirect:/administration#matchs";
         }
         matchDAO.save(match);
         return "redirect:/administration";

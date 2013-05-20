@@ -54,6 +54,7 @@ public class RoundControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Round round = new Round();
+        String objectName = "round";
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -63,8 +64,8 @@ public class RoundControllerTest {
 
         // then
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq("round"), same(round));
-        assertEquals("redirect:/administration", page);
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(round));
+        assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
     @Test

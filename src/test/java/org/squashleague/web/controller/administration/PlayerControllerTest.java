@@ -54,6 +54,7 @@ public class PlayerControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Player player = new Player();
+        String objectName = "player";
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -63,8 +64,8 @@ public class PlayerControllerTest {
 
         // then
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq("player"), same(player));
-        assertEquals("redirect:/administration", page);
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(player));
+        assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
     @Test

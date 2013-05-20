@@ -23,16 +23,17 @@
 
     <div class="login_form">
         <p>
-            <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required" pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" size="35" tabindex="1">
+            <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required" tabindex="1">
         </p>
 
         <p>
             <label class="password" for="password">Password:</label> <input id="password" type="password" name="password" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required" tabindex="2">
         </p>
 
-        <p>
-            <label class="remember_me" for="remember_me">Remember:</label> <input id="remember_me" name="remember_me" type="checkbox" value="forever" tabindex="3">
-        </p>
+        <#-- TODO can I easily implement a remember cookie for username? -->
+        <#--<p>-->
+            <#--<label class="remember_me" for="remember_me">Remember:</label> <input id="remember_me" name="remember_me" type="checkbox" value="forever" tabindex="3">-->
+        <#--</p>-->
 
         <p class="submit">
             <input class="submit primary" type="submit" name="submit" value="Login" tabindex="4">

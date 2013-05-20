@@ -16,11 +16,11 @@ import java.util.Set;
 @Entity
 public class Club extends ModelObject {
 
-    @NotNull(message = "{club.name}")
-    @Size(min = 5, max = 25, message = "{club.name}")
+    @NotNull(message = "{validation.club.name}")
+    @Size(min = 5, max = 25, message = "{validation.club.name}")
     private String name;
-    @NotNull(message = "{club.address}")
-    @Size(min = 5, max = 50, message = "{club.address}")
+    @NotNull(message = "{validation.club.address}")
+    @Size(min = 5, max = 50, message = "{validation.club.address}")
     private String address;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<League> leagues;

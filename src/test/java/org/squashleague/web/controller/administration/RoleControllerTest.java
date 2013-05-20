@@ -53,6 +53,7 @@ public class RoleControllerTest {
     public void shouldAddBindingErrorsToSessionAndRedirect() throws Exception {
         // given
         Role role = new Role();
+        String objectName = "role";
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
@@ -62,8 +63,8 @@ public class RoleControllerTest {
 
         // then
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq("role"), same(role));
-        assertEquals("redirect:/administration", page);
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(role));
+        assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
     @Test

@@ -16,7 +16,7 @@ import java.util.Properties;
  * @author jamesdbloom
  */
 @Configuration
-@PropertySource("classpath:web.properties")
+@PropertySource({"classpath:web.properties", "classpath:ValidationMessages.properties"})
 @ImportResource(value = {"classpath:/config/security-context.xml", "classpath:/config/dao-context.xml"})
 @Import(ServiceConfiguration.class)
 public class RootConfiguration {

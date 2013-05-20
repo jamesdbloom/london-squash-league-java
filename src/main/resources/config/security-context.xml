@@ -13,32 +13,37 @@
         <security:form-login
                 username-parameter="email"
                 password-parameter="password"
-                login-page="/login" />
-        <security:session-management session-fixation-protection="migrateSession"/>
+                login-page="/login"/>
+        <security:session-management session-fixation-protection="newSession"/>
         <security:access-denied-handler error-page="/errors/403"/>
 
-        <security:logout logout-url="/logout" logout-success-url="/"/>
+        <security:logout logout-url="/logout" delete-cookies="JSESSIONID" logout-success-url="/"/>
         <!-- ALL -->
-        <security:intercept-url pattern="/favicon.ico"          access="permitAll()" requires-channel="https"/>
-        <security:intercept-url pattern="/resources/**"         access="permitAll()" requires-channel="https"/>
-        <security:intercept-url pattern="/bundle/**"            access="permitAll()" requires-channel="https"/>
-        <security:intercept-url pattern="/"                     access="permitAll()" requires-channel="https"/>
-        <security:intercept-url pattern="/register"             access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/favicon.ico" access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/resources/**" access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/bundle/**" access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/" access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/register" access="permitAll()" requires-channel="https"/>
         <!-- NOT LOGGED IN -->
-        <security:intercept-url pattern="/login"                access="isAnonymous()" requires-channel="https"/>
+        <security:intercept-url pattern="/login" access="isAnonymous()" requires-channel="https"/>
         <!-- ANY USER -->
-        <security:intercept-url pattern="/logout"               access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/user/update/**"       access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/**"                   access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/logout" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/user/update/**" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="https"/>
         <!-- ADMIN ONLY -->
-        <security:intercept-url pattern="/user/delete/**"       access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
-        <security:intercept-url pattern="/administration/**"    access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/user/delete/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/administration/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <!--<security:intercept-url pattern="/**" access="hasRole('ROLE_ANONYMOUS')" requires-channel="https"/>-->
     </security:http>
 
     <!-- users - todo: to be replaced with stronger solution -->
     <security:authentication-manager>
-        <security:authentication-provider ref="springSecurityAuthenticationProvider"/>
+        <security:authentication-provider ref="springSecurityAuthenticationProvider" />
     </security:authentication-manager>
+
+    <beans:bean name="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+        <beans:constructor-arg value="SHA-512" />
+        <beans:constructor-arg value="b3bca4d0-c0e3-11e2-8b8b-0800200c9a66" />
+    </beans:bean>
 
 </beans:beans>

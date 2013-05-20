@@ -25,9 +25,9 @@ public class ClubController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("club", club);
-        } else {
-            clubDAO.save(club);
+            return "redirect:/administration#clubs";
         }
+        clubDAO.save(club);
         return "redirect:/administration";
     }
 

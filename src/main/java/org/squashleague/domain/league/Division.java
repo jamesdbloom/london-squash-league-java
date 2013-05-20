@@ -17,10 +17,10 @@ import java.util.Set;
 @Entity
 public class Division extends ModelObject {
 
-    @NotNull(message = "{division.name}")
-    @Size(min = 5, max = 25,message = "{division.name}")
+    @NotNull(message = "{validation.division.name}")
+    @Size(min = 5, max = 25,message = "{validation.division.name}")
     private String name;
-    @NotNull(message = "{club.name}")
+    @NotNull(message = "{validation.club.name}")
     @ManyToOne
     private League league;
     @OneToMany(cascade = CascadeType.ALL)

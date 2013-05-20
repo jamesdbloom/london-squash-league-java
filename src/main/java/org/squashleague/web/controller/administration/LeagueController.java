@@ -25,7 +25,7 @@ public class LeagueController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("league", league);
-            return "redirect:/administration";
+            return "redirect:/administration#leagues";
         }
         leagueDAO.save(league);
         return "redirect:/administration";

@@ -26,10 +26,5 @@ public class SpringSecurityUserContext {
     public void setCurrentUser(User user) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), AuthorityUtils.createAuthorityList(user.getRoleNames()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-//        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
-//        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), "password", authorities);
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

@@ -20,19 +20,19 @@ import java.util.Set;
 @Entity
 public class Round extends ModelObject {
 
-    @NotNull(message = "{round.startDate}")
-    @Future(message = "{round.startDate}")
+    @NotNull(message = "{validation.round.startDate}")
+    @Future(message = "{validation.round.startDate}")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime startDate;
-    @NotNull(message = "{round.endDate}")
-    @Future(message = "{round.endDate}")
+    @NotNull(message = "{validation.round.endDate}")
+    @Future(message = "{validation.round.endDate}")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime endDate;
     @NotNull
     private RoundStatus status = RoundStatus.UNKNOWN;
-    @NotNull(message = "{round.division}")
+    @NotNull(message = "{validation.round.division}")
     @ManyToOne
     private Division division;
     @OneToMany(cascade = CascadeType.ALL)

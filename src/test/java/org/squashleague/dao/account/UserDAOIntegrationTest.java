@@ -110,7 +110,7 @@ public class UserDAOIntegrationTest {
                 .withMobile("07515 900 569")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role)
-                .withOneTimeToken(new UUID().toString())
+                .withPassword("password")
                 .withPlayers(
                         new Player()
                                 .withCurrentDivision(division)

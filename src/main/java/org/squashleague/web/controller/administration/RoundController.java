@@ -27,7 +27,7 @@ public class RoundController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("round", round);
-            return "redirect:/administration";
+            return "redirect:/administration#rounds";
         }
         roundDAO.save(round);
         return "redirect:/administration";

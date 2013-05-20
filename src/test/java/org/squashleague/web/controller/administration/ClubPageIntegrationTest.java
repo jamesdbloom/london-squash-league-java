@@ -17,7 +17,6 @@ import org.squashleague.web.controller.PropertyMockingApplicationContextInitiali
 
 import javax.annotation.Resource;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -44,6 +43,10 @@ public class ClubPageIntegrationTest {
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
 
+    private final static String OBJECT_NAME = "club";
+
+    // TODO copy to all other domain objects once update completed below
+
     @Before
     public void setupFixture() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
@@ -51,7 +54,7 @@ public class ClubPageIntegrationTest {
 
     @Test
     public void saveClubWithNoErrors() throws Exception {
-        mockMvc.perform(post("/club/save")
+        mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
                 .param("address", "test address")
@@ -62,17 +65,18 @@ public class ClubPageIntegrationTest {
     @Test
     public void saveClubWithErrors() throws Exception {
         // given
-        mockMvc.perform(post("/club/save")
+
+        mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
         )
-                .andExpect(redirectedUrl("/administration"))
+                .andExpect(redirectedUrl("/administration#" + OBJECT_NAME + "s"))
                 .andExpect(flash().attributeExists("bindingResult"))
-                .andExpect(flash().attributeExists("club"));
+                .andExpect(flash().attributeExists(OBJECT_NAME));
     }
 
     @Test
     public void updateClubNoErrors() throws Exception {
-        mockMvc.perform(post("/club/update")
+        mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
                 .param("address", "test address")
@@ -82,12 +86,12 @@ public class ClubPageIntegrationTest {
 
     @Test
     public void updateClubWithErrors() throws Exception {
-        MvcResult response = mockMvc.perform(post("/club/update")
+        MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .content("save=save"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // todo parse response once ftl has been created
+        // TODO parse response once ftl has been created
     }
 
 }

@@ -22,11 +22,11 @@ public class Role extends ModelObject {
     public static final Role ROLE_USER = new Role().withName("ROLE_USER").withDescription("Authentication User Role");
     public static final Role ROLE_ADMIN = new Role().withName("ROLE_ADMIN").withDescription("Administrator Role");
 
-    @NotNull(message = "{role.name}")
-    @Size(min = 5, max = 50, message = "{role.name}")
+    @NotNull(message = "{validation.role.name}")
+    @Size(min = 5, max = 50, message = "{validation.role.name}")
     private String name;
-    @NotNull(message = "{role.description}")
-    @Size(min = 5, max = 50, message = "{role.description}")
+    @NotNull(message = "{validation.role.description}")
+    @Size(min = 5, max = 50, message = "{validation.role.description}")
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
     private Club club;

@@ -27,7 +27,7 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("user", user);
-            return "redirect:/administration";
+            return "redirect:/administration#users";
         }
         userDAO.save(user);
         return "redirect:/administration";

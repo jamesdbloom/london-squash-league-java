@@ -18,15 +18,15 @@ import java.util.Set;
 @Entity
 public class Player extends ModelObject {
 
-    @NotNull(message = "{player.user}")
+    @NotNull(message = "{validation.player.user}")
     @ManyToOne
     private User user;
-    @NotNull(message = "{player.status}")
+    @NotNull(message = "{validation.player.status}")
     private PlayerStatus status;
-    @NotNull(message = "{player.currentDivision}")
+    @NotNull(message = "{validation.player.currentDivision}")
     @ManyToOne
     private Division currentDivision;
-    @NotNull(message = "{player.league}")
+    @NotNull(message = "{validation.player.league}")
     @ManyToOne
     private League league;
     @OneToMany(cascade = CascadeType.ALL)
