@@ -48,7 +48,7 @@
 </style>
 <form action="/register" method="POST">
 
-    <p class="message">Please enter your details and a temporary password will be e-mailed to you.</p>
+    <p class="message">Please enter your details and you will receive an e-mailed to validate your email address.</p>
 
     <#assign filledFunction = "if(this.value.length >= 1){ this.setAttribute('class', 'filled'); } else { this.setAttribute('class', 'empty'); }" />
 
