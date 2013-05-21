@@ -2,7 +2,6 @@ package org.squashleague.web.controller.login;
 
 import com.eaio.uuid.UUID;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,22 +47,20 @@ public class RegistrationController {
         return "page/user/register";
     }
 
+    // todo add tests for registration controller and registration integration
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid User user, BindingResult bindingResult,
-                           @Pattern(regexp = PASSWORD_PATTERN, message = "{validation.user.password}") String passwordOne, BindingResult passwordOneBindingResult,
-                           @Pattern(regexp = PASSWORD_PATTERN, message = "{validation.user.password}") String passwordTwo, BindingResult passwordTwoBindingResult,
-                           Model uiModel) {
-        if (bindingResult.hasErrors() || passwordOneBindingResult.hasErrors() || passwordTwoBindingResult.hasErrors()) {
+    public String register(@Valid User user, BindingResult bindingResult, String passwordOne, String passwordTwo, Model uiModel) {
+        if (bindingResult.hasErrors()) {
             setupModel(uiModel);
+            if (!PASSWORD_PATTERN.matches(passwordOne)) {
+                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.password")));
+            }
             if (!passwordOne.equals(passwordTwo)) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.passwordNonMatching")));
             }
-            bindingResult.addAllErrors(passwordOneBindingResult);
-            bindingResult.addAllErrors(passwordTwoBindingResult);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
-            uiModel.addAttribute("passwordOne", passwordOne);
-            uiModel.addAttribute("passwordTwo", passwordTwo);
             return "page/user/register";
         }
         // add to DB

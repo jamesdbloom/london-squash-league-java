@@ -32,7 +32,7 @@
         </p>
 
         <p class="submit">
-            <input class="submit primary" type="submit" name="save" value="Save" tabindex="5">
+            <input class="submit primary" type="submit" name="save" value="Save">
         </p>
     </div>
 </form>

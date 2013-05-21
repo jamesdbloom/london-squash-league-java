@@ -23,11 +23,11 @@
 
             <p>
                 <label class="contact_message" for="message">Message:</label>
-                <textarea id="message" name="message" class="show_validation" cols="58" rows="15" required="required" pattern="^[a-zA-Z0-9\\s._-]{1,500}$" autocorrect="”off”" autocapitalize="”off”" autocomplete="”off”" required="required" tabindex="10"></textarea>
+                <textarea id="message" name="message" class="show_validation" cols="58" rows="15" required="required" pattern="^[a-zA-Z0-9\\s._-]{1,500}$" autocorrect="”off”" autocapitalize="”off”" autocomplete="”off”" required="required"></textarea>
             </p>
 
             <p class="submit">
-                <input class="submit primary" type="submit" name="submit" value="Send Message" tabindex="100">
+                <input class="submit primary" type="submit" name="submit" value="Send Message">
             </p>
         </div>
     </form>
