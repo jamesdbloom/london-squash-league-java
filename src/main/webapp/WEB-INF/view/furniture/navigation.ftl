@@ -19,7 +19,6 @@
         <@security.authorize access='hasAnyRole("ROLE_ADMIN")'>
             <li class="hide_on_medium_screen "><a href="/administration" title="Administration">Administration</a></li>
         </@security.authorize>
-        <li class="hide_on_medium_screen "><a href="/report_issue" title="Report Issue">Report Issue</a></li>
         <li class="hide_on_small_screen "><a href="/contact_us" title="Contact Us">Contact Us</a></li>
         <li><a href="/logout" title="Logout">Logout</a></li>
     </@security.authorize>

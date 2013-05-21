@@ -18,11 +18,11 @@
         </p>
 
         <p>
-            <label class="user_email" for="email">Email:</label> <@spring.formInput path="user.email" attributes="tabindex='2' required='required' class='show_validation' autocorrect='off' autocapitalize='off' autocomplete='off'" />
+            <label class="user_email" for="email">Email:</label> <@spring.formInput path="user.email" fieldType="email" attributes="tabindex='2' required='required' class='show_validation' autocorrect='off' autocapitalize='off' autocomplete='off'" />
         </p>
 
         <p>
-            <label class="user_mobile" for="mobile">Mobile:</label> <@spring.formInput path="user.mobile" attributes="tabindex='3' required='required' pattern='\\d{5,25}' class='show_validation' autocorrect='off' autocapitalize='off' autocomplete='off'" />
+            <label class="user_mobile" for="mobile">Mobile:</label> <@spring.formInput path="user.mobile" attributes="tabindex='3' required='required' pattern='[\\d\\s]{6,15}' class='show_validation' autocorrect='off' autocapitalize='off' autocomplete='off'" />
         </p>
 
         <@spring.bind "mobilePrivacyOptions" />

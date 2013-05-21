@@ -65,7 +65,7 @@ public class MatchControllerTest {
         // then
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
         verify(redirectAttributes).addFlashAttribute(eq(objectName), same(match));
-        assertEquals("redirect:/administration#" + objectName + "s", page);
+        assertEquals("redirect:/administration#" + objectName + "es", page);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class MatchControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Match match = new Match();
-        when(matchDAO.findOne(same(id))).thenReturn(match);
+        when(matchDAO.findById(same(id))).thenReturn(match);
 
         // when
         String page = matchController.updateForm(id, uiModel);

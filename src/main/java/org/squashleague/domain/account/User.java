@@ -1,6 +1,5 @@
 package org.squashleague.domain.account;
 
-import com.eaio.uuid.UUID;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -24,6 +23,7 @@ import java.util.Set;
 @Entity
 public class User extends ModelObject {
 
+    public static final String EMAIL_FIELD_NAME = "email";
     // basic properties
     @NotNull(message = "{validation.user.name}")
     @Size(min = 3, max = 25, message = "{validation.user.name}")

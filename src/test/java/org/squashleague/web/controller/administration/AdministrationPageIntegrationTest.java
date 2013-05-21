@@ -2,6 +2,7 @@ package org.squashleague.web.controller.administration;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
@@ -65,14 +66,14 @@ public class AdministrationPageIntegrationTest {
     }
 
     @Test
-    public void getPage() throws Exception {
+    public void shouldGetPage() throws Exception {
         mockMvc.perform(get("/administration").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"));
     }
 
     @Test
-    public void getPageWithRoleErrors() throws Exception {
+    public void shouldGetPageWithRoleErrors() throws Exception {
         Role object = new Role()
                 .withName("test name")
                 .withDescription("test description");
@@ -80,7 +81,7 @@ public class AdministrationPageIntegrationTest {
     }
 
     @Test
-    public void getPageWithUserErrors() throws Exception {
+    public void shouldGetPageWithUserErrors() throws Exception {
         Role role = roleDAO.findAll().get(0);
         User object = new User()
                 .withName("test name")
@@ -92,25 +93,25 @@ public class AdministrationPageIntegrationTest {
     }
 
     @Test
-    public void getPageWithClubErrors() throws Exception {
+    public void shouldGetPageWithClubErrors() throws Exception {
         Club object = new Club().withName("test name").withAddress("test address");
         getAdministrationPage("club", 2, object).hasClubFields("test name", "test address");
     }
 
     @Test
-    public void getPageWithLeagueErrors() throws Exception {
+    public void shouldGetPageWithLeagueErrors() throws Exception {
         League object = new League().withName("test name");
         getAdministrationPage("league", 2, object).hasLeagueFields("test name");
     }
 
     @Test
-    public void getPageWithDivisionErrors() throws Exception {
+    public void shouldGetPageWithDivisionErrors() throws Exception {
         Division object = new Division().withName("test name");
         getAdministrationPage("division", 2, object).hasDivisionFields("test name");
     }
 
     @Test
-    public void getPageWithRoundErrors() throws Exception {
+    public void shouldGetPageWithRoundErrors() throws Exception {
         Round object = new Round()
                 .withDivision((Division) new Division().withId(1l))
                 .withStartDate(new DateTime().plus(1))
@@ -119,7 +120,7 @@ public class AdministrationPageIntegrationTest {
     }
 
     @Test
-    public void getPageWithPlayerErrors() throws Exception {
+    public void shouldGetPageWithPlayerErrors() throws Exception {
         Player object = new Player()
                 .withUser((User) new User().withId(1l))
                 .withCurrentDivision((Division) new Division().withId(2l))
@@ -128,7 +129,7 @@ public class AdministrationPageIntegrationTest {
     }
 
     @Test
-    public void getPageWithMatchErrors() throws Exception {
+    public void shouldGetPageWithMatchErrors() throws Exception {
         Match object = new Match()
                 .withRound((Round) new Round().withId(2l))
                 .withPlayerOne((Player) new Player().withId(2l))

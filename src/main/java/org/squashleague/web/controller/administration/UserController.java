@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,7 +13,6 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RequestMapping("/user")
@@ -21,6 +21,8 @@ public class UserController {
 
     @Resource
     private UserDAO userDAO;
+    @Resource
+    private Environment environment;
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -35,7 +37,8 @@ public class UserController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("user", userDAO.findOne(id));
+        uiModel.addAttribute("environment", environment);
+        uiModel.addAttribute("user", userDAO.findById(id));
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         return "page/user/update";
     }
@@ -43,6 +46,7 @@ public class UserController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid User user, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("environment", environment);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
             uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());

@@ -72,7 +72,7 @@ public class RoundDAOIntegrationTest {
         roundDAO.save(expectedRound);
 
         // then
-        assertEquals(expectedRound, roundDAO.findOne(expectedRound.getId()));
+        assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
         roundDAO.delete(expectedRound);
     }
 
@@ -89,7 +89,7 @@ public class RoundDAOIntegrationTest {
         roundDAO.save(expectedRound);
 
         // then
-        assertEquals(expectedRound, roundDAO.findOne(expectedRound.getId()));
+        assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
         roundDAO.delete(expectedRound);
     }
 
@@ -123,13 +123,13 @@ public class RoundDAOIntegrationTest {
                 .withEndDate(new DateTime().plusDays(2))
                 .withDivision(division);
         roundDAO.save(expectedRound);
-        assertEquals(expectedRound, roundDAO.findOne(expectedRound.getId()));
+        assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
 
         // when
         roundDAO.delete(expectedRound);
 
         // then
-        assertNull(roundDAO.findOne(expectedRound.getId()));
+        assertNull(roundDAO.findById(expectedRound.getId()));
     }
 
 }

@@ -33,7 +33,6 @@
         <@security.authorize ifAnyGranted="ROLE_ADMIN">
             <li><a href="/administration" title="Administration">Administration</a></li>
         </@security.authorize>
-        <li><a href="/report_issue" title="Report Issue">Report Issue</a></li>
         <li><a href="/contact_us" title="Contact Us">Contact Us</a></li>
         <li><a href="/logout" title="Logout">Logout</a></li>
     </@security.authorize>

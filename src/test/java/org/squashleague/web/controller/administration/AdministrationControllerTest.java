@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
@@ -16,7 +15,6 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 

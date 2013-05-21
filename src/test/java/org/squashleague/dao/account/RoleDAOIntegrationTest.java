@@ -57,7 +57,7 @@ public class RoleDAOIntegrationTest {
         roleDAO.save(expectedRole);
 
         // then
-        assertEquals(expectedRole, roleDAO.findOne(expectedRole.getId()));
+        assertEquals(expectedRole, roleDAO.findById(expectedRole.getId()));
         roleDAO.delete(expectedRole);
     }
 
@@ -73,7 +73,7 @@ public class RoleDAOIntegrationTest {
         roleDAO.save(expectedRole);
 
         // then
-        assertEquals(expectedRole, roleDAO.findOne(expectedRole.getId()));
+        assertEquals(expectedRole, roleDAO.findById(expectedRole.getId()));
         roleDAO.delete(expectedRole);
     }
 
@@ -104,13 +104,13 @@ public class RoleDAOIntegrationTest {
                 .withName("role name")
                 .withDescription("role description");
         roleDAO.save(expectedRole);
-        assertEquals(expectedRole, roleDAO.findOne(expectedRole.getId()));
+        assertEquals(expectedRole, roleDAO.findById(expectedRole.getId()));
 
         // when
         roleDAO.delete(expectedRole);
 
         // then
-        assertNull(roleDAO.findOne(expectedRole.getId()));
+        assertNull(roleDAO.findById(expectedRole.getId()));
     }
 
 }

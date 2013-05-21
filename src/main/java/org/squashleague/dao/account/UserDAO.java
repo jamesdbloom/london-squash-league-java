@@ -8,8 +8,6 @@ import org.squashleague.dao.league.AbstractJpaDAO;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
-import javax.persistence.NoResultException;
-
 /**
  * @author jamesdbloom
  */
@@ -24,19 +22,11 @@ public class UserDAO extends AbstractJpaDAO<User> {
     @Transactional
     public void save(User user) {
         for (Role role : user.getRoles()) {
-            if (role.getId() == null) {
+            if (findByField(role.getName(), Role.NAME_FIELD_NAME, Role.class) == null) {
                 entityManager.persist(role);
             }
         }
         entityManager.persist(user);
         entityManager.flush();
-    }
-
-    public User findByEmail(String email) {
-        try {
-            return entityManager.createQuery("from User as user where user.email = '" + email + "'", User.class).getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
     }
 }

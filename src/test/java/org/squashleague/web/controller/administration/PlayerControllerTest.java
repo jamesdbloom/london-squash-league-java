@@ -74,7 +74,7 @@ public class PlayerControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Player player = new Player();
-        when(playerDAO.findOne(same(id))).thenReturn(player);
+        when(playerDAO.findById(same(id))).thenReturn(player);
 
         // when
         String page = playerController.updateForm(id, uiModel);

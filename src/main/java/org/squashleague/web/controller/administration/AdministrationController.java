@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,8 +38,13 @@ public class AdministrationController {
     @Resource
     private RoleDAO roleDAO;
 
+    @Resource
+    private Environment environment;
+
     @RequestMapping(value = "/administration", method = RequestMethod.GET)
     public String list(Model uiModel) {
+        uiModel.addAttribute("environment", environment);
+
         uiModel.addAttribute("roles", roleDAO.findAll());
         uiModel.addAttribute("users", userDAO.findAll());
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());

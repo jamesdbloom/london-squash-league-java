@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,8 @@ public class RoleController {
 
     @Resource
     private RoleDAO roleDAO;
+    @Resource
+    private Environment environment;
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Role role, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -34,7 +37,8 @@ public class RoleController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("role", roleDAO.findOne(id));
+        uiModel.addAttribute("environment", environment);
+        uiModel.addAttribute("role", roleDAO.findById(id));
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         return "page/role/update";
     }
@@ -42,6 +46,7 @@ public class RoleController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Role role, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("environment", environment);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("role", role);
             uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());

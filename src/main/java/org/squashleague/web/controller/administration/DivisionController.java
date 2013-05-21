@@ -1,18 +1,17 @@
 package org.squashleague.web.controller.administration;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.domain.league.Division;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @RequestMapping("/division")
@@ -21,6 +20,8 @@ public class DivisionController {
 
     @Resource
     private DivisionDAO divisionDAO;
+    @Resource
+    private Environment environment;
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Division division, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -35,13 +36,16 @@ public class DivisionController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("division", divisionDAO.findOne(id));
+        uiModel.addAttribute("environment", environment);
+        uiModel.addAttribute("division", divisionDAO.findById(id));
         return "page/division/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Division division, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("environment", environment);
+            uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("division", division);
             return "page/division/update";
         }

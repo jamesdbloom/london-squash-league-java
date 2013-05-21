@@ -37,7 +37,7 @@ public class ClubDAOIntegrationTest {
         clubDAO.save(expectedClub);
 
         // then
-        assertEquals(expectedClub, clubDAO.findOne(expectedClub.getId()));
+        assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
         clubDAO.delete(expectedClub);
     }
 
@@ -56,7 +56,7 @@ public class ClubDAOIntegrationTest {
         clubDAO.save(expectedClub);
 
         // then
-        assertEquals(expectedClub, clubDAO.findOne(expectedClub.getId()));
+        assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
         clubDAO.delete(expectedClub);
     }
 
@@ -87,13 +87,13 @@ public class ClubDAOIntegrationTest {
                 .withName("expectedClub name")
                 .withAddress("expectedClub address");
         clubDAO.save(expectedClub);
-        assertEquals(expectedClub, clubDAO.findOne(expectedClub.getId()));
+        assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
 
         // when
         clubDAO.delete(expectedClub);
 
         // then
-        assertNull(clubDAO.findOne(expectedClub.getId()));
+        assertNull(clubDAO.findById(expectedClub.getId()));
     }
 
 }

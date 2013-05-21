@@ -38,19 +38,14 @@ public class RegistrationController {
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         uiModel.addAttribute("passwordPattern", PASSWORD_PATTERN);
         uiModel.addAttribute("emailPattern", EMAIL_PATTERN);
-        uiModel.addAttribute("validation_user_name", environment.getProperty("validation.user.name"));
-        uiModel.addAttribute("validation_user_email", environment.getProperty("validation.user.email"));
-        uiModel.addAttribute("validation_user_mobile", environment.getProperty("validation.user.mobile"));
-        uiModel.addAttribute("validation_user_mobilePrivacy", environment.getProperty("validation.user.mobilePrivacy"));
-        uiModel.addAttribute("validation_user_password", environment.getProperty("validation.user.password"));
-        uiModel.addAttribute("validation_user_passwordNonMatching", environment.getProperty("validation.user.passwordNonMatching"));
+        uiModel.addAttribute("environment", environment);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerForm(Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("user", new User());
-        return "/page/user/register";
+        return "page/user/register";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -58,8 +53,8 @@ public class RegistrationController {
                            @Pattern(regexp = PASSWORD_PATTERN, message = "{validation.user.password}") String passwordOne, BindingResult passwordOneBindingResult,
                            @Pattern(regexp = PASSWORD_PATTERN, message = "{validation.user.password}") String passwordTwo, BindingResult passwordTwoBindingResult,
                            Model uiModel) {
-        setupModel(uiModel);
         if (bindingResult.hasErrors() || passwordOneBindingResult.hasErrors() || passwordTwoBindingResult.hasErrors()) {
+            setupModel(uiModel);
             if (!passwordOne.equals(passwordTwo)) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.passwordNonMatching")));
             }
@@ -69,7 +64,7 @@ public class RegistrationController {
             uiModel.addAttribute("user", user);
             uiModel.addAttribute("passwordOne", passwordOne);
             uiModel.addAttribute("passwordTwo", passwordTwo);
-            return "/page/user/register";
+            return "page/user/register";
         }
         // add to DB
         String salt = new UUID().toString();

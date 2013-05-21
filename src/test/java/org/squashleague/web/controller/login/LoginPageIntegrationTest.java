@@ -1,7 +1,5 @@
 package org.squashleague.web.controller.login;
 
-import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +11,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
+import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.web.configuration.WebMvcConfiguration;
 
 import javax.annotation.Resource;
 
@@ -47,7 +47,7 @@ public class LoginPageIntegrationTest {
     }
 
     @Test
-    public void testShouldReturnLoginPageForGetRequest() throws Exception {
+    public void shouldReturnLoginPageForGetRequest() throws Exception {
         MvcResult response = mockMvc.perform(get("/login").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -58,7 +58,7 @@ public class LoginPageIntegrationTest {
     }
 
     @Test
-    public void testShouldNotReturnLoginPageForPostRequest() throws Exception {
+    public void shouldNotReturnLoginPageForPostRequest() throws Exception {
         mockMvc.perform(post("/login"))
                 .andExpect(status().isMethodNotAllowed());
     }

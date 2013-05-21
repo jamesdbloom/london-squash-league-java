@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.domain.ModelObject;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -20,12 +21,29 @@ public abstract class AbstractJpaDAO<T extends ModelObject> {
         this.clazz = clazz;
     }
 
-    public T findOne(Long id) {
+    public T findById(Long id) {
         return entityManager.find(clazz, id);
     }
 
     public List<T> findAll() {
         return entityManager.createQuery("from " + clazz.getName()).getResultList();
+    }
+
+    public T findByField(String value, String fieldName) {
+        return findByField(value, fieldName, clazz);
+    }
+
+    protected <O> O findByField(String value, String fieldName, Class<O> clazz) {
+        try {
+            List<O> resultList = entityManager.createQuery("from " + clazz.getName() + " as obj where obj." + fieldName + " = '" + value + "'", clazz).getResultList();
+            if (resultList.size() > 0) {
+                return resultList.get(0);
+            } else {
+                return null;
+            }
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Transactional
@@ -41,11 +59,11 @@ public abstract class AbstractJpaDAO<T extends ModelObject> {
 
     @Transactional
     public void delete(Long id) {
-        entityManager.remove(findOne(id));
+        entityManager.remove(findById(id));
     }
 
     @Transactional
     public void delete(T entity) {
-        entityManager.remove(findOne(entity.getId()));
+        entityManager.remove(findById(entity.getId()));
     }
 }

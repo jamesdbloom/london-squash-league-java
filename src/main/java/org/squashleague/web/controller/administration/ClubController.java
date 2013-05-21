@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,8 @@ public class ClubController {
 
     @Resource
     private ClubDAO clubDAO;
+    @Resource
+    private Environment environment;
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Club club, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -33,13 +36,16 @@ public class ClubController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("club", clubDAO.findOne(id));
+        uiModel.addAttribute("environment", environment);
+        uiModel.addAttribute("club", clubDAO.findById(id));
         return "page/club/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Club club, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
+            uiModel.addAttribute("environment", environment);
+            uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("club", club);
             return "page/club/update";
         }

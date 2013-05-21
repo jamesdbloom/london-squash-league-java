@@ -1,6 +1,5 @@
 package org.squashleague.dao.account;
 
-import com.eaio.uuid.UUID;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -97,7 +96,7 @@ public class UserDAOIntegrationTest {
         userDAO.save(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findOne(expectedUser.getId()));
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
         userDAO.delete(expectedUser);
     }
 
@@ -124,7 +123,7 @@ public class UserDAOIntegrationTest {
         userDAO.save(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findOne(expectedUser.getId()));
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
         userDAO.delete(expectedUser);
     }
 
@@ -164,13 +163,13 @@ public class UserDAOIntegrationTest {
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);
         userDAO.save(expectedUser);
-        assertEquals(expectedUser, userDAO.findOne(expectedUser.getId()));
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
 
         // when
         userDAO.delete(expectedUser);
 
         // then
-        assertNull(userDAO.findOne(expectedUser.getId()));
+        assertNull(userDAO.findById(expectedUser.getId()));
     }
 
 }

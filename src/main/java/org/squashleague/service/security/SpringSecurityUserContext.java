@@ -17,7 +17,7 @@ public class SpringSecurityUserContext {
     public User getCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
-        if (authentication == null || authentication.getPrincipal().equals("anonymousUser")) {
+        if (authentication == null || authentication.getPrincipal() == null || authentication.getPrincipal().equals("anonymousUser")) {
             return null;
         }
         return (User) authentication.getPrincipal();

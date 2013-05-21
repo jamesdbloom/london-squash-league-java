@@ -74,7 +74,7 @@ public class RoundControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Round round = new Round();
-        when(roundDAO.findOne(same(id))).thenReturn(round);
+        when(roundDAO.findById(same(id))).thenReturn(round);
 
         // when
         String page = roundController.updateForm(id, uiModel);

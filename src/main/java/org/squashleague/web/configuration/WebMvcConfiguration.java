@@ -10,8 +10,10 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 import org.squashleague.web.interceptor.bundling.AddBundlingModelToViewModelInterceptor;
@@ -36,6 +38,10 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     @Resource
     private WroModelHolder wroModelHolder;
     @Resource
+    private RoleDAO roleDAO;
+    @Resource
+    private UserDAO userDAO;
+    @Resource
     private ClubDAO clubDAO;
     @Resource
     private LeagueDAO leagueDAO;
@@ -47,54 +53,57 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     private PlayerDAO playerDAO;
     @Resource
     private MatchDAO matchDAO;
-    @Resource
-    private UserDAO userDAO;
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(
-                new Converter<String, Club>() {
-                    public Club convert(String id) {
-                        return clubDAO.findOne(Long.parseLong(id));
-                    }
-                });
-        registry.addConverter(
-                new Converter<String, League>() {
-                    public League convert(String id) {
-                        return leagueDAO.findOne(Long.parseLong(id));
-                    }
-                });
-        registry.addConverter(
-                new Converter<String, Division>() {
-                    public Division convert(String id) {
-                        return divisionDAO.findOne(Long.parseLong(id));
-                    }
-                });
-        registry.addConverter(
-                new Converter<String, Round>() {
-                    public Round convert(String id) {
-                        return roundDAO.findOne(Long.parseLong(id));
-                    }
-                });
-        registry.addConverter(
-                new Converter<String, Player>() {
-                    public Player convert(String id) {
-                        return playerDAO.findOne(Long.parseLong(id));
-                    }
-                });
-        registry.addConverter(
-                new Converter<String, Match>() {
-                    public Match convert(String id) {
-                        return matchDAO.findOne(Long.parseLong(id));
+                new Converter<String, Role>() {
+                    public Role convert(String id) {
+                        return roleDAO.findById(Long.parseLong(id));
                     }
                 });
         registry.addConverter(
                 new Converter<String, User>() {
                     public User convert(String id) {
-                        return userDAO.findOne(Long.parseLong(id));
+                        return userDAO.findById(Long.parseLong(id));
                     }
-                }
-        );
+                });
+        registry.addConverter(
+                new Converter<String, Club>() {
+                    public Club convert(String id) {
+                        return clubDAO.findById(Long.parseLong(id));
+                    }
+                });
+        registry.addConverter(
+                new Converter<String, League>() {
+                    public League convert(String id) {
+                        return leagueDAO.findById(Long.parseLong(id));
+                    }
+                });
+        registry.addConverter(
+                new Converter<String, Division>() {
+                    public Division convert(String id) {
+                        return divisionDAO.findById(Long.parseLong(id));
+                    }
+                });
+        registry.addConverter(
+                new Converter<String, Round>() {
+                    public Round convert(String id) {
+                        return roundDAO.findById(Long.parseLong(id));
+                    }
+                });
+        registry.addConverter(
+                new Converter<String, Player>() {
+                    public Player convert(String id) {
+                        return playerDAO.findById(Long.parseLong(id));
+                    }
+                });
+        registry.addConverter(
+                new Converter<String, Match>() {
+                    public Match convert(String id) {
+                        return matchDAO.findById(Long.parseLong(id));
+                    }
+                });
     }
 
     @Override

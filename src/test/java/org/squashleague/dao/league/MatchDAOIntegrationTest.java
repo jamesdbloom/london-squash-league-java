@@ -128,7 +128,7 @@ public class MatchDAOIntegrationTest {
         matchDAO.save(expectedMatch);
 
         // then
-        assertEquals(expectedMatch, matchDAO.findOne(expectedMatch.getId()));
+        assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
         matchDAO.delete(expectedMatch);
     }
 
@@ -144,7 +144,7 @@ public class MatchDAOIntegrationTest {
         matchDAO.save(expectedMatch);
 
         // then
-        assertEquals(expectedMatch, matchDAO.findOne(expectedMatch.getId()));
+        assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
         matchDAO.delete(expectedMatch);
     }
 
@@ -178,13 +178,13 @@ public class MatchDAOIntegrationTest {
                 .withPlayerTwo(playerTwo)
                 .withRound(round);
         matchDAO.save(expectedMatch);
-        assertEquals(expectedMatch, matchDAO.findOne(expectedMatch.getId()));
+        assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
 
         // when
         matchDAO.delete(expectedMatch);
 
         // then
-        assertNull(matchDAO.findOne(expectedMatch.getId()));
+        assertNull(matchDAO.findById(expectedMatch.getId()));
     }
 
 }

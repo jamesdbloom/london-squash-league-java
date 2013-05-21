@@ -55,7 +55,7 @@ public class LeagueDAOIntegrationTest {
         leagueDAO.save(expectedLeague);
 
         // then
-        assertEquals(expectedLeague, leagueDAO.findOne(expectedLeague.getId()));
+        assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
         leagueDAO.delete(expectedLeague);
     }
 
@@ -74,7 +74,7 @@ public class LeagueDAOIntegrationTest {
         leagueDAO.save(expectedLeague);
 
         // then
-        assertEquals(expectedLeague, leagueDAO.findOne(expectedLeague.getId()));
+        assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
         leagueDAO.delete(expectedLeague);
     }
 
@@ -105,13 +105,13 @@ public class LeagueDAOIntegrationTest {
                 .withName("expectedLeague name")
                 .withClub(club);
         leagueDAO.save(expectedLeague);
-        assertEquals(expectedLeague, leagueDAO.findOne(expectedLeague.getId()));
+        assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
 
         // when
         leagueDAO.delete(expectedLeague);
 
         // then
-        assertNull(leagueDAO.findOne(expectedLeague.getId()));
+        assertNull(leagueDAO.findById(expectedLeague.getId()));
     }
 
 }

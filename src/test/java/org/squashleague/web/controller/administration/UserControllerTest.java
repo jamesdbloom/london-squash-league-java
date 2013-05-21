@@ -73,7 +73,7 @@ public class UserControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         User user = new User();
-        when(userDAO.findOne(same(id))).thenReturn(user);
+        when(userDAO.findById(same(id))).thenReturn(user);
 
         // when
         String page = userController.updateForm(id, uiModel);

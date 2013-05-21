@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.domain.league.Club;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class ClubControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Club club = new Club();
-        when(clubDAO.findOne(same(id))).thenReturn(club);
+        when(clubDAO.findById(same(id))).thenReturn(club);
 
         // when
         String page = clubController.updateForm(id, uiModel);

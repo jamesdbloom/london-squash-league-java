@@ -112,7 +112,7 @@ public class PlayerDAOIntegrationTest {
         playerDAO.save(expectedPlayer);
 
         // then
-        assertEquals(expectedPlayer, playerDAO.findOne(expectedPlayer.getId()));
+        assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
         playerDAO.delete(expectedPlayer);
     }
 
@@ -129,7 +129,7 @@ public class PlayerDAOIntegrationTest {
         playerDAO.save(expectedPlayer);
 
         // then
-        assertEquals(expectedPlayer, playerDAO.findOne(expectedPlayer.getId()));
+        assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
         playerDAO.delete(expectedPlayer);
     }
 
@@ -163,13 +163,13 @@ public class PlayerDAOIntegrationTest {
                 .withPlayerStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerDAO.save(expectedPlayer);
-        assertEquals(expectedPlayer, playerDAO.findOne(expectedPlayer.getId()));
+        assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
 
         // when
         playerDAO.delete(expectedPlayer);
 
         // then
-        assertNull(playerDAO.findOne(expectedPlayer.getId()));
+        assertNull(playerDAO.findById(expectedPlayer.getId()));
     }
 
 }

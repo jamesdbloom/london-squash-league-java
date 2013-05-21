@@ -73,7 +73,7 @@ public class RoleControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Role role = new Role();
-        when(roleDAO.findOne(same(id))).thenReturn(role);
+        when(roleDAO.findById(same(id))).thenReturn(role);
 
         // when
         String page = roleController.updateForm(id, uiModel);

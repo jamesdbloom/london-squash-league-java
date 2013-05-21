@@ -75,7 +75,7 @@ public class LeagueControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         League league = new League();
-        when(leagueDAO.findOne(same(id))).thenReturn(league);
+        when(leagueDAO.findById(same(id))).thenReturn(league);
 
         // when
         String page = leagueController.updateForm(id, uiModel);

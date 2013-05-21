@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.User;
@@ -22,12 +22,12 @@ public class SpringSecurityAuthenticationProvider implements AuthenticationProvi
     @Resource
     private UserDAO userDAO;
     @Resource
-    private StandardPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        User user = userDAO.findByEmail(token.getName());
+        User user = userDAO.findByField(token.getName(), User.EMAIL_FIELD_NAME);
         if (user == null || token.getCredentials() == null || !passwordEncoder.matches((CharSequence) token.getCredentials(), user.getPassword())) {
             throw new UsernameNotFoundException("Invalid username & password combination");
         }

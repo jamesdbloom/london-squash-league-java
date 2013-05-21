@@ -1,18 +1,18 @@
 package org.squashleague.web.controller.contact;
 
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
+import org.squashleague.service.http.RequestParser;
 import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Pattern;
 
 /**
  * @author jamesdbloom
@@ -20,17 +20,21 @@ import javax.validation.constraints.Pattern;
 @Controller
 public class ContactUsController {
 
+    public static final String LONDON_SQUASH_LEAGUE_CONTACT_US = "London Squash League - Contact Us";
+    private static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,2048}$");
+    private static final java.util.regex.Pattern USER_AGENT_PATTERN = java.util.regex.Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,1024}$");
     @Resource
     private EmailService emailService;
     @Resource
-    private Environment environment;
-    @Resource
     private SpringSecurityUserContext userContext;
+    @Resource
+    private RequestParser requestParser;
 
     @RequestMapping(value = "/confirmation", method = RequestMethod.GET)
     public String confirmationPage(Model uiModel) {
-        uiModel.addAttribute("user", userContext.getCurrentUser());
-        return "page/confirmation";
+        uiModel.addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + userContext.getCurrentUser().getEmail());
+        uiModel.addAttribute("title", "Message Sent");
+        return "page/message";
     }
 
     @RequestMapping(value = "/contact_us", method = RequestMethod.GET)
@@ -39,50 +43,17 @@ public class ContactUsController {
         return "page/contact_us";
     }
 
-    @RequestMapping(value = "/contact_us", method = RequestMethod.POST)  // todo add integration test to test all validation, etc
-    public String sendMessage(@Pattern(regexp = "^[a-zA-Z0-9\\s._-]{1,500}$", message = "{validation.contact.message}") String contact_message,
-                              @Pattern(regexp = "^[a-zA-Z0-9\\s._-]{1,500}$", message = "{validation.browser.user_agent}")
-                              @RequestHeader("User-Agent") String userAgent,
-                              HttpServletRequest request) {
-        User user = userContext.getCurrentUser();
-        String address = (user != null ? user.getEmail() : "unknown");
-        String subject = "London Squash League - Contact Us";
-        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>" +
-                "<p>A message has been submitted as follows:</p>\n" +
-                "<p>Email: " + address + "</p>\n" +
-                "<p>Message: " + contact_message + "</p>\n" +
-                "<p>User Agent: " + userAgent + "</p>\n" +
-                "<p>Remote Address: " + getIpAddress(request) + "</p>" +
-                "</body></html>";
-        emailService.sendMessage(address, new String[]{environment.getProperty("email.contact.address"), address}, subject, formattedMessage);
-        return "redirect:/confirmation";
-    }
-
-    private static final String[] IP_FORWARDING_HEADERS = {"X-Ip", "X-Forwarded-For"};
-    private static final java.util.regex.Pattern IP_PATTERN = java.util.regex.Pattern.compile("^\\[?[0-9\\.]+\\]?$"); // TODO improve pattern
-
-    public String getIpAddress(HttpServletRequest request) {
-
-        String ipInHeader = null;
-        //check for presence of forwarding headers
-        for (String header : IP_FORWARDING_HEADERS) {
-            String ip = request.getHeader(header.trim());
-            if (ip != null) {
-                //so it exists but we need to make sure that it is not a comma separated list
-                String[] tokens = ip.split(",");
-                ipInHeader = tokens[0].trim();
-                break;
-            }
+    @RequestMapping(value = "/contact_us", method = RequestMethod.POST)
+    public String sendMessage(@RequestParam("message") String message, @RequestHeader("User-Agent") String userAgent, HttpServletRequest request, Model uiModel) {
+        if (MESSAGE_PATTERN.matcher(message).matches()) {
+            User user = userContext.getCurrentUser();
+            String address = (user != null ? user.getEmail() : "unknown");
+            emailService.sendContactUsMessage(message, (USER_AGENT_PATTERN.matcher(userAgent).matches() ? userAgent : "too long"), requestParser.getIpAddress(request), LONDON_SQUASH_LEAGUE_CONTACT_US, address);
+            return "redirect:/confirmation";
+        } else {
+            uiModel.addAttribute("message", "Your message was too large please try a shorter message");
+            uiModel.addAttribute("title", "Message Failure");
+            return "page/message";
         }
-        //if we didn't find one then get the remote IP
-        if (ipInHeader == null) {
-            ipInHeader = request.getRemoteAddr();
-        }
-
-        if(!IP_PATTERN.matcher(ipInHeader).find()) {
-            return "";
-        }
-
-        return ipInHeader;
     }
 }

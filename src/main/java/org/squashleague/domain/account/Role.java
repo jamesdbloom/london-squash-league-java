@@ -5,12 +5,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Club;
-import org.squashleague.domain.league.Player;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 /**
  * @author jamesdbloom
@@ -21,7 +21,7 @@ public class Role extends ModelObject {
     public static final Role ROLE_ANONYMOUS = new Role().withName("ROLE_ANONYMOUS").withDescription("Anonymous User Role");
     public static final Role ROLE_USER = new Role().withName("ROLE_USER").withDescription("Authentication User Role");
     public static final Role ROLE_ADMIN = new Role().withName("ROLE_ADMIN").withDescription("Administrator Role");
-
+    public static final String NAME_FIELD_NAME = "name";
     @NotNull(message = "{validation.role.name}")
     @Size(min = 5, max = 50, message = "{validation.role.name}")
     private String name;

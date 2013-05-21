@@ -16,16 +16,16 @@ import javax.validation.constraints.Pattern;
 @Entity
 public class Match extends ModelObject {
 
-    @NotNull(message = "{validation.round.playerOne}")
+    @NotNull(message = "{validation.match.playerOne}")
     @ManyToOne
     private Player playerOne;
-    @NotNull(message = "{validation.round.playerTwo}")
+    @NotNull(message = "{validation.match.playerTwo}")
     @ManyToOne
     private Player playerTwo;
-    @NotNull(message = "{validation.round.round}")
+    @NotNull(message = "{validation.match.round}")
     @ManyToOne
     private Round round;
-    @Pattern(regexp = "\\d{1,2}-\\d{1,2}", message = "{validation.round.score}")
+    @Pattern(regexp = "\\d{1,2}-\\d{1,2}", message = "{validation.match.score}")
     private String score;
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime scoreEntered;

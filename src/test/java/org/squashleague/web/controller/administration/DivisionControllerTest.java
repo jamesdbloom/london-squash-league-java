@@ -75,7 +75,7 @@ public class DivisionControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Division division = new Division();
-        when(divisionDAO.findOne(same(id))).thenReturn(division);
+        when(divisionDAO.findById(same(id))).thenReturn(division);
 
         // when
         String page = divisionController.updateForm(id, uiModel);

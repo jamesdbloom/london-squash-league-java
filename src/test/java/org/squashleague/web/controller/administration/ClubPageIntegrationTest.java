@@ -12,12 +12,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.dao.league.ClubDAO;
+import org.squashleague.domain.league.Club;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
+import org.squashleague.web.controller.login.LoginPage;
 
 import javax.annotation.Resource;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -43,6 +48,9 @@ public class ClubPageIntegrationTest {
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
 
+    @Resource
+    private ClubDAO clubDAO;
+
     private final static String OBJECT_NAME = "club";
 
     // TODO copy to all other domain objects once update completed below
@@ -53,7 +61,7 @@ public class ClubPageIntegrationTest {
     }
 
     @Test
-    public void saveClubWithNoErrors() throws Exception {
+    public void shouldSaveClubWithNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
@@ -63,9 +71,7 @@ public class ClubPageIntegrationTest {
     }
 
     @Test
-    public void saveClubWithErrors() throws Exception {
-        // given
-
+    public void shouldSaveClubWithErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
         )
@@ -75,7 +81,23 @@ public class ClubPageIntegrationTest {
     }
 
     @Test
-    public void updateClubNoErrors() throws Exception {
+    public void shouldReturnPopulatedUpdateForm() throws Exception {
+        Long id = 1l;
+        Club object = (Club) new Club().withName("test name").withAddress("test address").withId(id);
+        when(clubDAO.findById(id)).thenReturn(object);
+
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
+        // todo fix this page object to do some actual tests
+        clubUpdatePage.shouldHaveCorrectFields(object);
+    }
+
+    @Test
+    public void shouldUpdateClubNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
@@ -85,13 +107,15 @@ public class ClubPageIntegrationTest {
     }
 
     @Test
-    public void updateClubWithErrors() throws Exception {
+    public void shouldUpdateClubWithErrors() throws Exception {
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .content("save=save"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // TODO parse response once ftl has been created
+        ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
+        // todo fix this page object to do some actual tests
+        clubUpdatePage.shouldHaveCorrectFields(new Club());
     }
 
 }

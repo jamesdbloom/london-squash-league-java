@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -67,7 +66,7 @@ public class DivisionDAOIntegrationTest {
         divisionDAO.save(expectedDivision);
 
         // then
-        assertEquals(expectedDivision, divisionDAO.findOne(expectedDivision.getId()));
+        assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
         divisionDAO.delete(expectedDivision);
     }
 
@@ -86,7 +85,7 @@ public class DivisionDAOIntegrationTest {
         divisionDAO.save(expectedDivision);
 
         // then
-        assertEquals(expectedDivision, divisionDAO.findOne(expectedDivision.getId()));
+        assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
         divisionDAO.delete(expectedDivision);
     }
 
@@ -117,13 +116,13 @@ public class DivisionDAOIntegrationTest {
                 .withName("expectedDivision name")
                 .withLeague(league);
         divisionDAO.save(expectedDivision);
-        assertEquals(expectedDivision, divisionDAO.findOne(expectedDivision.getId()));
+        assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
 
         // when
         divisionDAO.delete(expectedDivision);
 
         // then
-        assertNull(divisionDAO.findOne(expectedDivision.getId()));
+        assertNull(divisionDAO.findById(expectedDivision.getId()));
     }
 
 }
