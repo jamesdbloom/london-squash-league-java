@@ -70,7 +70,7 @@ public class LeagueControllerTest {
     }
 
     @Test
-    public void shouldRetrieveCorrectUserAndDisplayForm() throws Exception {
+    public void shouldRetrieveCorrectLeagueAndDisplayForm() throws Exception {
         // given
         Model uiModel = mock(Model.class);
         Long id = 1l;

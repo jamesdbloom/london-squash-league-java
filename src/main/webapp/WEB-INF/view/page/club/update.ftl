@@ -15,9 +15,7 @@
         width: 60%;
         margin: 1em;
         text-align: center;
-        border-color: rgba(255, 97, 97, 0.51);
-        border-style: dashed;
-        border-width: 1px;
+        border: 1px dashed rgba(255, 97, 97, 0.51);
         padding: 0.5em;
     }
 </style>
@@ -34,23 +32,24 @@
     <#assign filledFunction = "if(this.value.length >= 1){ this.setAttribute('class', 'filled'); } else { this.setAttribute('class', 'empty'); }" />
 
     <@errors.print_errors "club"/>
-    <div class="delete_sessions_form"><input name="type" type="hidden" value="club">
+    <div class="standard_form"><input name="type" type="hidden" value="club">
 
         <p>
-            <label class="id" for="id">Club Id:</label><input id="id" name="id" type="text" value="${club.id!""}" readonly="readonly">
+            <label class="id" for="id">Id:</label><input id="id" name="id" type="text" value="${club.id!""}" readonly="readonly">
         </p>
+        <input id="version" name="version" type="hidden" value="${club.version!""}">
 
         <p>
-            <label class="name" for="name">Name:</label><@spring.formInput  path="club.name" attributes="required='required' pattern='.{5,25}' title='${environment.getProperty(\"validation.club.name\")}' class='show_validation' autocorrect='off' autocapitalize='off' autocomplete='off' onblur='${filledFunction}'"/>
+            <label class="name" for="name">Name:</label><@spring.formInput  path="club.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.club.name")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="${filledFunction}"'/>
             <span class="error_message"></span>
         </p>
 
         <p>
-            <label class="address" for="address">Address:</label><@spring.formInput  path="club.address" attributes="required='required' pattern='.{5,50}' title='${environment.getProperty(\"validation.club.address\")}' class='show_validation' autocorrect='off' autocapitalize='off' autocomplete='off' onblur='${filledFunction}'"/>
+            <label class="address" for="address">Address:</label><@spring.formInput  path="club.address" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.club.address")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="${filledFunction}"'/>
             <span class="error_message"></span>
         </p>
 
-        <p class="submit"><input class="submit" type="submit" name="save" value="save"></p>
+        <p class="submit"><input class="submit" type="submit" name="update" value="update"></p>
     </div>
 </form><br>
 </#macro>

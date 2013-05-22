@@ -121,6 +121,11 @@
         <welcome-file/>
     </welcome-file-list>
 
+    <error-page>
+        <error-code>500</error-code>
+        <location>/Error500.html</location>
+    </error-page>
+
     <jsp-config>
         <taglib>
             <taglib-uri>http://www.springframework.org/security/tags</taglib-uri>

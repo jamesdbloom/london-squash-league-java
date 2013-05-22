@@ -13,7 +13,7 @@
     <li><a href="/register" title="1. Register">1. Register</a></li>
     <li><a href="/account#divisions" title="2. Join A League">2. Join A League</a></li>
 </ol>
-<form name="spring_security_check_form" action="/j_spring_security_check" method="POST">
+<form class="standard_form" name="spring_security_check_form" action="/j_spring_security_check" method="POST">
 
     <input type="hidden" name="redirect_to" value="/">
 
@@ -21,7 +21,7 @@
       <p class="errors_warnings">Login Failed:&nbsp;&nbsp;&nbsp;${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
     </#if>
 
-    <div class="login_form">
+    <div class="standard_form">
         <p>
             <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required">
         </p>

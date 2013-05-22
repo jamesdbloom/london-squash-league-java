@@ -23,6 +23,8 @@ import ro.isdc.wro.manager.factory.WroManagerFactory;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -57,9 +59,19 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(
+                new Converter<String[], List<Role>>() {
+                    public List<Role> convert(String[] names) {
+                        List<Role> roles = new ArrayList<>();
+                        for(String name : names) {
+                            roles.add(roleDAO.findByName(name));
+                        }
+                        return roles;
+                    }
+                });
+        registry.addConverter(
                 new Converter<String, Role>() {
-                    public Role convert(String id) {
-                        return roleDAO.findById(Long.parseLong(id));
+                    public Role convert(String name) {
+                        return roleDAO.findByName(name);
                     }
                 });
         registry.addConverter(

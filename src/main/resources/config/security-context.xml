@@ -5,7 +5,10 @@
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                                  http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-    <!-- security config -->
+    <!-- method security config -->
+    <security:global-method-security pre-post-annotations="enabled" />
+
+    <!-- http security config -->
     <security:http use-expressions="true" auto-config='true'>
         <security:port-mappings>
             <security:port-mapping http="8080" https="8443"/>
@@ -24,16 +27,29 @@
         <security:intercept-url pattern="/bundle/**" access="permitAll()" requires-channel="https"/>
         <security:intercept-url pattern="/" access="permitAll()" requires-channel="https"/>
         <security:intercept-url pattern="/register" access="permitAll()" requires-channel="https"/>
-        <!-- NOT LOGGED IN -->
+        <!-- NOT LOGGED IN --> <!-- todo - do I want to add this restriction -->
         <security:intercept-url pattern="/login" access="isAnonymous()" requires-channel="https"/>
+        <security:intercept-url pattern="/retrieve_password" access="isAnonymous()" requires-channel="https"/>
         <!-- ANY USER -->
+        <security:intercept-url pattern="/league" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/ranking" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/contact_us" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/account" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/logout" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/match/update/**" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/user/update/**" access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="https"/>
         <!-- ADMIN ONLY -->
-        <security:intercept-url pattern="/user/delete/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
-        <security:intercept-url pattern="/administration/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
-        <!--<security:intercept-url pattern="/**" access="hasRole('ROLE_ANONYMOUS')" requires-channel="https"/>-->
+        <security:intercept-url pattern="/print" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/administration" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <!-- DOMAIN PAGES ONLY -->
+        <security:intercept-url pattern="/role/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/club/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/league/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/division/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/round/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/player/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/match/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
     </security:http>
 
     <!-- users - todo: to be replaced with stronger solution -->

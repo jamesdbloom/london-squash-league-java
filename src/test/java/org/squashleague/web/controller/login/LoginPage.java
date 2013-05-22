@@ -28,14 +28,12 @@ public class LoginPage {
     public void hasCorrectUserNameField() {
         Element emailElement = html.select("input[name=email]").first();
         assertNotNull(emailElement);
-        assertEquals("1", emailElement.attr("tabindex"));
         assertEquals("email", emailElement.attr("type"));
     }
 
     public void hasCorrectPasswordField() {
         Element passwordElement = html.select("input[name=password]").first();
         assertNotNull(passwordElement);
-        assertEquals("2", passwordElement.attr("tabindex"));
         assertEquals("password", passwordElement.attr("type"));
     }
 }

@@ -1,10 +1,7 @@
 package org.squashleague.service.configuration;
 
 import freemarker.template.TemplateException;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.format.FormatterRegistry;
@@ -30,7 +27,12 @@ import java.util.Properties;
  * @author jamesdbloom
  */
 @Configuration
-@ComponentScan(basePackages = {"org.squashleague.service"})
+@ComponentScan(
+        basePackages = {"org.squashleague.service"},
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
+        }
+)
 @PropertySource({"classpath:mail.properties"})
 public class ServiceConfiguration {
 

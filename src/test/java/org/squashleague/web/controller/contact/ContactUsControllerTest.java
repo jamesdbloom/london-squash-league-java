@@ -28,7 +28,7 @@ public class ContactUsControllerTest {
     @Mock
     private EmailService emailService;
     @Mock
-    private SpringSecurityUserContext userContext;
+    private SpringSecurityUserContext securityUserContext;
     @Mock
     private RequestParser requestParser;
     @InjectMocks
@@ -40,12 +40,12 @@ public class ContactUsControllerTest {
         Model uiModel = mock(Model.class);
         User user = mock(User.class);
         String address = "user@email.com";
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(address);
 
         // then
         assertEquals("page/message", contactUsController.confirmationPage(uiModel));
-        verify(uiModel).addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + userContext.getCurrentUser().getEmail());
+        verify(uiModel).addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + securityUserContext.getCurrentUser().getEmail());
         verify(uiModel).addAttribute("title", "Message Sent");
     }
 
@@ -54,7 +54,7 @@ public class ContactUsControllerTest {
         // given
         Model uiModel = mock(Model.class);
         User user = mock(User.class);
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
 
         // then
         assertEquals("page/contact_us", contactUsController.contactUsPage(uiModel));
@@ -66,7 +66,7 @@ public class ContactUsControllerTest {
         // given
         User user = mock(User.class);
         String address = "user@email.com";
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(address);
 
         String ip = "127.0.0.1";
@@ -86,7 +86,7 @@ public class ContactUsControllerTest {
         // given
         User user = mock(User.class);
         String address = "user@email.com";
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(address);
 
         Model uiModel = mock(Model.class);

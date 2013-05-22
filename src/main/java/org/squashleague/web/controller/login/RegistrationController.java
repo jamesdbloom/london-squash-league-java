@@ -1,6 +1,5 @@
 package org.squashleague.web.controller.login;
 
-import com.eaio.uuid.UUID;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -9,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
@@ -17,7 +17,6 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 
 @Controller
 public class RegistrationController {
@@ -27,7 +26,7 @@ public class RegistrationController {
     @Resource
     private UserDAO userDAO;
     @Resource
-    private SpringSecurityUserContext userContext;
+    private SpringSecurityUserContext securityUserContext;
     @Resource
     private Environment environment;
     @Resource
@@ -63,14 +62,11 @@ public class RegistrationController {
             uiModel.addAttribute("user", user);
             return "page/user/register";
         }
-        // add to DB
-        String salt = new UUID().toString();
-        userDAO.save(user
-                .withRole((user.getEmail().startsWith("admin") ? Role.ROLE_ADMIN : Role.ROLE_USER))
+        userDAO.register(user
+                .withRole((user.getEmail().equals("jamesdbloom@gmail.com") ? Role.ROLE_ADMIN : Role.ROLE_USER))
                 .withPassword(passwordEncoder.encode(passwordOne))
         );
-        // mark user as logged in
-        userContext.setCurrentUser(user);
+        securityUserContext.setCurrentUser(user);
         return "redirect:/";
     }
 }

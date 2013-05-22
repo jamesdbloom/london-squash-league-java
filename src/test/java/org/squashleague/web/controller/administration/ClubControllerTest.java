@@ -26,7 +26,6 @@ import static org.mockito.Mockito.*;
 public class ClubControllerTest {
 
     private final List<Club> clubs = new ArrayList<>();
-
     @Mock
     private ClubDAO clubDAO;
     @InjectMocks
@@ -70,7 +69,7 @@ public class ClubControllerTest {
     }
 
     @Test
-    public void shouldRetrieveCorrectUserAndDisplayForm() throws Exception {
+    public void shouldRetrieveCorrectClubAndDisplayForm() throws Exception {
         // given
         Model uiModel = mock(Model.class);
         Long id = 1l;

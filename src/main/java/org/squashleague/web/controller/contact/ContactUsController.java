@@ -26,27 +26,27 @@ public class ContactUsController {
     @Resource
     private EmailService emailService;
     @Resource
-    private SpringSecurityUserContext userContext;
+    private SpringSecurityUserContext securityUserContext;
     @Resource
     private RequestParser requestParser;
 
     @RequestMapping(value = "/confirmation", method = RequestMethod.GET)
     public String confirmationPage(Model uiModel) {
-        uiModel.addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + userContext.getCurrentUser().getEmail());
+        uiModel.addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + securityUserContext.getCurrentUser().getEmail());
         uiModel.addAttribute("title", "Message Sent");
         return "page/message";
     }
 
     @RequestMapping(value = "/contact_us", method = RequestMethod.GET)
     public String contactUsPage(Model uiModel) {
-        uiModel.addAttribute("user", userContext.getCurrentUser());
+        uiModel.addAttribute("user", securityUserContext.getCurrentUser());
         return "page/contact_us";
     }
 
     @RequestMapping(value = "/contact_us", method = RequestMethod.POST)
     public String sendMessage(@RequestParam("message") String message, @RequestHeader("User-Agent") String userAgent, HttpServletRequest request, Model uiModel) {
         if (MESSAGE_PATTERN.matcher(message).matches()) {
-            User user = userContext.getCurrentUser();
+            User user = securityUserContext.getCurrentUser();
             String address = (user != null ? user.getEmail() : "unknown");
             emailService.sendContactUsMessage(message, (USER_AGENT_PATTERN.matcher(userAgent).matches() ? userAgent : "too long"), requestParser.getIpAddress(request), LONDON_SQUASH_LEAGUE_CONTACT_US, address);
             return "redirect:/confirmation";

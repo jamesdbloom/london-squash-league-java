@@ -1,4 +1,4 @@
-package org.squashleague.web.controller;
+package org.squashleague.service.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -17,8 +17,12 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
+import org.squashleague.service.security.AdministratorLoggedInTest;
+import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
+
+import static org.mockito.Mockito.when;
 
 /**
  * @author jamesdbloom
@@ -26,8 +30,7 @@ import javax.annotation.Resource;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = RootConfiguration.class, initializers = HSQLApplicationContextInitializer.class)
-public class ReferenceIntegrityDAOIntegrationTest {
-
+public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Resource
     private RoleDAO roleDAO;

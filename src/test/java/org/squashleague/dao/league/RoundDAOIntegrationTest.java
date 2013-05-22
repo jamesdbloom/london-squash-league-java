@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.league.*;
+import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = RootConfiguration.class, initializers = HSQLApplicationContextInitializer.class)
-public class RoundDAOIntegrationTest {
+public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Resource
     private RoundDAO roundDAO;

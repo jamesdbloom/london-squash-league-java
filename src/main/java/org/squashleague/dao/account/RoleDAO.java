@@ -7,9 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.league.AbstractJpaDAO;
 import org.squashleague.domain.account.Role;
+import org.squashleague.domain.account.User;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import java.util.List;
 
 /**
  * @author jamesdbloom
@@ -18,23 +21,21 @@ import javax.persistence.EntityTransaction;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class RoleDAO extends AbstractJpaDAO<Role> {
 
-//    @Value("${hibernate.hbm2ddl.auto}")
-//    private String hbm2ddl;
-//    @Value("${hibernate.dialect}")
-//    private String dialect;
-
     public RoleDAO() {
         super(Role.class);
     }
 
-//    @PostConstruct
-//    @Transactional
-//    public void initializeRoles() {
-//        if (hbm2ddl.equals("create-drop") || dialect.equals("org.hibernate.dialect.HSQLDialect")) {
-//            save(Role.ROLE_ANONYMOUS);
-//            save(Role.ROLE_USER);
-//            save(Role.ROLE_ADMIN);
-//        }
-//    }
+    public Role findByName(String name) {
+        try {
+            List<Role> resultList = entityManager.createQuery("from Role as role where role.name = '" + name + "'", Role.class).getResultList();
+            if (resultList.size() > 0) {
+                return resultList.get(0);
+            } else {
+                return null;
+            }
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
 }

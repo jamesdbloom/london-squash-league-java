@@ -16,9 +16,9 @@ import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.configuration.WebMvcConfiguration;
-import org.squashleague.web.controller.EmailMockingConfiguration;
+import org.squashleague.service.email.EmailMockingConfiguration;
 import org.squashleague.web.controller.MessagePage;
-import org.squashleague.web.controller.SecurityMockingConfiguration;
+import org.squashleague.service.security.SecurityMockingConfiguration;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class ContactUsPageIntegrationTest {
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
     @Resource
-    private SpringSecurityUserContext userContext;
+    private SpringSecurityUserContext securityUserContext;
     @Resource
     private EmailService emailService;
 
@@ -61,7 +61,7 @@ public class ContactUsPageIntegrationTest {
     public void shouldDisplayConfirmationPage() throws Exception {
         String email = "email";
         User user = mock(User.class);
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(email);
 
         MvcResult response = mockMvc.perform(get("/confirmation").accept(MediaType.TEXT_HTML))
@@ -78,7 +78,7 @@ public class ContactUsPageIntegrationTest {
     public void shouldDisplayContactUsForm() throws Exception {
         String email = "email";
         User user = mock(User.class);
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(email);
 
         MvcResult response = mockMvc.perform(get("/contact_us").accept(MediaType.TEXT_HTML))
@@ -94,7 +94,7 @@ public class ContactUsPageIntegrationTest {
     public void shouldSendEmail() throws Exception {
         String email = "email";
         User user = mock(User.class);
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(email);
 
         String message = "message";
@@ -115,7 +115,7 @@ public class ContactUsPageIntegrationTest {
     public void shouldHandleValidationErrors() throws Exception {
         String email = "email";
         User user = mock(User.class);
-        when(userContext.getCurrentUser()).thenReturn(user);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(email);
 
         byte[] randomBytes = new byte[4096];

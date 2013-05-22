@@ -15,6 +15,7 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
+import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = RootConfiguration.class, initializers = HSQLApplicationContextInitializer.class)
-public class PlayerDAOIntegrationTest {
+public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Resource
     private PlayerDAO playerDAO;

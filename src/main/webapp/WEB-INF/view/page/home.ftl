@@ -28,7 +28,7 @@
         <li><a href="/league" title="View League">View Your League</a></li>
         <li><a href="/ranking" title="Player Ranking">Player Ranking</a></li>
         <li><a href="/score" title="Enter Match Score">Enter Match Score</a></li>
-        <li><a href="/account" title="Account">Account Settings</a></li>
+        <li><a href="/user/update/${user.id}" title="Account">Account Settings</a></li>
         <li><a href="/account#divisions" title="Join A New League">Join A New League</a></li>
         <@security.authorize ifAnyGranted="ROLE_ADMIN">
             <li><a href="/administration" title="Administration">Administration</a></li>

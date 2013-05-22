@@ -15,9 +15,7 @@
         width: 60%;
         margin: 1em;
         text-align: center;
-        border-color: rgba(255, 97, 97, 0.51);
-        border-style: dashed;
-        border-width: 1px;
+        border: 1px dashed rgba(255, 97, 97, 0.51);
         padding: 0.5em;
     }
 </style>
@@ -46,16 +44,16 @@
         content: "${environment.getProperty("validation.user.passwordNonMatching")}";
     }
 </style>
-<form action="/register" method="POST" novalidate="novalidate">
+<form class="standard_form" action="/register" method="POST" novalidate="novalidate">
 
     <p class="message">Please enter your details and you will receive an e-mailed to validate your email address.</p>
 
     <#assign filledFunction = "if(this.value.length >= 1){ this.setAttribute('class', 'filled'); } else { this.setAttribute('class', 'empty'); }" />
 
     <@errors.print_errors "user"/>
-    <div class="register_form">
+    <div class="standard_form">
         <p>
-            <label class="user_name" for="name">Name:</label> <@spring.formInput path="user.name" attributes='required="required" pattern=".{3,25}" title="${environment.getProperty("validation.user.name")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="${filledFunction}"' />
+            <label class="user_name" for="name">Name:</label> <@spring.formInput path="user.name" attributes='required="required" pattern=".{3,25}" maxlength="25" title="${environment.getProperty("validation.user.name")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="${filledFunction}"' />
             <span class="error_message"></span>
         </p>
 
@@ -72,17 +70,17 @@
         <@spring.bind "mobilePrivacyOptions" />
         <p class="select">
             <label class="user_mobile_private" for="mobilePrivacy">Mobile Privacy:</label>
-            <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage="Please select" attributes='required="required" title="${environment.getProperty("validation.user.mobilePrivacy")}" onblur="this.setAttribute(\'class\', \'filled\');"' />
+            <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage='${environment.getProperty("message.general.please_select")}' attributes='required="required" title="${environment.getProperty("validation.user.mobilePrivacy")}" onblur="${filledFunction}"' />
         </p>
 
         <div style="width:100%; height: 1.5em;"></div>
 
         <p>
-            <label class="user_password" for="passwordOne">Password One:</label> <input type="password" id="passwordOne" name="passwordOne" value="${passwordOne!""}" required='required' pattern='${passwordPattern}' title="${environment.getProperty("validation.user.password")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="${filledFunction}"> <span class="error_message"></span>
+            <label class="user_password" for="passwordOne">Password One:</label> <input type="password" id="passwordOne" name="passwordOne" value="${passwordOne!""}" required="required" pattern="${passwordPattern}" title="${environment.getProperty("validation.user.password")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="${filledFunction}"> <span class="error_message"></span>
         </p>
 
         <p>
-            <label class="user_password" for="passwordTwo">Password Two:</label> <input type="password" id="passwordTwo" name="passwordTwo" value="${passwordTwo!""}" required='required' pattern='${passwordPattern}' title="${environment.getProperty("validation.user.passwordNonMatching")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="if(this.value.length == 0 || this.value == document.getElementById('passwordOne').value) { this.setAttribute('class', 'valid'); } else { this.setAttribute('class', 'invalid'); }">
+            <label class="user_password" for="passwordTwo">Password Two:</label> <input type="password" id="passwordTwo" name="passwordTwo" value="${passwordTwo!""}" required="required" pattern="${passwordPattern}" title="${environment.getProperty("validation.user.passwordNonMatching")}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off" onblur="if(this.value.length == 0 || this.value == document.getElementById('passwordOne').value) { this.setAttribute('class', 'valid'); } else { this.setAttribute('class', 'invalid'); }">
             <span class="error_message"></span>
         </p>
 

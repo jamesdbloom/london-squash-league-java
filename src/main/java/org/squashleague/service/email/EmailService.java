@@ -6,6 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,6 +25,7 @@ public class EmailService {
     private Environment environment;
 
     @VisibleForTesting
+    @PreAuthorize("isAuthenticated()")
     protected void sendMessage(final String from, final String[] to, final String subject, final String msg) {
         mailSender.send(new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws MessagingException {

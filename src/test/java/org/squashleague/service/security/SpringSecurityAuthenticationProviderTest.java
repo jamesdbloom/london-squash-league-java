@@ -48,7 +48,7 @@ public class SpringSecurityAuthenticationProviderTest {
         UsernamePasswordAuthenticationToken token = mock(UsernamePasswordAuthenticationToken.class);
         when(token.getName()).thenReturn(name);
         when(token.getCredentials()).thenReturn(credentials);
-        when(userDAO.findByField(same(name), same(User.EMAIL_FIELD_NAME))).thenReturn(user);
+        when(userDAO.findByEmail(same(name))).thenReturn(user);
         when(passwordEncoder.matches(same(credentials), same(password))).thenReturn(true);
 
         // when
@@ -72,7 +72,7 @@ public class SpringSecurityAuthenticationProviderTest {
         when(token.getName()).thenReturn(name);
         when(token.getCredentials()).thenReturn(credentials);
 
-        when(userDAO.findByField(same(name), same(User.EMAIL_FIELD_NAME))).thenReturn(user);
+        when(userDAO.findByEmail(same(name))).thenReturn(user);
         when(passwordEncoder.matches(same(credentials), same(password))).thenReturn(false);
 
         // when
@@ -96,7 +96,7 @@ public class SpringSecurityAuthenticationProviderTest {
         when(token.getName()).thenReturn(name);
         when(token.getCredentials()).thenReturn(credentials);
 
-        when(userDAO.findByField(same(name), same(User.EMAIL_FIELD_NAME))).thenReturn(user);
+        when(userDAO.findByEmail(same(name))).thenReturn(user);
 
         // when
         springSecurityAuthenticationProvider.authenticate(token);
@@ -118,7 +118,7 @@ public class SpringSecurityAuthenticationProviderTest {
         when(token.getName()).thenReturn(name);
         when(token.getCredentials()).thenReturn(credentials);
 
-        when(userDAO.findByField(same(name), same(User.EMAIL_FIELD_NAME))).thenReturn(null);
+        when(userDAO.findByEmail(same(name))).thenReturn(null);
 
         // when
         springSecurityAuthenticationProvider.authenticate(token);

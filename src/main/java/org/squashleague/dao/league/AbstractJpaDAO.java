@@ -1,5 +1,6 @@
 package org.squashleague.dao.league;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.domain.ModelObject;
 
@@ -29,40 +30,27 @@ public abstract class AbstractJpaDAO<T extends ModelObject> {
         return entityManager.createQuery("from " + clazz.getName()).getResultList();
     }
 
-    public T findByField(String value, String fieldName) {
-        return findByField(value, fieldName, clazz);
-    }
-
-    protected <O> O findByField(String value, String fieldName, Class<O> clazz) {
-        try {
-            List<O> resultList = entityManager.createQuery("from " + clazz.getName() + " as obj where obj." + fieldName + " = '" + value + "'", clazz).getResultList();
-            if (resultList.size() > 0) {
-                return resultList.get(0);
-            } else {
-                return null;
-            }
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void save(T entity) {
         entityManager.persist(entity);
         entityManager.flush();
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void update(T entity) {
         entityManager.merge(entity);
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(Long id) {
         entityManager.remove(findById(id));
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(T entity) {
         entityManager.remove(findById(entity.getId()));
     }

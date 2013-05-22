@@ -27,8 +27,8 @@ public class SpringSecurityAuthenticationProvider implements AuthenticationProvi
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        User user = userDAO.findByField(token.getName(), User.EMAIL_FIELD_NAME);
-        if (user == null || token.getCredentials() == null || !passwordEncoder.matches((CharSequence) token.getCredentials(), user.getPassword())) {
+        User user = userDAO.findByEmail(token.getName());
+        if (user == null || token.getCredentials() == null || user.getPassword() == null || !passwordEncoder.matches((CharSequence) token.getCredentials(), user.getPassword())) {
             throw new UsernameNotFoundException("Invalid username & password combination");
         }
         return new UsernamePasswordAuthenticationToken(user, user.getPassword(), AuthorityUtils.createAuthorityList(user.getRoleNames()));

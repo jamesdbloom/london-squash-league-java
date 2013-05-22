@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
+import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -22,7 +24,11 @@ public class UserController {
     @Resource
     private UserDAO userDAO;
     @Resource
+    private RoleDAO roleDAO;
+    @Resource
     private Environment environment;
+    @Resource
+    private SpringSecurityUserContext securityUserContext;
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -38,6 +44,7 @@ public class UserController {
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("environment", environment);
+        uiModel.addAttribute("roles", roleDAO.findAll());
         uiModel.addAttribute("user", userDAO.findById(id));
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         return "page/user/update";
@@ -47,12 +54,14 @@ public class UserController {
     public String update(@Valid User user, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("environment", environment);
+            uiModel.addAttribute("roles", roleDAO.findAll());
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
             uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
             return "page/user/update";
         }
-        userDAO.update(user);
+        User existingUser = userDAO.findById(user.getId());
+        userDAO.update(user.withPassword((existingUser != null ? existingUser.getPassword() : null)));
         return "redirect:/account";
     }
 

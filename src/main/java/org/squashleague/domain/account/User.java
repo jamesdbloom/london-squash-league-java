@@ -23,7 +23,6 @@ import java.util.Set;
 @Entity
 public class User extends ModelObject {
 
-    public static final String EMAIL_FIELD_NAME = "email";
     // basic properties
     @NotNull(message = "{validation.user.name}")
     @Size(min = 3, max = 25, message = "{validation.user.name}")

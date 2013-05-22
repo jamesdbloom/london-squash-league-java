@@ -70,7 +70,7 @@ public class DivisionControllerTest {
     }
 
     @Test
-    public void shouldRetrieveCorrectUserAndDisplayForm() throws Exception {
+    public void shouldRetrieveCorrectDivisionAndDisplayForm() throws Exception {
         // given
         Model uiModel = mock(Model.class);
         Long id = 1l;

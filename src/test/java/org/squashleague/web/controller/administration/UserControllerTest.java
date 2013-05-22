@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,9 @@ import org.mockito.runners.VerboseMockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
 import java.util.ArrayList;
@@ -27,6 +30,8 @@ public class UserControllerTest {
     private final List<User> users = new ArrayList<>();
     @Mock
     private UserDAO userDAO;
+    @Mock
+    private RoleDAO roleDAO;
     @InjectMocks
     private UserController userController = new UserController();
 
@@ -74,12 +79,22 @@ public class UserControllerTest {
         Long id = 1l;
         User user = new User();
         when(userDAO.findById(same(id))).thenReturn(user);
+        List<Role> roles = Lists.newArrayList(
+                new Role()
+                        .withName("role one name")
+                        .withDescription("role one description"),
+                new Role()
+                        .withName("role two name")
+                        .withDescription("role two description")
+        );
+        when(roleDAO.findAll()).thenReturn(roles);
 
         // when
         String page = userController.updateForm(id, uiModel);
 
         // then
         verify(uiModel).addAttribute(eq("user"), same(user));
+        verify(uiModel).addAttribute(eq("roles"), same(roles));
         assertEquals("page/user/update", page);
     }
 
@@ -87,14 +102,16 @@ public class UserControllerTest {
     public void shouldUpdateUserAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         Model uiModel = mock(Model.class);
-        User user = new User();
-        BindingResult bindingResult = mock(BindingResult.class);
+        User user = (User) new User().withId(5l);
+        User existingUser = new User().withPassword("password");
+        when(userDAO.findById(same(user.getId()))).thenReturn(existingUser);
 
         // when
-        String page = userController.update(user, bindingResult, uiModel);
+        String page = userController.update(user, mock(BindingResult.class), uiModel);
 
         // then
         verify(userDAO).update(same(user));
+        assertEquals(user.getPassword(), existingUser.getPassword());
         assertEquals("redirect:/account", page);
     }
 
@@ -105,12 +122,22 @@ public class UserControllerTest {
         User user = new User();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
+        List<Role> roles = Lists.newArrayList(
+                new Role()
+                        .withName("role one name")
+                        .withDescription("role one description"),
+                new Role()
+                        .withName("role two name")
+                        .withDescription("role two description")
+        );
+        when(roleDAO.findAll()).thenReturn(roles);
 
         // when
         String page = userController.update(user, bindingResult, uiModel);
 
         // then
         verify(uiModel).addAttribute(eq("user"), same(user));
+        verify(uiModel).addAttribute(eq("roles"), same(roles));
         assertEquals("page/user/update", page);
     }
 

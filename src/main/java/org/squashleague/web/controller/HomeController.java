@@ -1,6 +1,5 @@
 package org.squashleague.web.controller;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +16,11 @@ import javax.annotation.Resource;
 public class HomeController {
 
     @Resource
-    private SpringSecurityUserContext userContext;
+    private SpringSecurityUserContext securityUserContext;
 
     @RequestMapping(method = RequestMethod.GET)
     public String getPage(Model uiModel) {
-        uiModel.addAttribute("user", userContext.getCurrentUser());
+        uiModel.addAttribute("user", securityUserContext.getCurrentUser());
         return "page/home";
     }
 }

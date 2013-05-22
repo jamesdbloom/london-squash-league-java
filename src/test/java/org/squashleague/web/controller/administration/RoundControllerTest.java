@@ -69,7 +69,7 @@ public class RoundControllerTest {
     }
 
     @Test
-    public void shouldRetrieveCorrectUserAndDisplayForm() throws Exception {
+    public void shouldRetrieveCorrectRoundAndDisplayForm() throws Exception {
         // given
         Model uiModel = mock(Model.class);
         Long id = 1l;
