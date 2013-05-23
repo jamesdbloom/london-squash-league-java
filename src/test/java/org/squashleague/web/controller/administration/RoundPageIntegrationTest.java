@@ -212,6 +212,67 @@ public class RoundPageIntegrationTest {
     }
 
     @Test
+    public void shouldGetPageWithStartDateAfterEndDateError() throws Exception {
+        // given
+        Round round = (Round) new Round()
+                .withStartDate(new DateTime().plusDays(3))
+                .withEndDate(new DateTime().plusDays(2))
+                .withDivision(division)
+                .withId(2l);
+        round.setVersion(5);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", round.getId().toString())
+                .param("version", round.getVersion().toString())
+                .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
+                .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
+                .param("division", round.getDivision().getId().toString())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
+        RoundUpdatePage.hasErrors("round", 1);
+        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+    }
+
+
+    @Test
+    public void shouldGetPageWithPastDatesError() throws Exception {
+        // given
+        Round round = (Round) new Round()
+                .withStartDate(new DateTime().minusDays(3))
+                .withEndDate(new DateTime().minusDays(2))
+                .withDivision(division)
+                .withId(2l);
+        round.setVersion(5);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", round.getId().toString())
+                .param("version", round.getVersion().toString())
+                .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
+                .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
+                .param("division", round.getDivision().getId().toString())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
+        RoundUpdatePage.hasErrors("round", 2);
+        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+    }
+
+    @Test
     public void shouldGetPageWithAllErrors() throws Exception {
         // given
         Round round = (Round) new Round()

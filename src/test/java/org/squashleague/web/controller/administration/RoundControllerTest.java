@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.RoundDAO;
@@ -35,7 +37,7 @@ public class RoundControllerTest {
     private RoundDAO roundDAO;
     @Mock
     private DivisionDAO divisionDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private RoundController roundController = new RoundController();
@@ -73,6 +75,29 @@ public class RoundControllerTest {
         String page = roundController.create(round, bindingResult, redirectAttributes);
 
         // then
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(round));
+        assertEquals("redirect:/administration#" + objectName + "s", page);
+    }
+
+
+    @Test
+    public void shouldAddDateErrorsToModelAndForwardWhenCreating() throws Exception {
+        // given
+        Round round = new Round();
+        String objectName = "round";
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        String startDateAfterEndDate = "startDateAfterEndDate";
+        when(environment.getProperty("validation.round.startDateAfterEndDate")).thenReturn(startDateAfterEndDate);
+        round.setEndDate(new DateTime());
+        round.setStartDate(new DateTime().plusDays(1));
+
+        // when
+        String page = roundController.create(round, bindingResult, redirectAttributes);
+
+        // then
+        verify(bindingResult).addError(new ObjectError(objectName, startDateAfterEndDate));
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
         verify(redirectAttributes).addFlashAttribute(eq(objectName), same(round));
         assertEquals("redirect:/administration#" + objectName + "s", page);
@@ -123,6 +148,31 @@ public class RoundControllerTest {
         String page = roundController.update(round, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
+        verify(uiModel).addAttribute(eq("round"), same(round));
+        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        assertEquals("page/round/update", page);
+    }
+
+    @Test
+    public void shouldAddDateErrorsToModelAndForwardWhenUpdating() throws Exception {
+        // given
+        Model uiModel = mock(Model.class);
+        Round round = new Round();
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(false);
+        String startDateAfterEndDate = "startDateAfterEndDate";
+        when(environment.getProperty("validation.round.startDateAfterEndDate")).thenReturn(startDateAfterEndDate);
+        round.setEndDate(new DateTime());
+        round.setStartDate(new DateTime().plusDays(1));
+
+        // when
+        String page = roundController.update(round, bindingResult, uiModel);
+
+        // then
+        verify(bindingResult).addError(new ObjectError("round", startDateAfterEndDate));
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("round"), same(round));
         verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("environment"), same(environment));

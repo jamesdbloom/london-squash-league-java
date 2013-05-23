@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
@@ -40,7 +41,7 @@ public class MatchControllerTest {
     private RoundDAO roundDAO;
     @Mock
     private PlayerDAO playerDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private MatchController matchController = new MatchController();
@@ -79,6 +80,28 @@ public class MatchControllerTest {
         String page = matchController.create(match, bindingResult, redirectAttributes);
 
         // then
+        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
+        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(match));
+        assertEquals("redirect:/administration#" + objectName + "es", page);
+    }
+
+
+    @Test
+    public void shouldAddPlayersErrorsToSessionAndRedirectWhenCreating() throws Exception {
+        // given
+        Match match = new Match();
+        String objectName = "match";
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        String playersIdentical = "playersIdentical";
+        when(environment.getProperty("validation.match.playersIdentical")).thenReturn(playersIdentical);
+        match.withPlayerOne(new Player()).withPlayerTwo(match.getPlayerOne());
+
+        // when
+        String page = matchController.create(match, bindingResult, redirectAttributes);
+
+        // then
+        verify(bindingResult).addError(new ObjectError(objectName, playersIdentical));
         verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
         verify(redirectAttributes).addFlashAttribute(eq(objectName), same(match));
         assertEquals("redirect:/administration#" + objectName + "es", page);
@@ -130,6 +153,31 @@ public class MatchControllerTest {
         String page = matchController.update(match, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
+        verify(uiModel).addAttribute(eq("match"), same(match));
+        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
+        verify(uiModel).addAttribute(eq("players"), same(players));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        assertEquals("page/match/update", page);
+    }
+
+    @Test
+    public void shouldAddPlayersErrorsToSessionAndRedirectWhenUpdating() throws Exception {
+        // given
+        Match match = new Match();
+        String objectName = "match";
+        Model uiModel = mock(Model.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        String playersIdentical = "playersIdentical";
+        when(environment.getProperty("validation.match.playersIdentical")).thenReturn(playersIdentical);
+        match.withPlayerOne(new Player()).withPlayerTwo(match.getPlayerOne());
+
+        // when
+        String page = matchController.update(match, bindingResult, uiModel);
+
+        // then
+        verify(bindingResult).addError(new ObjectError(objectName, playersIdentical));
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("match"), same(match));
         verify(uiModel).addAttribute(eq("rounds"), same(rounds));
         verify(uiModel).addAttribute(eq("players"), same(players));

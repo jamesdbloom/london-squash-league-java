@@ -112,6 +112,7 @@ public class RegistrationControllerTest {
         String page = registrationController.register(user, bindingResult, password, password, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));

@@ -36,7 +36,7 @@ public class UserControllerTest {
     private UserDAO userDAO;
     @Mock
     private RoleDAO roleDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private UserController userController = new UserController();
@@ -145,6 +145,7 @@ public class UserControllerTest {
         String page = userController.update(user, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("user"), same(user));
         verify(uiModel).addAttribute(eq("roles"), same(roles));
         verify(uiModel).addAttribute(eq("environment"), same(environment));

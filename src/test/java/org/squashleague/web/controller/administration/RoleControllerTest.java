@@ -29,7 +29,7 @@ public class RoleControllerTest {
     private final List<Role> roles = new ArrayList<>();
     @Mock
     private RoleDAO roleDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private RoleController roleController = new RoleController();
@@ -115,6 +115,7 @@ public class RoleControllerTest {
         String page = roleController.update(role, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("role"), same(role));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/role/update", page);

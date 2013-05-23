@@ -4,6 +4,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +34,11 @@ public class RoundController {
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Round round, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
+        boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate());
+        if (bindingResult.hasErrors() || startDateAfterEndDate) {
+            if(startDateAfterEndDate) {
+                bindingResult.addError(new ObjectError("round", environment.getProperty("validation.round.startDateAfterEndDate")));
+            }
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("round", round);
             return "redirect:/administration#rounds";
@@ -51,7 +56,11 @@ public class RoundController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Round round, BindingResult bindingResult, Model uiModel) {
-        if (bindingResult.hasErrors()) {
+        boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate());
+        if (bindingResult.hasErrors() || startDateAfterEndDate) {
+            if(startDateAfterEndDate) {
+                bindingResult.addError(new ObjectError("round", environment.getProperty("validation.round.startDateAfterEndDate")));
+            }
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("round", round);

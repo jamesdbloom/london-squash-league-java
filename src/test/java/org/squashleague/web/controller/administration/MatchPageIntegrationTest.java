@@ -274,6 +274,36 @@ public class MatchPageIntegrationTest {
     }
 
     @Test
+    public void shouldGetPageWithPlayersIdenticalError() throws Exception {
+        // given
+        Match match = (Match) new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerOne)
+                .withRound(round)
+                .withId(2l);
+        match.setVersion(5);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", match.getId().toString())
+                .param("version", match.getVersion().toString())
+                .param("playerOne", match.getPlayerOne().getId().toString())
+                .param("playerTwo", match.getPlayerOne().getId().toString())
+                .param("round", match.getRound().getId().toString())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
+        MatchUpdatePage.hasErrors("match", 1);
+        MatchUpdatePage.hasMatchFields(match.getId(), match.getVersion(), match.getPlayerOne().getId(), match.getPlayerTwo().getId(), match.getRound().getId());
+    }
+
+    @Test
     public void shouldGetPageWithAllErrors() throws Exception {
         // given
         Match match = (Match) new Match()

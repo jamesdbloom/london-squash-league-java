@@ -53,7 +53,7 @@ public class AdministrationControllerTest {
     private UserDAO userDAO;
     @Mock
     private RoleDAO roleDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private AdministrationController administrationController = new AdministrationController();

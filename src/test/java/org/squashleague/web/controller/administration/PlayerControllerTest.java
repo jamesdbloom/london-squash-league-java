@@ -47,7 +47,7 @@ public class PlayerControllerTest {
     private DivisionDAO divisionDAO;
     @Mock
     private LeagueDAO leagueDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private PlayerController playerController = new PlayerController();
@@ -140,6 +140,7 @@ public class PlayerControllerTest {
         String page = playerController.update(player, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("player"), same(player));
         verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
         verify(uiModel).addAttribute(eq("users"), same(users));

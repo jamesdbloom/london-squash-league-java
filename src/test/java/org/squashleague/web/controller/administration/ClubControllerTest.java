@@ -30,7 +30,7 @@ public class ClubControllerTest {
     private final List<Club> clubs = new ArrayList<>();
     @Mock
     private ClubDAO clubDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private ClubController clubController = new ClubController();
@@ -116,6 +116,7 @@ public class ClubControllerTest {
         String page = clubController.update(club, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("club"), same(club));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/club/update", page);

@@ -36,7 +36,7 @@ public class DivisionControllerTest {
     private DivisionDAO divisionDAO;
     @Mock
     private LeagueDAO leagueDAO;
-    @Resource
+    @Mock
     private Environment environment;
     @InjectMocks
     private DivisionController divisionController = new DivisionController();
@@ -124,6 +124,7 @@ public class DivisionControllerTest {
         String page = divisionController.update(division, bindingResult, uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("division"), same(division));
         verify(uiModel).addAttribute(eq("leagues"), same(leagues));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
