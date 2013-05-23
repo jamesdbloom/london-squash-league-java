@@ -13,7 +13,6 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;

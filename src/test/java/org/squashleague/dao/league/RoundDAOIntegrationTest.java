@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -176,22 +175,22 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         assertNull(roundDAO.findById(null));
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenSavingNull() {
         roundDAO.save(null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         roundDAO.update(null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenDeletingNull() {
         roundDAO.delete((Round) null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenDeletingInvalidId() {
         roundDAO.delete(1l);
     }

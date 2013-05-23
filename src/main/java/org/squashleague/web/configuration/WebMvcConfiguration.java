@@ -62,7 +62,7 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
                 new Converter<String[], List<Role>>() {
                     public List<Role> convert(String[] names) {
                         List<Role> roles = new ArrayList<>();
-                        for(String name : names) {
+                        for (String name : names) {
                             roles.add(roleDAO.findByName(name));
                         }
                         return roles;

@@ -5,15 +5,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.squashleague.domain.account.Role;
-import org.squashleague.domain.account.User;
-import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -40,7 +37,7 @@ public class RoleDAOTest {
         // given
         TypedQuery query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
-        when(query.getResultList()).thenThrow(new NoResultException());
+        when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
         // then
         assertNull(roleDAO.findByName("name"));

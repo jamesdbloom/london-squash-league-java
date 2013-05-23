@@ -13,12 +13,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.account.User;
+import org.squashleague.service.email.EmailMockingConfiguration;
 import org.squashleague.service.email.EmailService;
+import org.squashleague.service.security.SecurityMockingConfiguration;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.configuration.WebMvcConfiguration;
-import org.squashleague.service.email.EmailMockingConfiguration;
 import org.squashleague.web.controller.MessagePage;
-import org.squashleague.service.security.SecurityMockingConfiguration;
 
 import javax.annotation.Resource;
 import java.util.Arrays;

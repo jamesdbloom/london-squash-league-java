@@ -1,26 +1,11 @@
 package org.squashleague.service.configuration;
 
-import freemarker.template.TemplateException;
 import org.springframework.context.annotation.*;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
-import org.squashleague.dao.account.UserDAO;
-import org.squashleague.dao.league.*;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.*;
-import org.squashleague.web.interceptor.bundling.AddBundlingModelToViewModelInterceptor;
-import org.squashleague.web.interceptor.bundling.WroModelHolder;
-import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
-import ro.isdc.wro.manager.factory.WroManagerFactory;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.Properties;
 
 /**

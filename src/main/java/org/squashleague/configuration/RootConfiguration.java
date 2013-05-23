@@ -2,7 +2,6 @@ package org.squashleague.configuration;
 
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.squashleague.service.configuration.ServiceConfiguration;
 import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
 import ro.isdc.wro.manager.factory.WroManagerFactory;

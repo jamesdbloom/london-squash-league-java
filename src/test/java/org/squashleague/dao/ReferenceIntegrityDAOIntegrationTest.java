@@ -18,11 +18,8 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
-import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
-
-import static org.mockito.Mockito.when;
 
 /**
  * @author jamesdbloom

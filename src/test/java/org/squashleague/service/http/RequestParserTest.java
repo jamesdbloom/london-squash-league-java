@@ -70,7 +70,7 @@ public class RequestParserTest {
         //then
         assertEquals("9.9.9.9", requestParser.getIpAddress(mockHttpServletRequest));
     }
-    
+
     @Test
     public void shouldHandleIPv6() {
         //given
@@ -85,18 +85,18 @@ public class RequestParserTest {
         mockHttpServletRequest.setRemoteAddr("0:0:0:0:0:0:0:1");
         //then
         assertEquals("0:0:0:0:0:0:0:1", requestParser.getIpAddress(mockHttpServletRequest));
-        
+
         //given
         mockHttpServletRequest.setRemoteAddr("0000:0000:0000:0000:0000:0000:0000:0001");
         //then
         assertEquals("0000:0000:0000:0000:0000:0000:0000:0001", requestParser.getIpAddress(mockHttpServletRequest));
-        
+
         //given
         mockHttpServletRequest.setRemoteAddr("::1");
         //then
         assertEquals("::1", requestParser.getIpAddress(mockHttpServletRequest));
     }
-    
+
     @Test
     public void shouldHandleIPv4AsIPv6() {
         //given

@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
@@ -37,7 +38,7 @@ public class UserDAOTest {
         // given
         TypedQuery query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(User.class))).thenReturn(query);
-        when(query.getResultList()).thenThrow(new NoResultException());
+        when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
         // then
         assertNull(userDAO.findByEmail("email"));
@@ -74,7 +75,7 @@ public class UserDAOTest {
                 .withDescription("role description");
         TypedQuery query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
-        when(query.getResultList()).thenThrow(new NoResultException());
+        when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
         // then
         assertEquals(newRole, userDAO.findOrCreateRole(newRole));

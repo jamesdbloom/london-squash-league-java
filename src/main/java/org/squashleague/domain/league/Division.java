@@ -18,7 +18,7 @@ import java.util.Set;
 public class Division extends ModelObject {
 
     @NotNull(message = "{validation.division.name}")
-    @Size(min = 5, max = 25,message = "{validation.division.name}")
+    @Size(min = 5, max = 25, message = "{validation.division.name}")
     private String name;
     @NotNull(message = "{validation.club.name}")
     @ManyToOne

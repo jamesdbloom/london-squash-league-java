@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -285,22 +284,22 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         assertNull(userDAO.findByEmail(null));
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenSavingNull() {
         userDAO.save(null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         userDAO.update(null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenDeletingNull() {
         userDAO.delete((User) null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenDeletingInvalidId() {
         userDAO.delete(1l);
     }

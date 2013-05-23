@@ -2,13 +2,10 @@ package org.squashleague.dao.league;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.League;
 import org.squashleague.service.security.AdministratorLoggedInTest;
@@ -140,22 +137,22 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
         assertNull(clubDAO.findById(null));
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenSavingNull() {
         clubDAO.save(null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         clubDAO.update(null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenDeletingNull() {
         clubDAO.delete((Club) null);
     }
 
-    @Test(expected = InvalidDataAccessApiUsageException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotThrowExceptionWhenDeletingInvalidId() {
         clubDAO.delete(1l);
     }

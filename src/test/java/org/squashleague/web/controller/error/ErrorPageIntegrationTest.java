@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
-import org.squashleague.web.controller.login.LoginPage;
 
 import javax.annotation.Resource;
 

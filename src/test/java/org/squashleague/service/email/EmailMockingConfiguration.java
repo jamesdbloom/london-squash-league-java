@@ -2,8 +2,6 @@ package org.squashleague.service.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.squashleague.service.email.EmailService;
-import org.squashleague.service.security.SpringSecurityUserContext;
 
 import static org.mockito.Mockito.mock;
 

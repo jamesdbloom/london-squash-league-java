@@ -1,7 +1,5 @@
 package org.squashleague.web.controller.administration;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatterBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
