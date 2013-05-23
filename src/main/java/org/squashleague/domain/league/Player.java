@@ -72,6 +72,14 @@ public class Player extends ModelObject {
         return this;
     }
 
+    public League getLeague() {
+        return league;
+    }
+
+    public void setLeague(League league) {
+        this.league = league;
+    }
+
     public Set<Match> getMatches() {
         return matches;
     }

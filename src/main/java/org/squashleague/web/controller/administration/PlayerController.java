@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.UserDAO;
+import org.squashleague.dao.league.DivisionDAO;
+import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.league.Player;
@@ -26,11 +28,17 @@ public class PlayerController {
     @Resource
     private UserDAO userDAO;
     @Resource
+    private DivisionDAO divisionDAO;
+    @Resource
+    private LeagueDAO leagueDAO;
+    @Resource
     private Environment environment;
 
     private void setupModel(Model uiModel) {
         uiModel.addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
         uiModel.addAttribute("users", userDAO.findAll());
+        uiModel.addAttribute("divisions", divisionDAO.findAll());
+        uiModel.addAttribute("leagues", leagueDAO.findAll());
         uiModel.addAttribute("environment", environment);
     }
 

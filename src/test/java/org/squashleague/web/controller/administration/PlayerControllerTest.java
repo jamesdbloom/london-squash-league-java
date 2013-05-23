@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.UserDAO;
+import org.squashleague.dao.league.DivisionDAO;
+import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.league.Player;
 
@@ -33,6 +35,10 @@ public class PlayerControllerTest {
     private PlayerDAO playerDAO;
     @Mock
     private UserDAO userDAO;
+    @Mock
+    private DivisionDAO divisionDAO;
+    @Mock
+    private LeagueDAO leagueDAO;
     @Resource
     private Environment environment;
     @InjectMocks
