@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class EmailServiceTest {
 
     @Mock

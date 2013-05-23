@@ -89,7 +89,9 @@
             </#list>
         }, 50);
     };
-</script><!-- google analytics start -->
+</script>
+    <@page_js_inline/>
+<!-- google analytics start -->
 <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-32687194-3']);
@@ -103,4 +105,8 @@
         s.parentNode.insertBefore(ga, s);
     })();
 </script><!-- google analytics end -->
+</#macro>
+
+<#macro page_js_inline>
+
 </#macro>

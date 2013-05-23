@@ -18,7 +18,6 @@ public abstract class ModelObject {
     }
 
     protected transient Logger logger = LoggerFactory.getLogger(getClass());
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -46,4 +45,10 @@ public abstract class ModelObject {
         this.version = version;
     }
 
+    public ModelObject incrementVersion() {
+        if (version != null) {
+            version++;
+        }
+        return this;
+    }
 }

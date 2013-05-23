@@ -16,13 +16,12 @@ import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.domain.league.Club;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
-import org.squashleague.web.controller.login.LoginPage;
 
 import javax.annotation.Resource;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -44,14 +43,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 })
 public class ClubPageIntegrationTest {
 
+    private final static String OBJECT_NAME = "club";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-
     @Resource
     private ClubDAO clubDAO;
-
-    private final static String OBJECT_NAME = "club";
 
     // TODO copy to all other domain objects once update completed below
 
@@ -83,7 +80,11 @@ public class ClubPageIntegrationTest {
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
         Long id = 1l;
-        Club object = (Club) new Club().withName("test name").withAddress("test address").withId(id);
+        Club object = (Club) new Club()
+                .withName("test name")
+                .withAddress("test address")
+                .withId(id);
+        object.setVersion(5);
         when(clubDAO.findById(id)).thenReturn(object);
 
         MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
@@ -92,8 +93,7 @@ public class ClubPageIntegrationTest {
                 .andReturn();
 
         ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
-        // todo fix this page object to do some actual tests
-        clubUpdatePage.shouldHaveCorrectFields(object);
+        clubUpdatePage.hasClubFields(object.getId(), object.getVersion(), object.getName(), object.getAddress());
     }
 
     @Test
@@ -107,15 +107,59 @@ public class ClubPageIntegrationTest {
     }
 
     @Test
-    public void shouldUpdateClubWithErrors() throws Exception {
+    public void shouldGetPageWithAddressError() throws Exception {
+        // given
+        Club object = (Club) new Club()
+                .withName("test name")
+                .withAddress("")
+                .withId(2l);
+        object.setVersion(5);
+
+        // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
-                .content("save=save"))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", object.getId().toString())
+                .param("version", object.getVersion().toString())
+                .param("name", object.getName())
+                .param("address", object.getAddress())
+        )
+
+                // then
                 .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
-        // todo fix this page object to do some actual tests
-        clubUpdatePage.shouldHaveCorrectFields(new Club());
+        clubUpdatePage.hasErrors("club", 1);
+        clubUpdatePage.hasClubFields(object.getId(), object.getVersion(), object.getName(), object.getAddress());
+    }
+
+    @Test
+    public void shouldGetPageWithNameError() throws Exception {
+        // given
+        Club object = (Club) new Club()
+                .withName("")
+                .withAddress("test address")
+                .withId(2l);
+        object.setVersion(5);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", object.getId().toString())
+                .param("version", object.getVersion().toString())
+                .param("name", object.getName())
+                .param("address", object.getAddress())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
+        clubUpdatePage.hasErrors("club", 1);
+        clubUpdatePage.hasClubFields(object.getId(), object.getVersion(), object.getName(), object.getAddress());
     }
 
 }

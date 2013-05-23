@@ -5,13 +5,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.domain.account.Role;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +23,14 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RoleControllerTest {
 
     private final List<Role> roles = new ArrayList<>();
     @Mock
     private RoleDAO roleDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private RoleController roleController = new RoleController();
 
@@ -80,6 +84,7 @@ public class RoleControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("role"), same(role));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/role/update", page);
     }
 
@@ -111,6 +116,7 @@ public class RoleControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("role"), same(role));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/role/update", page);
     }
 

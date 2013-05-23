@@ -5,13 +5,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.domain.league.Division;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +24,15 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DivisionControllerTest {
 
     private final List<Division> divisions = new ArrayList<>();
 
     @Mock
     private DivisionDAO divisionDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private DivisionController divisionController = new DivisionController();
 
@@ -82,6 +86,7 @@ public class DivisionControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("division"), same(division));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/division/update", page);
     }
 
@@ -113,6 +118,7 @@ public class DivisionControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("division"), same(division));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/division/update", page);
     }
 

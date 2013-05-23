@@ -13,6 +13,7 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.regex.Pattern;
 
 /**
  * @author jamesdbloom
@@ -21,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ContactUsController {
 
     public static final String LONDON_SQUASH_LEAGUE_CONTACT_US = "London Squash League - Contact Us";
-    private static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,2048}$");
-    private static final java.util.regex.Pattern USER_AGENT_PATTERN = java.util.regex.Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,1024}$");
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,2048}$");
+    private static final Pattern USER_AGENT_PATTERN = Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,1024}$");
     @Resource
     private EmailService emailService;
     @Resource

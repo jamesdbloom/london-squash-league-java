@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -134,6 +135,26 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        Match expectedMatch = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
+        matchDAO.save(expectedMatch);
+        expectedMatch
+                .withPlayerOne(playerTwo)
+                .withPlayerTwo(playerOne);
+
+        // when
+        matchDAO.update(expectedMatch);
+
+        // then
+        assertEquals(expectedMatch.incrementVersion(), matchDAO.findById(expectedMatch.getId()));
+        matchDAO.delete(expectedMatch);
+    }
+
+    @Test
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         Match expectedMatch = new Match()
@@ -186,6 +207,48 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(matchDAO.findById(expectedMatch.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        Match expectedMatch = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
+        matchDAO.save(expectedMatch);
+        assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
+
+        // when
+        matchDAO.delete(expectedMatch.getId());
+
+        // then
+        assertNull(matchDAO.findById(expectedMatch.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(matchDAO.findById(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        matchDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        matchDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        matchDAO.delete((Match) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        matchDAO.delete(1l);
     }
 
 }

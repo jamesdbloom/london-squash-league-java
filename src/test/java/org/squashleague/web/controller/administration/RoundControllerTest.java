@@ -5,13 +5,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Round;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +23,15 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RoundControllerTest {
 
     private final List<Round> rounds = new ArrayList<>();
 
     @Mock
     private RoundDAO roundDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private RoundController roundController = new RoundController();
 
@@ -81,6 +85,7 @@ public class RoundControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("round"), same(round));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/round/update", page);
     }
 
@@ -112,6 +117,7 @@ public class RoundControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("round"), same(round));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/round/update", page);
     }
 

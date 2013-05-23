@@ -89,7 +89,7 @@ public class AdministrationPageIntegrationTest {
                 .withMobile("123456789")
                 .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
                 .withRole(role);
-        getAdministrationPage("user", 2, object).hasUserFields("test name", "test@email.com", "123456789", MobilePrivacy.SHOW_ALL, role.getId());
+        getAdministrationPage("user", 2, object).hasUserFields("test name", "test@email.com", "123456789", MobilePrivacy.SHOW_ALL, role.getName());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class AdministrationPageIntegrationTest {
                 .withPlayerOne((Player) new Player().withId(2l))
                 .withPlayerTwo((Player) new Player().withId(1l))
                 .withScore("4-5");
-        getAdministrationPage("match", 2, object).hasMatchFields(2l, 2l, 1l, "4-5", new DateTime().toString("yyyy-MM-dd"));
+        getAdministrationPage("match", 2, object).hasMatchFields(2l, 2l, 1l, "4-5");
     }
 
     private AdministrationPage getAdministrationPage(String objectName, int errorCount, Object object) throws Exception {
@@ -148,9 +148,9 @@ public class AdministrationPageIntegrationTest {
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
-        AdministrationPage loginPage = new AdministrationPage(response);
-        loginPage.hasErrors(objectName, errorCount);
-        return loginPage;
+        AdministrationPage administrationPage = new AdministrationPage(response);
+        administrationPage.hasErrors(objectName, errorCount);
+        return administrationPage;
     }
 
     private BindingResult getBindingResult(String objectName, int errorCount) {

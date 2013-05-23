@@ -6,25 +6,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 
     private final List<User> users = new ArrayList<>();
@@ -32,6 +36,8 @@ public class UserControllerTest {
     private UserDAO userDAO;
     @Mock
     private RoleDAO roleDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private UserController userController = new UserController();
 
@@ -95,6 +101,9 @@ public class UserControllerTest {
         // then
         verify(uiModel).addAttribute(eq("user"), same(user));
         verify(uiModel).addAttribute(eq("roles"), same(roles));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
+        verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
         assertEquals("page/user/update", page);
     }
 
@@ -138,6 +147,9 @@ public class UserControllerTest {
         // then
         verify(uiModel).addAttribute(eq("user"), same(user));
         verify(uiModel).addAttribute(eq("roles"), same(roles));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
+        verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
         assertEquals("page/user/update", page);
     }
 

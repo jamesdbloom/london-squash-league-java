@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -17,11 +18,9 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
-
 import java.util.List;
 
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -81,7 +80,71 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         divisionDAO.delete(division);
         leagueDAO.delete(league);
         clubDAO.delete(club);
-//        roleDAO.delete(role);
+        roleDAO.delete(role);
+    }
+
+    @Test
+    public void shouldRegisterWithNewRole() throws Exception {
+        // given
+        Role newRole = new Role()
+                .withName("new role")
+                .withDescription("role description");
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(newRole);
+
+        // when
+        userDAO.register(expectedUser);
+
+        // then
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
+        assertEquals(newRole, roleDAO.findByName(newRole.getName()));
+        userDAO.delete(expectedUser);
+        roleDAO.delete(newRole);
+    }
+
+    @Test
+    public void shouldRegisterWithExistingRole() throws Exception {
+        // given
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+
+        // when
+        userDAO.register(expectedUser);
+
+        // then
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
+        assertEquals(role, roleDAO.findByName(role.getName()));
+        userDAO.delete(expectedUser);
+    }
+
+
+    @Test
+    public void shouldRegisterWithOneExistingRoleAndOneNewRole() throws Exception {
+        // given
+        Role newRole = new Role()
+                .withName("new role")
+                .withDescription("role description");
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(newRole, role);
+
+        // when
+        userDAO.register(expectedUser);
+
+        // then
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
+        assertEquals(newRole, roleDAO.findByName(newRole.getName()));
+        assertEquals(role, roleDAO.findByName(role.getName()));
+        userDAO.delete(expectedUser);
+        roleDAO.delete(newRole);
     }
 
     @Test
@@ -95,6 +158,27 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // when
         userDAO.save(expectedUser);
+
+        // then
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
+        userDAO.delete(expectedUser);
+    }
+
+    @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        userDAO.save(expectedUser);
+        expectedUser
+                .withEmail("new@email.com")
+                .withName("new name");
+
+        // when
+        userDAO.update(expectedUser);
 
         // then
         assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
@@ -171,6 +255,54 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(userDAO.findById(expectedUser.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        userDAO.save(expectedUser);
+        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
+
+        // when
+        userDAO.delete(expectedUser.getId());
+
+        // then
+        assertNull(userDAO.findById(expectedUser.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(userDAO.findById(null));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullEmail() {
+        assertNull(userDAO.findByEmail(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        userDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        userDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        userDAO.delete((User) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        userDAO.delete(1l);
     }
 
 }

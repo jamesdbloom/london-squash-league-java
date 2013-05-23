@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -45,6 +46,60 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
     @After
     public void teardownDatabase() {
         clubDAO.delete(club);
+    }
+
+    @Test
+    public void shouldSaveRequiredFieldsAndRetrieveByName() throws Exception {
+        // given
+        Role expectedRole = new Role()
+                .withName("role name")
+                .withDescription("role description");
+
+        // when
+        roleDAO.save(expectedRole);
+
+        // then
+        assertEquals(expectedRole, roleDAO.findByName(expectedRole.getName()));
+        roleDAO.delete(expectedRole);
+    }
+
+    @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        Role expectedRole = new Role()
+                .withName("role name")
+                .withDescription("role description");
+        roleDAO.save(expectedRole);
+        expectedRole
+                .withName("new role name")
+                .withDescription("new role description");
+
+        // when
+        roleDAO.update(expectedRole);
+
+        // then
+        assertEquals(expectedRole.incrementVersion(), roleDAO.findById(expectedRole.getId()));
+        roleDAO.delete(expectedRole);
+    }
+
+    @Test
+    public void shouldRetrieveFirstByNameWhenDuplicates() throws Exception {
+        // given
+        Role expectedRoleOne = new Role()
+                .withName("role name")
+                .withDescription("role description one");
+        Role expectedRoleTwo = new Role()
+                .withName(expectedRoleOne.getName())
+                .withDescription("role description one");
+
+        // when
+        roleDAO.save(expectedRoleOne);
+        roleDAO.save(expectedRoleTwo);
+
+        // then
+        assertEquals(expectedRoleOne, roleDAO.findByName(expectedRoleOne.getName()));
+        roleDAO.delete(expectedRoleOne);
+        roleDAO.delete(expectedRoleTwo);
     }
 
     @Test
@@ -112,6 +167,52 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(roleDAO.findById(expectedRole.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        Role expectedRole = new Role()
+                .withName("role name")
+                .withDescription("role description");
+        roleDAO.save(expectedRole);
+        assertEquals(expectedRole, roleDAO.findById(expectedRole.getId()));
+
+        // when
+        roleDAO.delete(expectedRole.getId());
+
+        // then
+        assertNull(roleDAO.findById(expectedRole.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(roleDAO.findById(null));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullEmail() {
+        assertNull(roleDAO.findByName(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        roleDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        roleDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        roleDAO.delete((Role) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        roleDAO.delete(1l);
     }
 
 }

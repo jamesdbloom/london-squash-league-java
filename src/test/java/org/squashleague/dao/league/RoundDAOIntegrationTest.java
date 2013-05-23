@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -78,6 +79,26 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        Round expectedRound = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withDivision(division);
+        roundDAO.save(expectedRound);
+        expectedRound
+                .withStartDate(new DateTime().plusDays(3))
+                .withEndDate(new DateTime().plusDays(4));
+
+        // when
+        roundDAO.update(expectedRound);
+
+        // then
+        assertEquals(expectedRound.incrementVersion(), roundDAO.findById(expectedRound.getId()));
+        roundDAO.delete(expectedRound);
+    }
+
+    @Test
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         Round expectedRound = new Round()
@@ -131,6 +152,48 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(roundDAO.findById(expectedRound.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        Round expectedRound = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withDivision(division);
+        roundDAO.save(expectedRound);
+        assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
+
+        // when
+        roundDAO.delete(expectedRound.getId());
+
+        // then
+        assertNull(roundDAO.findById(expectedRound.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(roundDAO.findById(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        roundDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        roundDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        roundDAO.delete((Round) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        roundDAO.delete(1l);
     }
 
 }

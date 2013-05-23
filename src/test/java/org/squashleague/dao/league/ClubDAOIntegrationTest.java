@@ -1,13 +1,16 @@
 package org.squashleague.dao.league;
 
-import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.league.Club;
-import org.squashleague.domain.league.League;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.Club;
+import org.squashleague.domain.league.League;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
@@ -39,6 +42,25 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
+        clubDAO.delete(expectedClub);
+    }
+
+    @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        Club expectedClub = new Club()
+                .withName("expectedClub name")
+                .withAddress("expectedClub address");
+        clubDAO.save(expectedClub);
+        expectedClub
+                .withName("new expectedClub name")
+                .withAddress("new expectedClub address");
+
+        // when
+        clubDAO.update(expectedClub);
+
+        // then
+        assertEquals(expectedClub.incrementVersion(), clubDAO.findById(expectedClub.getId()));
         clubDAO.delete(expectedClub);
     }
 
@@ -95,6 +117,47 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(clubDAO.findById(expectedClub.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        Club expectedClub = new Club()
+                .withName("expectedClub name")
+                .withAddress("expectedClub address");
+        clubDAO.save(expectedClub);
+        assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
+
+        // when
+        clubDAO.delete(expectedClub.getId());
+
+        // then
+        assertNull(clubDAO.findById(expectedClub.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(clubDAO.findById(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        clubDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        clubDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        clubDAO.delete((Club) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        clubDAO.delete(1l);
     }
 
 }

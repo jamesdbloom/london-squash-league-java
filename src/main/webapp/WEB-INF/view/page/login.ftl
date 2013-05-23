@@ -13,7 +13,7 @@
     <li><a href="/register" title="1. Register">1. Register</a></li>
     <li><a href="/account#divisions" title="2. Join A League">2. Join A League</a></li>
 </ol>
-<form class="standard_form" name="spring_security_check_form" action="/j_spring_security_check" method="POST">
+<form name="spring_security_check_form" action="/j_spring_security_check" method="POST">
 
     <input type="hidden" name="redirect_to" value="/">
 

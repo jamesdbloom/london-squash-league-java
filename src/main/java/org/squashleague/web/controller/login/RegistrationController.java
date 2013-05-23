@@ -1,6 +1,7 @@
 package org.squashleague.web.controller.login;
 
 import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +18,13 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.regex.Pattern;
 
 @Controller
 public class RegistrationController {
 
-    public static final String PASSWORD_PATTERN = "^.*(?=.{8,})(?=.*\\d)(?=.*(\\£|\\!|\\@|\\#|\\$|\\%|\\^|\\&|\\*|\\(|\\)|\\-|\\_|\\[|\\]|\\{|\\}|\\<|\\>|\\~|\\`|\\+|\\=|\\,|\\.|\\;|\\:|\\/|\\?|\\|))(?=.*[a-zA-Z]).*$";
-    public static final String EMAIL_PATTERN = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
+    private static final Pattern PASSWORD_MATCHER = Pattern.compile(User.PASSWORD_PATTERN);
+
     @Resource
     private UserDAO userDAO;
     @Resource
@@ -30,12 +32,12 @@ public class RegistrationController {
     @Resource
     private Environment environment;
     @Resource
-    private StandardPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     private void setupModel(Model uiModel) {
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        uiModel.addAttribute("passwordPattern", PASSWORD_PATTERN);
-        uiModel.addAttribute("emailPattern", EMAIL_PATTERN);
+        uiModel.addAttribute("passwordPattern", User.PASSWORD_PATTERN);
+        uiModel.addAttribute("emailPattern", User.EMAIL_PATTERN);
         uiModel.addAttribute("environment", environment);
     }
 
@@ -46,16 +48,16 @@ public class RegistrationController {
         return "page/user/register";
     }
 
-    // todo add tests for registration controller and registration integration
-
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(@Valid User user, BindingResult bindingResult, String passwordOne, String passwordTwo, Model uiModel) {
-        if (bindingResult.hasErrors()) {
+        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(passwordOne)).matches();
+        boolean passwordsMatchError = !String.valueOf(passwordOne).equals(passwordTwo);
+        if (bindingResult.hasErrors() || passwordFormatError || passwordsMatchError) {
             setupModel(uiModel);
-            if (!PASSWORD_PATTERN.matches(passwordOne)) {
+            if (passwordFormatError) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.password")));
             }
-            if (!passwordOne.equals(passwordTwo)) {
+            if (passwordsMatchError) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.passwordNonMatching")));
             }
             uiModel.addAttribute("bindingResult", bindingResult);

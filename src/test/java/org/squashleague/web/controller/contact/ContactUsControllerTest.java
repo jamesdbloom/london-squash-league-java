@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.ui.Model;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ContactUsControllerTest {
 
     @Mock

@@ -85,14 +85,14 @@
                 <td class="mobile last"><@spring.formInput  path="user.mobile" attributes='required="required" pattern="[\\d\\s]{6,15}" maxlength="25" title="${environment.getProperty("validation.user.mobile")}" class="show_validation"'/></td>
                 <td class="status hide_on_small_screen last">
                     <@spring.bind "mobilePrivacyOptions" />
-                    <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage='${environment.getProperty("message.general.please_select")}' />
+                    <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage='${environment.getProperty("message.general.please_select")}' attributes='required="required" title="${environment.getProperty("validation.user.mobilePrivacy")}"' />
                 </td>
                 <td class="roles hide_on_small_screen last">
                     <#if (roles?size > 0)>
                         <select id="roles" name="roles" <#if (roles?size > 1)>multiple="multiple"</#if> required="required">
                             <#if (roles?size <= 1)><option value="">${environment.getProperty("message.general.please_select")}</option></#if>
                             <#list roles as role>
-                                <option value="${role.id}" <#if user.hasRole(role) >selected="selected"</#if>>${role.description}</option>
+                                <option value="${role.name}" <#if user.hasRole(role) >selected="selected"</#if>>${role.description}</option>
                             </#list>
                         </select>
                     </#if>
@@ -371,8 +371,8 @@
                         </select>
                     </#if>
                 </td>
-                <td class="score last"><@spring.formInput  path="match.score" attributes='pattern="[0-9]{1,2}-[0-9]{1,2}" class="show_validation"'/></td>
-                <td class="score_entered last"><@spring.formInput  path="match.scoreEntered" fieldType="date"/></td>
+                <td class="score last"><@spring.formInput  path="match.score" attributes='pattern="[0-9]{1,2}-[0-9]{1,2}" title="${environment.getProperty("validation.match.score")}" class="show_validation"'/></td>
+                <td class="score_entered last"></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>

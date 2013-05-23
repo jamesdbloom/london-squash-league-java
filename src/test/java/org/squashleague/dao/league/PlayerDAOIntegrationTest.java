@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -118,6 +119,25 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        Player expectedPlayer = new Player()
+                .withCurrentDivision(division)
+                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        playerDAO.save(expectedPlayer);
+        expectedPlayer
+                .withPlayerStatus(PlayerStatus.INACTIVE);
+
+        // when
+        playerDAO.update(expectedPlayer);
+
+        // then
+        assertEquals(expectedPlayer.incrementVersion(), playerDAO.findById(expectedPlayer.getId()));
+        playerDAO.delete(expectedPlayer);
+    }
+
+    @Test
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         Player expectedPlayer = new Player()
@@ -171,6 +191,48 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(playerDAO.findById(expectedPlayer.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        Player expectedPlayer = new Player()
+                .withCurrentDivision(division)
+                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        playerDAO.save(expectedPlayer);
+        assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
+
+        // when
+        playerDAO.delete(expectedPlayer.getId());
+
+        // then
+        assertNull(playerDAO.findById(expectedPlayer.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(playerDAO.findById(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        playerDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        playerDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        playerDAO.delete((Player) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        playerDAO.delete(1l);
     }
 
 }

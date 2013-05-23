@@ -5,13 +5,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.domain.league.Club;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +24,14 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ClubControllerTest {
 
     private final List<Club> clubs = new ArrayList<>();
     @Mock
     private ClubDAO clubDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private ClubController clubController = new ClubController();
 
@@ -81,6 +85,7 @@ public class ClubControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("club"), same(club));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/club/update", page);
     }
 
@@ -112,6 +117,7 @@ public class ClubControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("club"), same(club));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/club/update", page);
     }
 

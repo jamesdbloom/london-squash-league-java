@@ -5,13 +5,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.domain.league.Match;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,18 +24,20 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class MatchControllerTest {
 
-    private final List<Match> matchs = new ArrayList<>();
+    private final List<Match> matches = new ArrayList<>();
     @Mock
     private MatchDAO matchDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private MatchController matchController = new MatchController();
 
     @Before
     public void setupFixture() {
-        when(matchDAO.findAll()).thenReturn(matchs);
+        when(matchDAO.findAll()).thenReturn(matches);
     }
 
     @Test
@@ -81,6 +85,7 @@ public class MatchControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("match"), same(match));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/match/update", page);
     }
 
@@ -112,6 +117,7 @@ public class MatchControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("match"), same(match));
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/match/update", page);
     }
 

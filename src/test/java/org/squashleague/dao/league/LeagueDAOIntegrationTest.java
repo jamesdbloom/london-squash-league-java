@@ -1,14 +1,17 @@
 package org.squashleague.dao.league;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
@@ -27,7 +30,6 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Resource
     private LeagueDAO leagueDAO;
-
     @Resource
     private ClubDAO clubDAO;
     private Club club;
@@ -57,6 +59,24 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
+        leagueDAO.delete(expectedLeague);
+    }
+
+    @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        League expectedLeague = new League()
+                .withName("expectedLeague name")
+                .withClub(club);
+        leagueDAO.save(expectedLeague);
+        expectedLeague
+                .withName("new expectedLeague name");
+
+        // when
+        leagueDAO.update(expectedLeague);
+
+        // then
+        assertEquals(expectedLeague.incrementVersion(), leagueDAO.findById(expectedLeague.getId()));
         leagueDAO.delete(expectedLeague);
     }
 
@@ -113,6 +133,47 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(leagueDAO.findById(expectedLeague.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        League expectedLeague = new League()
+                .withName("expectedLeague name")
+                .withClub(club);
+        leagueDAO.save(expectedLeague);
+        assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
+
+        // when
+        leagueDAO.delete(expectedLeague.getId());
+
+        // then
+        assertNull(leagueDAO.findById(expectedLeague.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(leagueDAO.findById(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        leagueDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        leagueDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        leagueDAO.delete((League) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        leagueDAO.delete(1l);
     }
 
 }

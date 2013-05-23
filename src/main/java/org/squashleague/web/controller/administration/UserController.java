@@ -27,8 +27,13 @@ public class UserController {
     private RoleDAO roleDAO;
     @Resource
     private Environment environment;
-    @Resource
-    private SpringSecurityUserContext securityUserContext;
+
+    private void setupModel(Model uiModel) {
+        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
+        uiModel.addAttribute("roles", roleDAO.findAll());
+        uiModel.addAttribute("emailPattern", User.EMAIL_PATTERN);
+        uiModel.addAttribute("environment", environment);
+    }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -43,21 +48,17 @@ public class UserController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("environment", environment);
-        uiModel.addAttribute("roles", roleDAO.findAll());
+        setupModel(uiModel);
         uiModel.addAttribute("user", userDAO.findById(id));
-        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         return "page/user/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid User user, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("environment", environment);
-            uiModel.addAttribute("roles", roleDAO.findAll());
+            setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
-            uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
             return "page/user/update";
         }
         User existingUser = userDAO.findById(user.getId());

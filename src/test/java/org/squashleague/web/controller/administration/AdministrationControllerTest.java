@@ -5,7 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.VerboseMockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
@@ -15,6 +16,7 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author jamesdbloom
  */
-@RunWith(VerboseMockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class AdministrationControllerTest {
 
     private final List<Club> clubs = new ArrayList<>();
@@ -51,6 +53,8 @@ public class AdministrationControllerTest {
     private UserDAO userDAO;
     @Mock
     private RoleDAO roleDAO;
+    @Resource
+    private Environment environment;
     @InjectMocks
     private AdministrationController administrationController = new AdministrationController();
 
@@ -75,6 +79,7 @@ public class AdministrationControllerTest {
         administrationController.list(uiModel);
 
         // then
+        verify(uiModel).addAttribute(eq("environment"), same(environment));
         verify(uiModel).addAttribute(eq("roles"), same(roles));
         verify(uiModel).addAttribute(eq("users"), same(users));
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());

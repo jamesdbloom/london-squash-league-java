@@ -23,20 +23,22 @@ import java.util.Set;
 @Entity
 public class User extends ModelObject {
 
+    public static final String PASSWORD_PATTERN = "^.*(?=.{8,})(?=.*\\d)(?=.*(\\£|\\!|\\@|\\#|\\$|\\%|\\^|\\&|\\*|\\(|\\)|\\-|\\_|\\[|\\]|\\{|\\}|\\<|\\>|\\~|\\`|\\+|\\=|\\,|\\.|\\;|\\:|\\/|\\?|\\|))(?=.*[a-zA-Z]).*$";
+    public static final String EMAIL_PATTERN = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
     // basic properties
     @NotNull(message = "{validation.user.name}")
     @Size(min = 3, max = 25, message = "{validation.user.name}")
     private String name;
     @NotNull(message = "{validation.user.email}")
-    @Email(message = "{validation.user.email}")
+    @Pattern(regexp = EMAIL_PATTERN, message = "{validation.user.email}")
     @NotEmpty(message = "{validation.user.email}")
     private String email;
-    @Pattern(regexp = "[\\d\\s]{6,15}", message = "{validation.user.mobile}")
+    @Pattern(regexp = "( *\\d *){6,15}", message = "{validation.user.mobile}")
     private String mobile;
     @NotNull(message = "{validation.user.mobilePrivacy}")
     private MobilePrivacy mobilePrivacy;
     // login
-    @NotNull(message = "{validation.user.role}")
+    @NotNull(message = "{validation.user.roles}")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);

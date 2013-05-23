@@ -1,18 +1,19 @@
 package org.squashleague.dao.league;
 
 import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Round;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
@@ -72,6 +73,24 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
+    public void shouldSaveUpdateAndRetrieveById() throws Exception {
+        // given
+        Division expectedDivision = new Division()
+                .withName("expectedDivision name")
+                .withLeague(league);
+        divisionDAO.save(expectedDivision);
+        expectedDivision
+                .withName("new expectedDivision name");
+
+        // when
+        divisionDAO.update(expectedDivision);
+
+        // then
+        assertEquals(expectedDivision.incrementVersion(), divisionDAO.findById(expectedDivision.getId()));
+        divisionDAO.delete(expectedDivision);
+    }
+
+    @Test
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
@@ -124,6 +143,47 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(divisionDAO.findById(expectedDivision.getId()));
+    }
+
+    @Test
+    public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
+        // given
+        Division expectedDivision = new Division()
+                .withName("expectedDivision name")
+                .withLeague(league);
+        divisionDAO.save(expectedDivision);
+        assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
+
+        // when
+        divisionDAO.delete(expectedDivision.getId());
+
+        // then
+        assertNull(divisionDAO.findById(expectedDivision.getId()));
+    }
+
+    @Test
+    public void shouldNotThrowExceptionWhenFindingNullId() {
+        assertNull(divisionDAO.findById(null));
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenSavingNull() {
+        divisionDAO.save(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenUpdatingNull() {
+        divisionDAO.update(null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingNull() {
+        divisionDAO.delete((Division) null);
+    }
+
+    @Test(expected = InvalidDataAccessApiUsageException.class)
+    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+        divisionDAO.delete(1l);
     }
 
 }

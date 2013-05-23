@@ -2,10 +2,16 @@ package org.squashleague.web.controller.administration;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
+import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.league.Club;
 
 import java.io.UnsupportedEncodingException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author jamesdbloom
@@ -17,7 +23,26 @@ public class ClubUpdatePage {
         html = Jsoup.parse(response.getResponse().getContentAsString());
     }
 
-    public void shouldHaveCorrectFields(Club object) {
-        // todo - add tests in here
+    public void hasErrors(String objectName, int errorCount) {
+        Elements errorMessages = html.select("#validation_error_" + objectName + " .validation_error");
+        assertEquals(errorCount, errorMessages.size());
+    }
+
+    public void hasClubFields(Long id, Integer version, String name, String address) {
+        Element idElement = html.select("#id").first();
+        assertNotNull(idElement);
+        assertEquals(String.valueOf(id), idElement.val());
+
+        Element versionElement = html.select("#version").first();
+        assertNotNull(versionElement);
+        assertEquals(String.valueOf(version), versionElement.val());
+
+        Element nameInputElement = html.select("#name").first();
+        assertNotNull(nameInputElement);
+        assertEquals(name, nameInputElement.val());
+
+        Element addressInputElement = html.select("#address").first();
+        assertNotNull(addressInputElement);
+        assertEquals(address, addressInputElement.val());
     }
 }

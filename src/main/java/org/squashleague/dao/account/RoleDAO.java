@@ -1,16 +1,12 @@
 package org.squashleague.dao.account;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.squashleague.dao.league.AbstractJpaDAO;
+import org.squashleague.dao.AbstractJpaDAO;
 import org.squashleague.domain.account.Role;
-import org.squashleague.domain.account.User;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import java.util.List;
 
@@ -33,7 +29,7 @@ public class RoleDAO extends AbstractJpaDAO<Role> {
             } else {
                 return null;
             }
-        } catch (NoResultException e) {
+        } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
