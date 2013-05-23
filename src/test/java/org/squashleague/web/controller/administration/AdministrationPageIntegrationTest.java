@@ -54,7 +54,6 @@ public class AdministrationPageIntegrationTest {
 
     @Resource
     private RoleDAO roleDAO;
-
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
@@ -73,22 +72,22 @@ public class AdministrationPageIntegrationTest {
 
     @Test
     public void shouldGetPageWithRoleErrors() throws Exception {
-        Role object = new Role()
+        Role role = new Role()
                 .withName("test name")
                 .withDescription("test description");
-        getAdministrationPage("role", 2, object).hasRoleFields("test name", "test description");
+        getAdministrationPage("role", 2, role).hasRoleFields(role.getName(), role.getDescription());
     }
 
     @Test
     public void shouldGetPageWithUserErrors() throws Exception {
         Role role = roleDAO.findAll().get(0);
-        User object = new User()
+        User user = new User()
                 .withName("test name")
                 .withEmail("test@email.com")
                 .withMobile("123456789")
                 .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
                 .withRole(role);
-        getAdministrationPage("user", 2, object).hasUserFields("test name", "test@email.com", "123456789", MobilePrivacy.SHOW_ALL, role.getName());
+        getAdministrationPage("user", 2, user).hasUserFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy(), role.getName());
     }
 
     @Test
@@ -99,42 +98,44 @@ public class AdministrationPageIntegrationTest {
 
     @Test
     public void shouldGetPageWithLeagueErrors() throws Exception {
-        League object = new League().withName("test name");
-        getAdministrationPage("league", 2, object).hasLeagueFields("test name");
+        League league = new League()
+                .withName("test name");
+        getAdministrationPage("league", 2, league).hasLeagueFields(league.getName());
     }
 
     @Test
     public void shouldGetPageWithDivisionErrors() throws Exception {
-        Division object = new Division().withName("test name");
-        getAdministrationPage("division", 2, object).hasDivisionFields("test name");
+        Division division = new Division()
+                .withName("test name");
+        getAdministrationPage("division", 2, division).hasDivisionFields(division.getName());
     }
 
     @Test
     public void shouldGetPageWithRoundErrors() throws Exception {
-        Round object = new Round()
+        Round round = new Round()
                 .withDivision((Division) new Division().withId(1l))
                 .withStartDate(new DateTime().plus(1))
                 .withEndDate(new DateTime().plus(2));
-        getAdministrationPage("round", 2, object).hasRoundFields(1l, new DateTime().plus(1).toString("yyyy-MM-dd"), new DateTime().plus(2).toString("yyyy-MM-dd"));
+        getAdministrationPage("round", 2, round).hasRoundFields(round.getDivision().getId(), round.getStartDate(), round.getEndDate());
     }
 
     @Test
     public void shouldGetPageWithPlayerErrors() throws Exception {
-        Player object = new Player()
+        Player player = new Player()
                 .withUser((User) new User().withId(1l))
                 .withCurrentDivision((Division) new Division().withId(2l))
                 .withPlayerStatus(PlayerStatus.ACTIVE);
-        getAdministrationPage("player", 2, object).hasPlayerFields(1l, 2l, PlayerStatus.ACTIVE);
+        getAdministrationPage("player", 2, player).hasPlayerFields(player.getUser().getId(), player.getCurrentDivision().getId(), player.getStatus());
     }
 
     @Test
     public void shouldGetPageWithMatchErrors() throws Exception {
-        Match object = new Match()
+        Match match = new Match()
                 .withRound((Round) new Round().withId(2l))
                 .withPlayerOne((Player) new Player().withId(2l))
                 .withPlayerTwo((Player) new Player().withId(1l))
                 .withScore("4-5");
-        getAdministrationPage("match", 2, object).hasMatchFields(2l, 2l, 1l, "4-5");
+        getAdministrationPage("match", 2, match).hasMatchFields(match.getRound().getId(), match.getPlayerOne().getId(), match.getPlayerTwo().getId(), match.getScore());
     }
 
     private AdministrationPage getAdministrationPage(String objectName, int errorCount, Object object) throws Exception {

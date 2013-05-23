@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -82,18 +83,18 @@ public class AdministrationPage {
         assertEquals(name, nameInputElement.val());
     }
 
-    public void hasRoundFields(Long divisionId, String startDate, String endDate) {
+    public void hasRoundFields(Long divisionId, DateTime startDate, DateTime endDate) {
         Element divisionInputElement = html.select("#create_round #division [selected=selected]").first();
         assertNotNull(divisionInputElement);
         assertEquals(divisionId.toString(), divisionInputElement.attr("value"));
 
         Element startDateInputElement = html.select("#create_round #startDate").first();
         assertNotNull(startDateInputElement);
-        assertEquals(startDate, startDateInputElement.val());
+        assertEquals(startDate.toString("yyyy-MM-dd"), startDateInputElement.val());
 
         Element endDateInputElement = html.select("#create_round #endDate").first();
         assertNotNull(endDateInputElement);
-        assertEquals(endDate, endDateInputElement.val());
+        assertEquals(endDate.toString("yyyy-MM-dd"), endDateInputElement.val());
     }
 
     public void hasPlayerFields(Long userId, Long divisionId, PlayerStatus playerStatus) {
