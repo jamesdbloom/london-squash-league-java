@@ -14,6 +14,8 @@ import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Match;
+import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.Round;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ import static org.mockito.Mockito.*;
 public class MatchControllerTest {
 
     private final List<Match> matches = new ArrayList<>();
+    private final List<Round> rounds = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
     @Mock
     private MatchDAO matchDAO;
     @Mock
@@ -44,6 +48,8 @@ public class MatchControllerTest {
     @Before
     public void setupFixture() {
         when(matchDAO.findAll()).thenReturn(matches);
+        when(roundDAO.findAll()).thenReturn(rounds);
+        when(playerDAO.findAll()).thenReturn(players);
     }
 
     @Test
@@ -91,6 +97,8 @@ public class MatchControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("match"), same(match));
+        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
+        verify(uiModel).addAttribute(eq("players"), same(players));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/match/update", page);
     }
@@ -123,6 +131,8 @@ public class MatchControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("match"), same(match));
+        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
+        verify(uiModel).addAttribute(eq("players"), same(players));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/match/update", page);
     }

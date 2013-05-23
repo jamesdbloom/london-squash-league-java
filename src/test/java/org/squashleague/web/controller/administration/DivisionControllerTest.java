@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.League;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
 public class DivisionControllerTest {
 
     private final List<Division> divisions = new ArrayList<>();
+    private final List<League> leagues = new ArrayList<>();
 
     @Mock
     private DivisionDAO divisionDAO;
@@ -42,6 +44,7 @@ public class DivisionControllerTest {
     @Before
     public void setupFixture() {
         when(divisionDAO.findAll()).thenReturn(divisions);
+        when(leagueDAO.findAll()).thenReturn(leagues);
     }
 
     @Test
@@ -89,6 +92,7 @@ public class DivisionControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("division"), same(division));
+        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/division/update", page);
     }
@@ -121,6 +125,7 @@ public class DivisionControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("division"), same(division));
+        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/division/update", page);
     }

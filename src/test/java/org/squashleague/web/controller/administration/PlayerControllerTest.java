@@ -14,13 +14,18 @@ import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.PlayerDAO;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.PlayerStatus;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -30,6 +35,9 @@ import static org.mockito.Mockito.*;
 public class PlayerControllerTest {
 
     private final List<Player> players = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
+    private final List<Division> divisions = new ArrayList<>();
+    private final List<League> leagues = new ArrayList<>();
 
     @Mock
     private PlayerDAO playerDAO;
@@ -47,6 +55,9 @@ public class PlayerControllerTest {
     @Before
     public void setupFixture() {
         when(playerDAO.findAll()).thenReturn(players);
+        when(userDAO.findAll()).thenReturn(users);
+        when(divisionDAO.findAll()).thenReturn(divisions);
+        when(leagueDAO.findAll()).thenReturn(leagues);
     }
 
     @Test
@@ -94,6 +105,10 @@ public class PlayerControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("player"), same(player));
+        verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
+        verify(uiModel).addAttribute(eq("users"), same(users));
+        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
+        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/player/update", page);
     }
@@ -126,6 +141,10 @@ public class PlayerControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("player"), same(player));
+        verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
+        verify(uiModel).addAttribute(eq("users"), same(users));
+        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
+        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/player/update", page);
     }

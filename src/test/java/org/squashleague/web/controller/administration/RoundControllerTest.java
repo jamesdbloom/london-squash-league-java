@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.RoundDAO;
+import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Round;
 
 import javax.annotation.Resource;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.*;
 public class RoundControllerTest {
 
     private final List<Round> rounds = new ArrayList<>();
+    private final List<Division> divisions = new ArrayList<>();
 
     @Mock
     private RoundDAO roundDAO;
@@ -41,6 +43,7 @@ public class RoundControllerTest {
     @Before
     public void setupFixture() {
         when(roundDAO.findAll()).thenReturn(rounds);
+        when(divisionDAO.findAll()).thenReturn(divisions);
     }
 
     @Test
@@ -88,6 +91,7 @@ public class RoundControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("round"), same(round));
+        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/round/update", page);
     }
@@ -120,6 +124,7 @@ public class RoundControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("round"), same(round));
+        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         assertEquals("page/round/update", page);
     }
