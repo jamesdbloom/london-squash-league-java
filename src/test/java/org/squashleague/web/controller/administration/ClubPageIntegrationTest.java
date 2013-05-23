@@ -19,6 +19,8 @@ import org.squashleague.web.controller.PropertyMockingApplicationContextInitiali
 
 import javax.annotation.Resource;
 
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,7 +89,9 @@ public class ClubPageIntegrationTest {
         object.setVersion(5);
         when(clubDAO.findById(id)).thenReturn(object);
 
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id)
+                .accept(MediaType.TEXT_HTML)
+        )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
@@ -188,6 +192,21 @@ public class ClubPageIntegrationTest {
         ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
         clubUpdatePage.hasErrors("club", 2);
         clubUpdatePage.hasClubFields(object.getId(), object.getVersion(), object.getName(), object.getAddress());
+    }
+
+    @Test
+    public void shouldDeleteClub() throws Exception {
+        // given
+        Long id = 5l;
+
+        // when
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+                .accept(MediaType.TEXT_HTML)
+        )
+                // then
+                .andExpect(redirectedUrl("/administration"));
+
+        verify(clubDAO).delete(same(id));
     }
 
 }

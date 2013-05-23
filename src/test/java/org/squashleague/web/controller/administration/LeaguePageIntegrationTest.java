@@ -22,6 +22,8 @@ import org.squashleague.web.controller.PropertyMockingApplicationContextInitiali
 import javax.annotation.Resource;
 import java.util.Arrays;
 
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -194,6 +196,21 @@ public class LeaguePageIntegrationTest {
         LeagueUpdatePage leagueUpdatePage = new LeagueUpdatePage(response);
         leagueUpdatePage.hasErrors("league", 2);
         leagueUpdatePage.hasLeagueFields(object.getId(), object.getVersion(), object.getName(), null);
+    }
+
+    @Test
+    public void shouldDeleteLeague() throws Exception {
+        // given
+        Long id = 5l;
+
+        // when
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+                .accept(MediaType.TEXT_HTML)
+        )
+                // then
+                .andExpect(redirectedUrl("/administration"));
+
+        verify(leagueDAO).delete(same(id));
     }
 
 }

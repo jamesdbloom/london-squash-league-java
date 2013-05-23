@@ -54,7 +54,7 @@ public class ClubController {
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("delete") Long id) {
+    public String delete(@PathVariable("id") Long id) {
         clubDAO.delete(id);
         return "redirect:/administration";
     }
