@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.PlayerDAO;
+import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.PlayerStatus;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -21,7 +24,15 @@ public class PlayerController {
     @Resource
     private PlayerDAO playerDAO;
     @Resource
+    private UserDAO userDAO;
+    @Resource
     private Environment environment;
+
+    private void setupModel(Model uiModel) {
+        uiModel.addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
+        uiModel.addAttribute("users", userDAO.findAll());
+        uiModel.addAttribute("environment", environment);
+    }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Player player, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -36,7 +47,7 @@ public class PlayerController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("environment", environment);
+        setupModel(uiModel);
         uiModel.addAttribute("player", playerDAO.findById(id));
         return "page/player/update";
     }
@@ -44,7 +55,7 @@ public class PlayerController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Player player, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("environment", environment);
+            setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("player", player);
             return "page/player/update";

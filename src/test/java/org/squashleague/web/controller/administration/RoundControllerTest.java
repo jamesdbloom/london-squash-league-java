@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Round;
 
@@ -30,6 +31,8 @@ public class RoundControllerTest {
 
     @Mock
     private RoundDAO roundDAO;
+    @Mock
+    private DivisionDAO divisionDAO;
     @Resource
     private Environment environment;
     @InjectMocks

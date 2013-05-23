@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.MatchDAO;
+import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.league.Match;
 
 import javax.annotation.Resource;
@@ -30,6 +31,8 @@ public class MatchControllerTest {
     private final List<Match> matches = new ArrayList<>();
     @Mock
     private MatchDAO matchDAO;
+    @Mock
+    private PlayerDAO playerDAO;
     @Resource
     private Environment environment;
     @InjectMocks

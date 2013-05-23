@@ -39,7 +39,6 @@ public class RoleController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("role", roleDAO.findById(id));
-        uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         return "page/role/update";
     }
 
@@ -49,7 +48,6 @@ public class RoleController {
             uiModel.addAttribute("environment", environment);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("role", role);
-            uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
             return "page/role/update";
         }
         roleDAO.update(role);

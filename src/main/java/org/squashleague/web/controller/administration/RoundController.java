@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Round;
 
@@ -21,7 +22,14 @@ public class RoundController {
     @Resource
     private RoundDAO roundDAO;
     @Resource
+    private DivisionDAO divisionDAO;
+    @Resource
     private Environment environment;
+
+    private void setupModel(Model uiModel) {
+        uiModel.addAttribute("divisions", divisionDAO.findAll());
+        uiModel.addAttribute("environment", environment);
+    }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Round round, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -36,7 +44,7 @@ public class RoundController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("environment", environment);
+        setupModel(uiModel);
         uiModel.addAttribute("round", roundDAO.findById(id));
         return "page/round/update";
     }
@@ -44,7 +52,7 @@ public class RoundController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Round round, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("environment", environment);
+            setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("round", round);
             return "page/round/update";

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.MatchDAO;
+import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.league.Match;
 
 import javax.annotation.Resource;
@@ -21,7 +22,14 @@ public class MatchController {
     @Resource
     private MatchDAO matchDAO;
     @Resource
+    private PlayerDAO playerDAO;
+    @Resource
     private Environment environment;
+
+    private void setupModel(Model uiModel) {
+        uiModel.addAttribute("players", playerDAO.findAll());
+        uiModel.addAttribute("environment", environment);
+    }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Match match, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -36,7 +44,7 @@ public class MatchController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("environment", environment);
+        setupModel(uiModel);
         uiModel.addAttribute("match", matchDAO.findById(id));
         return "page/match/update";
     }
@@ -44,7 +52,7 @@ public class MatchController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Match match, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("environment", environment);
+            setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("match", match);
             return "page/match/update";

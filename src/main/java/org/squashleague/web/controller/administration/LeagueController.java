@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.dao.league.LeagueDAO;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.League;
 
 import javax.annotation.Resource;
@@ -21,7 +24,14 @@ public class LeagueController {
     @Resource
     private LeagueDAO leagueDAO;
     @Resource
+    private ClubDAO clubDAO;
+    @Resource
     private Environment environment;
+
+    private void setupModel(Model uiModel) {
+        uiModel.addAttribute("clubs", clubDAO.findAll());
+        uiModel.addAttribute("environment", environment);
+    }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid League league, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -36,7 +46,7 @@ public class LeagueController {
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("environment", environment);
+        setupModel(uiModel);
         uiModel.addAttribute("league", leagueDAO.findById(id));
         return "page/league/update";
     }
@@ -44,7 +54,7 @@ public class LeagueController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid League league, BindingResult bindingResult, Model uiModel) {
         if (bindingResult.hasErrors()) {
-            uiModel.addAttribute("environment", environment);
+            setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("league", league);
             return "page/league/update";
