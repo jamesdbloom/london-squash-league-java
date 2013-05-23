@@ -51,7 +51,7 @@ public class RoleController {
             return "page/role/update";
         }
         roleDAO.update(role);
-        return "redirect:/account";
+        return "redirect:/administration";
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)

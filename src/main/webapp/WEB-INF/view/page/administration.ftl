@@ -33,8 +33,8 @@
             </#list>
             <tr class="create_row" id="create_role">
                 <td class="key last"></td>
-                <td class="name last"><@spring.formInput  path="role.name" attributes='required="required" pattern=".{3,25}" maxlength="25" title="${environment.getProperty("validation.role.name")}" class="show_validation"'/></td>
-                <td class="description last"><@spring.formInput  path="role.description" attributes='required="required" pattern=".{3,25}" maxlength="25" title="${environment.getProperty("validation.role.description")}" class="show_validation"'/></td>
+                <td class="name last"><@spring.formInput  path="role.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.role.name")}" class="show_validation"'/></td>
+                <td class="description last"><@spring.formInput  path="role.description" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.role.description")}" class="show_validation"'/></td>
                 <td class="club last">
                     <#if (clubs?size > 0)>
                         <select id="club" name="club">

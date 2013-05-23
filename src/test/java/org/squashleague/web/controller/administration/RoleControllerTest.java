@@ -100,7 +100,7 @@ public class RoleControllerTest {
 
         // then
         verify(roleDAO).update(same(role));
-        assertEquals("redirect:/account", page);
+        assertEquals("redirect:/administration", page);
     }
 
     @Test

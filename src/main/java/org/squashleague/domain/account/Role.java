@@ -23,7 +23,7 @@ public class Role extends ModelObject {
     public static final Role ROLE_ADMIN = new Role().withName("ROLE_ADMIN").withDescription("Administrator Role");
 
     @NotNull(message = "{validation.role.name}")
-    @Size(min = 5, max = 50, message = "{validation.role.name}")
+    @Size(min = 5, max = 25, message = "{validation.role.name}")
     private String name;
     @NotNull(message = "{validation.role.description}")
     @Size(min = 5, max = 50, message = "{validation.role.description}")
