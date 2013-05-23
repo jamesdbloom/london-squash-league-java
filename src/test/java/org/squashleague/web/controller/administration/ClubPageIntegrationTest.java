@@ -162,4 +162,32 @@ public class ClubPageIntegrationTest {
         clubUpdatePage.hasClubFields(object.getId(), object.getVersion(), object.getName(), object.getAddress());
     }
 
+    @Test
+    public void shouldGetPageWithAllErrors() throws Exception {
+        // given
+        Club object = (Club) new Club()
+                .withName("test")
+                .withAddress("test")
+                .withId(2l);
+        object.setVersion(5);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", object.getId().toString())
+                .param("version", object.getVersion().toString())
+                .param("name", object.getName())
+                .param("address", object.getAddress())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
+        clubUpdatePage.hasErrors("club", 2);
+        clubUpdatePage.hasClubFields(object.getId(), object.getVersion(), object.getName(), object.getAddress());
+    }
+
 }
