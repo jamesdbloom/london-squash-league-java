@@ -12,11 +12,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.mail.internet.MimeMessage;
-import java.net.URI;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author jamesdbloom
@@ -97,7 +97,7 @@ public class EmailServiceTest {
         // given
         String subject = EmailService.LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "New Registration";
         String to = "to@email.com";
-        URL url = new URL("http", "www.london-squash-league.com", "path");
+        URL link = new URL("http", "www.london-squash-league.com", "path");
         String leagueEmail = "info@squash-league.com";
         when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
 
@@ -106,7 +106,7 @@ public class EmailServiceTest {
         MimeMessage mimeMessage = new JavaMailSenderImpl().createMimeMessage();
 
         // when
-        emailService.sendRegistrationMessage(to, url);
+        emailService.sendRegistrationMessage(to, link);
 
         // then
         MimeMessagePreparator result = preparatorArgumentCaptor.getValue();
@@ -116,8 +116,9 @@ public class EmailServiceTest {
         assertEquals(to, mimeMessage.getAllRecipients()[0].toString());
         assertEquals(subject, mimeMessage.getSubject());
         assertEquals("<html><head><title>" + subject + "</title></head><body>" +
+                "<h1>" + subject + "</h1>\n" +
                 "<p>A new has just been registered for " + to + "</p>\n" +
-                "<p>To validate this email please click on the following link <a href=" + url + ">" + url + "</a></p>\n" +
+                "<p>To validate this email address please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
                 "</body></html>", mimeMessage.getContent().toString());
     }
 }

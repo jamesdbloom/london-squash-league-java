@@ -62,8 +62,12 @@ public class RegistrationControllerTest {
         user = mock(User.class);
         when(user.withPassword(same(password))).thenReturn(user);
         when(user.withOneTimeToken(same(oneTimeToken))).thenReturn(user);
+        when(user.getOneTimeToken()).thenReturn(oneTimeToken);
 
         request = mock(HttpServletRequest.class);
+        when(request.getLocalName()).thenReturn("www.london-squash-league.com");
+        when(request.getLocalPort()).thenReturn(8080);
+
         uiModel = mock(Model.class);
     }
 
@@ -125,7 +129,6 @@ public class RegistrationControllerTest {
         // given
         when(user.getEmail()).thenReturn("user@email.com");
         when(user.withRole(same(Role.ROLE_USER))).thenReturn(user);
-        when(request.getLocalName()).thenReturn("www.london-squash-league.com");
 
         // when
         registrationController.register(user, mock(BindingResult.class), password, password, request, uiModel);
@@ -137,7 +140,8 @@ public class RegistrationControllerTest {
                 new URL(
                         "https",
                         request.getLocalName(),
-                        URLEncoder.encode("validate?user=" + user.getEmail() + "&token=" + user.getOneTimeToken(), "UTF-8")
+                        request.getLocalPort(),
+                        "/validate?user=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&token=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
                 )
         );
     }

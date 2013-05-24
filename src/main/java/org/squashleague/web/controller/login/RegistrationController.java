@@ -1,6 +1,5 @@
 package org.squashleague.web.controller.login;
 
-import com.eaio.uuid.UUID;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
-import org.squashleague.service.http.RequestParser;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.service.uuid.UUIDService;
 
@@ -89,7 +87,8 @@ public class RegistrationController {
                 new URL(
                         "https",
                         request.getLocalName(),
-                        URLEncoder.encode("validate?user=" + user.getEmail() + "&token=" + user.getOneTimeToken(), "UTF-8")
+                        request.getLocalPort(),
+                        "/validate?user=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&token=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
                 )
         );
         securityUserContext.setCurrentUser(user);

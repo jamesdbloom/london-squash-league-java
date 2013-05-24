@@ -51,12 +51,13 @@ public class EmailService {
         sendMessage(address, new String[]{environment.getProperty("email.contact.address"), address}, subject, formattedMessage);
     }
 
-    public void sendRegistrationMessage(String address, URL link) {
+    public void sendRegistrationMessage(String to, URL link) {
         String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "New Registration";
         String formattedMessage = "<html><head><title>" + subject + "</title></head><body>" +
-                "<p>A new has just been registered for " + address + "</p>\n" +
-                "<p>To validate this email please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
+                "<h1>" + subject + "</h1>\n" +
+                "<p>A new has just been registered for " + to + "</p>\n" +
+                "<p>To validate this email address please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
                 "</body></html>";
-        sendMessage(environment.getProperty("email.contact.address"), new String[]{address}, subject, formattedMessage);
+        sendMessage(environment.getProperty("email.contact.address"), new String[]{to}, subject, formattedMessage);
     }
 }

@@ -147,6 +147,7 @@ public class User extends ModelObject {
     }
 
     public User withOneTimeToken(String oneTimeToken) {
+        setOneTimeToken(oneTimeToken);
         return this;
     }
 

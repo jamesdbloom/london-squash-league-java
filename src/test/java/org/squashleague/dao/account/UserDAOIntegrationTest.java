@@ -194,6 +194,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role)
                 .withPassword("password")
+                .withOneTimeToken("oneTimeToken")
                 .withPlayers(
                         new Player()
                                 .withCurrentDivision(division)
