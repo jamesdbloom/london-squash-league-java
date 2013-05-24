@@ -1,5 +1,6 @@
 package org.squashleague.dao;
 
+import com.eaio.uuid.UUID;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 /**
  * @author jamesdbloom
@@ -63,12 +65,12 @@ public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInT
                 .withDescription("role description");
         roleDAO.save(role);
         userOne = new User()
-                .withEmail("user@email.com")
+                .withEmail("one@email.com")
                 .withName("playerOne name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);
         userTwo = new User()
-                .withEmail("user@email.com")
+                .withEmail("two@email.com")
                 .withName("playerTwo name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);

@@ -17,6 +17,7 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 import static junit.framework.Assert.assertNull;
@@ -122,7 +123,6 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.delete(expectedUser);
     }
 
-
     @Test
     public void shouldRegisterWithOneExistingRoleAndOneNewRole() throws Exception {
         // given
@@ -215,12 +215,12 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveList() throws Exception {
         // given
         User userOne = new User()
-                .withEmail("user@email.com")
+                .withEmail("one@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);
         User userTwo = new User()
-                .withEmail("user@email.com")
+                .withEmail("two@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);
@@ -254,6 +254,28 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertNull(userDAO.findById(expectedUser.getId()));
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void shouldNotAllowDuplicateNames() throws Exception {
+        // given
+        User expectedUserOne = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        User expectedUserTwo = new User()
+                .withEmail(expectedUserOne.getEmail())
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role);
+        try {
+            // when
+            userDAO.save(expectedUserOne);
+            userDAO.save(expectedUserTwo);
+        } finally {
+            userDAO.delete(expectedUserOne);
+        }
     }
 
     @Test

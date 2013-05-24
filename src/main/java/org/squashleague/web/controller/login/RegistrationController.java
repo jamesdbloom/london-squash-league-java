@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 public class RegistrationController {
 
     private static final Pattern PASSWORD_MATCHER = Pattern.compile(User.PASSWORD_PATTERN);
-
     @Resource
     private UserDAO userDAO;
     @Resource
@@ -50,7 +49,8 @@ public class RegistrationController {
     public String register(@Valid User user, BindingResult bindingResult, String passwordOne, String passwordTwo, Model uiModel) {
         boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(passwordOne)).matches();
         boolean passwordsMatchError = !String.valueOf(passwordOne).equals(passwordTwo);
-        if (bindingResult.hasErrors() || passwordFormatError || passwordsMatchError) {
+        boolean userAlreadyExists = user.getEmail() != null && (userDAO.findByEmail(user.getEmail()) != null);
+        if (bindingResult.hasErrors() || passwordFormatError || passwordsMatchError || userAlreadyExists) {
             setupModel(uiModel);
             if (passwordFormatError) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.password")));
@@ -58,10 +58,14 @@ public class RegistrationController {
             if (passwordsMatchError) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.passwordNonMatching")));
             }
+            if (userAlreadyExists) {
+                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.alreadyExists")));
+            }
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
             return "page/user/register";
         }
+
         userDAO.register(user
                 .withRole((user.getEmail().equals("jamesdbloom@gmail.com") ? Role.ROLE_ADMIN : Role.ROLE_USER))
                 .withPassword(passwordEncoder.encode(passwordOne))

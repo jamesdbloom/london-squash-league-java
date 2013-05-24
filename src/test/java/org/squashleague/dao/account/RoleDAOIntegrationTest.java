@@ -15,6 +15,7 @@ import org.squashleague.domain.league.Club;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import javax.persistence.PersistenceException;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -81,24 +82,22 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
         roleDAO.delete(expectedRole);
     }
 
-    @Test
-    public void shouldRetrieveFirstByNameWhenDuplicates() throws Exception {
+    @Test(expected = PersistenceException.class)
+    public void shouldNotAllowDuplicateNames() throws Exception {
         // given
         Role expectedRoleOne = new Role()
                 .withName("role name")
                 .withDescription("role description one");
         Role expectedRoleTwo = new Role()
                 .withName(expectedRoleOne.getName())
-                .withDescription("role description one");
-
-        // when
-        roleDAO.save(expectedRoleOne);
-        roleDAO.save(expectedRoleTwo);
-
-        // then
-        assertEquals(expectedRoleOne, roleDAO.findByName(expectedRoleOne.getName()));
-        roleDAO.delete(expectedRoleOne);
-        roleDAO.delete(expectedRoleTwo);
+                .withDescription("role description two");
+        try {
+            // when
+            roleDAO.save(expectedRoleOne);
+            roleDAO.save(expectedRoleTwo);
+        } finally {
+            roleDAO.delete(expectedRoleOne);
+        }
     }
 
     @Test

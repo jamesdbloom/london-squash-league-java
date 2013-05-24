@@ -19,6 +19,8 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
+import java.util.Random;
+
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -60,12 +62,12 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withDescription("role description");
         roleDAO.save(role);
         userOne = new User()
-                .withEmail("user@email.com")
+                .withEmail("one@email.com")
                 .withName("playerOne name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);
         userTwo = new User()
-                .withEmail("user@email.com")
+                .withEmail("two@email.com")
                 .withName("playerTwo name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role);

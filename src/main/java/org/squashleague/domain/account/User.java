@@ -28,6 +28,7 @@ public class User extends ModelObject {
     @NotNull(message = "{validation.user.name}")
     @Size(min = 3, max = 25, message = "{validation.user.name}")
     private String name;
+    @Column(unique = true)
     @NotNull(message = "{validation.user.email}")
     @Pattern(regexp = EMAIL_PATTERN, message = "{validation.user.email}")
     @NotEmpty(message = "{validation.user.email}")
