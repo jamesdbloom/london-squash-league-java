@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 @Controller
 public class ContactUsController {
 
-    public static final String LONDON_SQUASH_LEAGUE_CONTACT_US = "London Squash League - Contact Us";
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,2048}$");
     private static final Pattern USER_AGENT_PATTERN = Pattern.compile("^[a-zA-Z0-9\\p{Punct}\\s]{1,1024}$");
     @Resource
@@ -49,7 +48,7 @@ public class ContactUsController {
         if (MESSAGE_PATTERN.matcher(message).matches()) {
             User user = securityUserContext.getCurrentUser();
             String address = (user != null ? user.getEmail() : "unknown");
-            emailService.sendContactUsMessage(message, (USER_AGENT_PATTERN.matcher(userAgent).matches() ? userAgent : "too long"), requestParser.getIpAddress(request), LONDON_SQUASH_LEAGUE_CONTACT_US, address);
+            emailService.sendContactUsMessage(message, (USER_AGENT_PATTERN.matcher(userAgent).matches() ? userAgent : "too long"), requestParser.getIpAddress(request), address);
             return "redirect:/confirmation";
         } else {
             uiModel.addAttribute("message", "Your message was too large please try a shorter message");

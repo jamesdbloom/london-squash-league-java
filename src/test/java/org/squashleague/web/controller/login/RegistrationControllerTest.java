@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.login;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,13 @@ import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
+import org.squashleague.service.email.EmailService;
 import org.squashleague.service.security.SpringSecurityUserContext;
+import org.squashleague.service.uuid.UUIDService;
+
+import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -33,8 +40,32 @@ public class RegistrationControllerTest {
     private Environment environment;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private UUIDService uuidService;
     @InjectMocks
     private RegistrationController registrationController = new RegistrationController();
+    private HttpServletRequest request;
+    private Model uiModel;
+    private String password;
+    private User user;
+
+    @Before
+    public void setupFixture() {
+        password = "abd123$%^";
+        when(passwordEncoder.encode(same(password))).thenReturn(password);
+
+        String oneTimeToken = "oneTimeToken";
+        when(uuidService.generateUUID()).thenReturn(oneTimeToken);
+
+        user = mock(User.class);
+        when(user.withPassword(same(password))).thenReturn(user);
+        when(user.withOneTimeToken(same(oneTimeToken))).thenReturn(user);
+
+        request = mock(HttpServletRequest.class);
+        uiModel = mock(Model.class);
+    }
 
     @Test
     public void shouldRetrieveRegistrationForm() throws Exception {
@@ -56,16 +87,11 @@ public class RegistrationControllerTest {
     @Test
     public void shouldRegisterAdminUserAndRedirect() throws Exception {
         // given
-        Model uiModel = mock(Model.class);
-        User user = mock(User.class);
         when(user.getEmail()).thenReturn("jamesdbloom@gmail.com");
-        String password = "abd123$%^";
-        when(passwordEncoder.encode(same(password))).thenReturn(password);
         when(user.withRole(same(Role.ROLE_ADMIN))).thenReturn(user);
-        when(user.withPassword(same(password))).thenReturn(user);
 
         // when
-        String page = registrationController.register(user, mock(BindingResult.class), password, password, uiModel);
+        String page = registrationController.register(user, mock(BindingResult.class), password, password, request, uiModel);
 
         // then
         verify(passwordEncoder).encode(same(password));
@@ -79,16 +105,11 @@ public class RegistrationControllerTest {
     @Test
     public void shouldRegisterNonAdminUserAndRedirect() throws Exception {
         // given
-        Model uiModel = mock(Model.class);
-        User user = mock(User.class);
         when(user.getEmail()).thenReturn("user@email.com");
-        String password = "abd123$%^";
-        when(passwordEncoder.encode(same(password))).thenReturn(password);
         when(user.withRole(same(Role.ROLE_USER))).thenReturn(user);
-        when(user.withPassword(same(password))).thenReturn(user);
 
         // when
-        String page = registrationController.register(user, mock(BindingResult.class), password, password, uiModel);
+        String page = registrationController.register(user, mock(BindingResult.class), password, password, request, uiModel);
 
         // then
         verify(passwordEncoder).encode(same(password));
@@ -100,16 +121,36 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    public void shouldAddBindingErrorsToModelAndForward() throws Exception {
+    public void shouldSendEmail() throws Exception {
         // given
-        Model uiModel = mock(Model.class);
-        User user = new User();
-        BindingResult bindingResult = mock(BindingResult.class);
-        when(bindingResult.hasErrors()).thenReturn(true);
-        String password = "abd123$%^";
+        when(user.getEmail()).thenReturn("user@email.com");
+        when(user.withRole(same(Role.ROLE_USER))).thenReturn(user);
+        when(request.getLocalName()).thenReturn("www.london-squash-league.com");
 
         // when
-        String page = registrationController.register(user, bindingResult, password, password, uiModel);
+        registrationController.register(user, mock(BindingResult.class), password, password, request, uiModel);
+
+
+        // then
+        verify(emailService).sendRegistrationMessage(
+                user.getEmail(),
+                new URL(
+                        "https",
+                        request.getLocalName(),
+                        URLEncoder.encode("validate?user=" + user.getEmail() + "&token=" + user.getOneTimeToken(), "UTF-8")
+                )
+        );
+    }
+
+    @Test
+    public void shouldAddBindingErrorsToModelAndForward() throws Exception {
+        // given
+        BindingResult bindingResult = mock(BindingResult.class);
+        reset(bindingResult);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // when
+        String page = registrationController.register(user, bindingResult, password, password, request, uiModel);
 
         // then
         verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
@@ -125,8 +166,6 @@ public class RegistrationControllerTest {
     @Test
     public void shouldValidatePasswordCorrectFormat() throws Exception {
         // given
-        Model uiModel = mock(Model.class);
-        User user = new User();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
         String password = "not_correct_format";
@@ -134,7 +173,7 @@ public class RegistrationControllerTest {
         when(environment.getProperty("validation.user.password")).thenReturn(errorMessage);
 
         // when
-        String page = registrationController.register(user, bindingResult, password, password, uiModel);
+        String page = registrationController.register(user, bindingResult, password, password, request, uiModel);
 
         // then
         verify(uiModel).addAttribute(eq("environment"), same(environment));
@@ -150,15 +189,13 @@ public class RegistrationControllerTest {
     @Test
     public void shouldValidatePasswordsDoNotMatch() throws Exception {
         // given
-        Model uiModel = mock(Model.class);
-        User user = new User();
         BindingResult bindingResult = mock(BindingResult.class);
         when(bindingResult.hasErrors()).thenReturn(true);
         String errorMessage = "passwordNonMatching";
         when(environment.getProperty("validation.user.passwordNonMatching")).thenReturn(errorMessage);
 
         // when
-        String page = registrationController.register(user, bindingResult, "password_one", "password_two", uiModel);
+        String page = registrationController.register(user, bindingResult, "password_one", "password_two", request, uiModel);
 
         // then
         verify(uiModel).addAttribute(eq("environment"), same(environment));

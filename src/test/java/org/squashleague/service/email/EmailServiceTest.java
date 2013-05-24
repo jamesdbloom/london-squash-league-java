@@ -12,10 +12,11 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.mail.internet.MimeMessage;
+import java.net.URI;
+import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author jamesdbloom
@@ -62,7 +63,7 @@ public class EmailServiceTest {
         String message = "msg";
         String userAgent = "userAgent";
         String ip = "ip";
-        String subject = "subject";
+        String subject = EmailService.LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "Contact Us";
         String from = "from@email.com";
         String leagueEmail = "info@squash-league.com";
         when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
@@ -72,7 +73,7 @@ public class EmailServiceTest {
         MimeMessage mimeMessage = new JavaMailSenderImpl().createMimeMessage();
 
         // when
-        emailService.sendContactUsMessage(message, userAgent, ip, subject, from);
+        emailService.sendContactUsMessage(message, userAgent, ip, from);
 
         // then
         MimeMessagePreparator result = preparatorArgumentCaptor.getValue();
@@ -88,6 +89,35 @@ public class EmailServiceTest {
                 "<p>Message: " + message + "</p>\n" +
                 "<p>User Agent: " + userAgent + "</p>\n" +
                 "<p>Remote Address: " + ip + "</p>" +
+                "</body></html>", mimeMessage.getContent().toString());
+    }
+
+    @Test
+    public void shouldSendRegistrationEmail() throws Exception {
+        // given
+        String subject = EmailService.LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "New Registration";
+        String to = "to@email.com";
+        URL url = new URL("http", "www.london-squash-league.com", "path");
+        String leagueEmail = "info@squash-league.com";
+        when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
+
+        ArgumentCaptor<MimeMessagePreparator> preparatorArgumentCaptor = ArgumentCaptor.forClass(MimeMessagePreparator.class);
+        doNothing().when(mailSender).send(preparatorArgumentCaptor.capture());
+        MimeMessage mimeMessage = new JavaMailSenderImpl().createMimeMessage();
+
+        // when
+        emailService.sendRegistrationMessage(to, url);
+
+        // then
+        MimeMessagePreparator result = preparatorArgumentCaptor.getValue();
+        result.prepare(mimeMessage);
+
+        assertEquals(leagueEmail, mimeMessage.getFrom()[0].toString());
+        assertEquals(to, mimeMessage.getAllRecipients()[0].toString());
+        assertEquals(subject, mimeMessage.getSubject());
+        assertEquals("<html><head><title>" + subject + "</title></head><body>" +
+                "<p>A new has just been registered for " + to + "</p>\n" +
+                "<p>To validate this email please click on the following link <a href=" + url + ">" + url + "</a></p>\n" +
                 "</body></html>", mimeMessage.getContent().toString());
     }
 }

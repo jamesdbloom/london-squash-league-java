@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.net.URL;
 
 /**
  * @author jamesdbloom
@@ -18,6 +19,7 @@ import javax.mail.internet.MimeMessage;
 @Component
 public class EmailService {
 
+    public static final String LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX = "London Squash League - ";
     @Resource
     private JavaMailSender mailSender;
     @Resource
@@ -37,7 +39,8 @@ public class EmailService {
         });
     }
 
-    public void sendContactUsMessage(String message, String userAgent, String ip, String subject, String address) {
+    public void sendContactUsMessage(String message, String userAgent, String ip, String address) {
+        String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "Contact Us";
         String formattedMessage = "<html><head><title>" + subject + "</title></head><body>" +
                 "<p>A message has been submitted as follows:</p>\n" +
                 "<p>Email: " + address + "</p>\n" +
@@ -46,5 +49,14 @@ public class EmailService {
                 "<p>Remote Address: " + ip + "</p>" +
                 "</body></html>";
         sendMessage(address, new String[]{environment.getProperty("email.contact.address"), address}, subject, formattedMessage);
+    }
+
+    public void sendRegistrationMessage(String address, URL link) {
+        String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "New Registration";
+        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>" +
+                "<p>A new has just been registered for " + address + "</p>\n" +
+                "<p>To validate this email please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
+                "</body></html>";
+        sendMessage(environment.getProperty("email.contact.address"), new String[]{address}, subject, formattedMessage);
     }
 }

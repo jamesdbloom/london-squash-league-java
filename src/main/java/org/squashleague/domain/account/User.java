@@ -43,6 +43,7 @@ public class User extends ModelObject {
     @JoinColumn
     private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);
     private String password;
+    private String oneTimeToken;
     // extra domain traversal
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Player> players;
@@ -134,6 +135,18 @@ public class User extends ModelObject {
 
     public User withPassword(String password) {
         setPassword(password);
+        return this;
+    }
+
+    public String getOneTimeToken() {
+        return oneTimeToken;
+    }
+
+    public void setOneTimeToken(String oneTimeToken) {
+        this.oneTimeToken = oneTimeToken;
+    }
+
+    public User withOneTimeToken(String oneTimeToken) {
         return this;
     }
 

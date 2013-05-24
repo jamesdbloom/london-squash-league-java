@@ -108,7 +108,7 @@ public class ContactUsPageIntegrationTest {
 
 
         String ip = "127.0.0.1";
-        verify(emailService).sendContactUsMessage(message, userAgentHeader, ip, ContactUsController.LONDON_SQUASH_LEAGUE_CONTACT_US, email);
+        verify(emailService).sendContactUsMessage(message, userAgentHeader, ip, email);
     }
 
     @Test

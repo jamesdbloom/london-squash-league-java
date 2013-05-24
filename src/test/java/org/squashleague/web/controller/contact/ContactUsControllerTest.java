@@ -78,7 +78,7 @@ public class ContactUsControllerTest {
 
         // then
         assertEquals("redirect:/confirmation", contactUsController.sendMessage(message, userAgent, request, mock(Model.class)));
-        verify(emailService).sendContactUsMessage(same(message), same(userAgent), same(ip), same(ContactUsController.LONDON_SQUASH_LEAGUE_CONTACT_US), same(address));
+        verify(emailService).sendContactUsMessage(same(message), same(userAgent), same(ip), same(address));
     }
 
     @Test
