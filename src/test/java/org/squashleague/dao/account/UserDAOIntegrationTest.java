@@ -1,6 +1,5 @@
 package org.squashleague.dao.account;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,10 +43,10 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     private League league;
     @Resource
     private DivisionDAO divisionDAO;
-    private Division division;
+    private Division divisionOne;
+    private Division divisionTwo;
     @Resource
-    private RoundDAO roundDAO;
-    private Round round;
+    private PlayerDAO playerDAO;
 
     @Before
     public void setupDatabase() {
@@ -60,24 +59,23 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withAddress("address");
         clubDAO.save(club);
         league = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
-        division = new Division()
-                .withName("expectedDivision name")
+        divisionOne = new Division()
+                .withName("division one name")
                 .withLeague(league);
-        divisionDAO.save(division);
-        round = new Round()
-                .withStartDate(new DateTime().plusDays(1))
-                .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
-        roundDAO.save(round);
+        divisionDAO.save(divisionOne);
+        divisionTwo = new Division()
+                .withName("division two name")
+                .withLeague(league);
+        divisionDAO.save(divisionTwo);
     }
 
     @After
     public void teardownDatabase() {
-        roundDAO.delete(round);
-        divisionDAO.delete(division);
+        divisionDAO.delete(divisionOne);
+        divisionDAO.delete(divisionTwo);
         leagueDAO.delete(league);
         clubDAO.delete(club);
         roleDAO.delete(role);
@@ -194,21 +192,26 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRole(role)
                 .withPassword("password")
-                .withOneTimeToken("oneTimeToken")
-                .withPlayers(
-                        new Player()
-                                .withCurrentDivision(division)
-                                .withPlayerStatus(PlayerStatus.ACTIVE),
-                        new Player()
-                                .withCurrentDivision(division)
-                                .withPlayerStatus(PlayerStatus.ACTIVE)
-                );
+                .withOneTimeToken("oneTimeToken");
+
+        expectedUser.withPlayers(
+                new Player()
+                        .withCurrentDivision(divisionOne)
+                        .withPlayerStatus(PlayerStatus.ACTIVE)
+                        .withUser(expectedUser),
+                new Player()
+                        .withCurrentDivision(divisionTwo)
+                        .withPlayerStatus(PlayerStatus.ACTIVE)
+                        .withUser(expectedUser));
 
         // when
         userDAO.save(expectedUser);
 
         // then
         assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
+        for (Player player : expectedUser.getPlayers()) {
+            playerDAO.delete(player);
+        }
         userDAO.delete(expectedUser);
     }
 

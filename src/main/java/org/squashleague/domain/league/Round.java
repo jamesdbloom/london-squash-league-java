@@ -8,13 +8,12 @@ import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.squashleague.domain.ModelObject;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,7 +35,8 @@ public class Round extends ModelObject {
     @ManyToOne
     private Division division;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Match> matches;
+    @JoinColumn(name = "matches_id")
+    private List<Match> matches;
 
     public DateTime getStartDate() {
         return startDate;
@@ -107,16 +107,16 @@ public class Round extends ModelObject {
         return this;
     }
 
-    public Set<Match> getMatches() {
+    public List<Match> getMatches() {
         return matches;
     }
 
-    public void setMatches(Set<Match> matches) {
+    public void setMatches(List<Match> matches) {
         this.matches = matches;
     }
 
     public Round withMatches(Match... matches) {
-        this.matches = new HashSet<>();
+        this.matches = new ArrayList<>();
         for (Match match : matches) {
             this.matches.add(match.withRound(this));
         }

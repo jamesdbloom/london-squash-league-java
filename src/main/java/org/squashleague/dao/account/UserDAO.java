@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.Match;
+import org.squashleague.domain.league.Player;
+import org.squashleague.service.security.SpringSecurityUserContext;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
@@ -26,20 +30,6 @@ public class UserDAO {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     @PersistenceContext
     protected EntityManager entityManager;
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #id")
-    public User findById(Long id) {
-        try {
-            return entityManager.find(User.class, id);
-        } catch (Exception e) {
-            logger.error(String.format("Exception while finding user with id %s", id), e);
-        }
-        return null;
-    }
-
-    public List<User> findAll() {
-        return entityManager.createQuery("from " + User.class.getName(), User.class).getResultList();
-    }
 
     public User findByEmail(String email) {
         try {
@@ -87,6 +77,25 @@ public class UserDAO {
     @Transactional
     public void updateOneTimeToken(User user) {
         entityManager.createQuery("update User as user set user.oneTimeToken = '" + user.getOneTimeToken() + "' where user.email = '" + user.getEmail() + "'").executeUpdate();
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #id")
+    public User findById(Long id) {
+        try {
+            User user = entityManager.find(User.class, id);
+            for(Player player : user.getPlayers()) {
+                player.toString();
+            }
+            return user;
+        } catch (Exception e) {
+            logger.error(String.format("Exception while finding user with id %s", id), e);
+        }
+        return null;
+    }
+
+    public List<User> findAll() {
+        return entityManager.createQuery("from " + User.class.getName(), User.class).getResultList();
     }
 
     @Transactional

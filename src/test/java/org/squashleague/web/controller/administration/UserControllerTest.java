@@ -104,7 +104,7 @@ public class UserControllerTest {
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
-        assertEquals("page/user/update", page);
+        assertEquals("page/administration/user/update", page);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class UserControllerTest {
         verify(uiModel).addAttribute(eq("environment"), same(environment));
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
         verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
-        assertEquals("page/user/update", page);
+        assertEquals("page/administration/user/update", page);
     }
 
     @Test

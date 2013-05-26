@@ -5,13 +5,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.squashleague.domain.ModelObject;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,8 @@ public class League extends ModelObject {
     @ManyToOne
     private Club club;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Division> divisions;
+    @JoinColumn(name = "divisions_id")
+    private List<Division> divisions;
 
     public String getName() {
         return name;
@@ -52,16 +52,16 @@ public class League extends ModelObject {
         return this;
     }
 
-    public Set<Division> getDivisions() {
+    public List<Division> getDivisions() {
         return divisions;
     }
 
-    public void setDivisions(Set<Division> divisions) {
+    public void setDivisions(List<Division> divisions) {
         this.divisions = divisions;
     }
 
     public League withDivisions(Division... divisions) {
-        this.divisions = new HashSet<>();
+        this.divisions = new ArrayList<>();
         for (Division division : divisions) {
             this.divisions.add(division.withLeague(this));
         }

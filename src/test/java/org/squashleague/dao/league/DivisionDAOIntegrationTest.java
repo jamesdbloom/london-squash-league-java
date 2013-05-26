@@ -37,6 +37,8 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     @Resource
     private LeagueDAO leagueDAO;
     private League league;
+    @Resource
+    private RoundDAO roundDAO;
 
     @Before
     public void setupDatabase() {
@@ -45,7 +47,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withAddress("address");
         clubDAO.save(club);
         league = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
     }
@@ -60,7 +62,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveRequiredFieldsAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("expectedDivision name")
+                .withName("division name")
                 .withLeague(league);
 
         // when
@@ -75,11 +77,11 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveUpdateAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("expectedDivision name")
+                .withName("division name")
                 .withLeague(league);
         divisionDAO.save(expectedDivision);
         expectedDivision
-                .withName("new expectedDivision name");
+                .withName("new division name");
 
         // when
         divisionDAO.update(expectedDivision);
@@ -93,7 +95,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("expectedDivision name")
+                .withName("division name")
                 .withLeague(league)
                 .withRounds(
                         new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)),
@@ -105,6 +107,9 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
+        for (Round round : expectedDivision.getRounds()) {
+            roundDAO.delete(round);
+        }
         divisionDAO.delete(expectedDivision);
     }
 
@@ -132,7 +137,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveAndDelete() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("expectedDivision name")
+                .withName("division name")
                 .withLeague(league);
         divisionDAO.save(expectedDivision);
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
@@ -148,7 +153,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("expectedDivision name")
+                .withName("division name")
                 .withLeague(league);
         divisionDAO.save(expectedDivision);
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));

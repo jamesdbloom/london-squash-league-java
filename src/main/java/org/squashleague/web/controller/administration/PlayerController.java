@@ -57,7 +57,7 @@ public class PlayerController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("player", playerDAO.findById(id));
-        return "page/player/update";
+        return "page/administration/player/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -66,7 +66,7 @@ public class PlayerController {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("player", player);
-            return "page/player/update";
+            return "page/administration/player/update";
         }
         playerDAO.update(player);
         return "redirect:/administration";

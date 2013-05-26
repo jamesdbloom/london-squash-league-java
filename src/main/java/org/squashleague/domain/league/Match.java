@@ -10,10 +10,12 @@ import org.squashleague.domain.ModelObject;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
+@Table(name = "Matches")
 public class Match extends ModelObject {
 
     @NotNull(message = "{validation.match.playerOne}")

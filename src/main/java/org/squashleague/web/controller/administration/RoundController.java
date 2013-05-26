@@ -51,7 +51,7 @@ public class RoundController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("round", roundDAO.findById(id));
-        return "page/round/update";
+        return "page/administration/round/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -64,7 +64,7 @@ public class RoundController {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("round", round);
-            return "page/round/update";
+            return "page/administration/round/update";
         }
         roundDAO.update(round);
         return "redirect:/administration";

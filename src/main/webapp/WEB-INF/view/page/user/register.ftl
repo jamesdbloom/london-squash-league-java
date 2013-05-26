@@ -33,7 +33,7 @@
     <@errors.print_errors "user"/>
     <div class="standard_form">
         <p>
-            <label for="name">Name:</label> <@spring.formInput path="user.name" attributes='required="required" pattern=".{3,25}" maxlength="25" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
+            <label for="name">Name:</label> <@spring.formInput path="user.name" attributes='required="required" pattern=".{3,50}" maxlength="50" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
             <span class="error_message"></span>
         </p>
 

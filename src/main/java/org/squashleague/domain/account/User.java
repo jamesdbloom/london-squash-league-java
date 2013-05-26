@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class User extends ModelObject {
     public static final String EMAIL_PATTERN = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
     // basic properties
     @NotNull(message = "{validation.user.name}")
-    @Size(min = 3, max = 25, message = "{validation.user.name}")
+    @Size(min = 3, max = 50, message = "{validation.user.name}")
     private String name;
     @Column(unique = true)
     @NotNull(message = "{validation.user.email}")
@@ -46,7 +47,8 @@ public class User extends ModelObject {
     private String oneTimeToken;
     // extra domain traversal
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Player> players;
+    @JoinColumn(name = "user_id")
+    private List<Player> players;
 
     public String getName() {
         return name;
@@ -151,16 +153,16 @@ public class User extends ModelObject {
         return this;
     }
 
-    public Set<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Set<Player> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
     public User withPlayers(Player... players) {
-        this.players = new HashSet<>();
+        this.players = new ArrayList<>();
         for (Player player : players) {
             this.players.add(player.withUser(this));
         }

@@ -118,7 +118,7 @@ public class RoundControllerTest {
         verify(uiModel).addAttribute(eq("round"), same(round));
         verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/round/update", page);
+        assertEquals("page/administration/round/update", page);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class RoundControllerTest {
         verify(uiModel).addAttribute(eq("round"), same(round));
         verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/round/update", page);
+        assertEquals("page/administration/round/update", page);
     }
 
     @Test
@@ -176,7 +176,7 @@ public class RoundControllerTest {
         verify(uiModel).addAttribute(eq("round"), same(round));
         verify(uiModel).addAttribute(eq("divisions"), same(divisions));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/round/update", page);
+        assertEquals("page/administration/round/update", page);
     }
 
     @Test

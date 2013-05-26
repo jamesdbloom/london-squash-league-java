@@ -50,7 +50,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveRequiredFieldsAndRetrieveById() throws Exception {
         // given
         League expectedLeague = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
 
         // when
@@ -65,11 +65,11 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveUpdateAndRetrieveById() throws Exception {
         // given
         League expectedLeague = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
         leagueDAO.save(expectedLeague);
         expectedLeague
-                .withName("new expectedLeague name");
+                .withName("new league name");
 
         // when
         leagueDAO.update(expectedLeague);
@@ -83,7 +83,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         League expectedLeague = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club)
                 .withDivisions(
                         new Division().withName("league one"),
@@ -122,7 +122,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveAndDelete() throws Exception {
         // given
         League expectedLeague = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
         leagueDAO.save(expectedLeague);
         assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
@@ -138,7 +138,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
         // given
         League expectedLeague = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
         leagueDAO.save(expectedLeague);
         assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));

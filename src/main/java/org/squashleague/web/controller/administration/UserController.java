@@ -54,7 +54,7 @@ public class UserController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("user", userDAO.findById(id));
-        return "page/user/update";
+        return "page/administration/user/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -64,7 +64,7 @@ public class UserController {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
-            return "page/user/update";
+            return "page/administration/user/update";
         }
         User existingUser = userDAO.findById(user.getId());
         userDAO.update(user.withPassword((existingUser != null ? existingUser.getPassword() : null)));

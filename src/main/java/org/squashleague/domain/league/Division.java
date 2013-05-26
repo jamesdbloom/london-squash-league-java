@@ -5,13 +5,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.squashleague.domain.ModelObject;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,8 @@ public class Division extends ModelObject {
     @ManyToOne
     private League league;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Round> rounds;
+    @JoinColumn(name = "division_id")
+    private List<Round> rounds;
 
     public String getName() {
         return name;
@@ -52,16 +52,16 @@ public class Division extends ModelObject {
         return this;
     }
 
-    public Set<Round> getRounds() {
+    public List<Round> getRounds() {
         return rounds;
     }
 
-    public void setRounds(Set<Round> rounds) {
+    public void setRounds(List<Round> rounds) {
         this.rounds = rounds;
     }
 
     public Division withRounds(Round... rounds) {
-        this.rounds = new HashSet<>();
+        this.rounds = new ArrayList<>();
         for (Round round : rounds) {
             this.rounds.add(round.withDivision(this));
         }

@@ -34,6 +34,7 @@
         <security:intercept-url pattern="/updatePassword" access="isAnonymous()" requires-channel="https"/>
         <security:intercept-url pattern="/sendUpdatePasswordEmail" access="isAnonymous()" requires-channel="https"/>
         <!-- ANY USER -->
+        <security:intercept-url pattern="/leagueTable" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/league" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/ranking" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/contact_us" access="isAuthenticated()" requires-channel="https"/>

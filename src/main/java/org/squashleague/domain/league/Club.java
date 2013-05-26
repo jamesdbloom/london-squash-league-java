@@ -7,10 +7,13 @@ import org.squashleague.domain.ModelObject;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +26,8 @@ public class Club extends ModelObject {
     @Size(min = 5, max = 50, message = "{validation.club.address}")
     private String address;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<League> leagues;
+    @JoinColumn(name = "leagues_id")
+    private List<League> leagues;
 
     public String getName() {
         return name;
@@ -51,20 +55,19 @@ public class Club extends ModelObject {
         return this;
     }
 
-    public Set<League> getLeagues() {
+    public List<League> getLeagues() {
         return leagues;
     }
 
+    public void setLeagues(List<League> leagues) {
+        this.leagues = leagues;
+    }
+
     public Club withLeagues(League... leagues) {
-        this.leagues = new HashSet<>();
+        this.leagues = new ArrayList<>();
         for (League league : leagues) {
             this.leagues.add(league.withClub(this));
         }
-        return this;
-    }
-
-    public Club withLeagues(Set<League> leagues) {
-        this.leagues = leagues;
         return this;
     }
 

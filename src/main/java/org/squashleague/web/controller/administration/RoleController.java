@@ -39,7 +39,7 @@ public class RoleController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("role", roleDAO.findById(id));
-        return "page/role/update";
+        return "page/administration/role/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -48,7 +48,7 @@ public class RoleController {
             uiModel.addAttribute("environment", environment);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("role", role);
-            return "page/role/update";
+            return "page/administration/role/update";
         }
         roleDAO.update(role);
         return "redirect:/administration";

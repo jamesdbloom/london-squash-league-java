@@ -46,7 +46,7 @@ public class DivisionController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("division", divisionDAO.findById(id));
-        return "page/division/update";
+        return "page/administration/division/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -55,7 +55,7 @@ public class DivisionController {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("division", division);
-            return "page/division/update";
+            return "page/administration/division/update";
         }
         divisionDAO.update(division);
         return "redirect:/administration";

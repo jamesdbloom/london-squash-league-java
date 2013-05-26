@@ -55,7 +55,7 @@ public class MatchController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("match", matchDAO.findById(id));
-        return "page/match/update";
+        return "page/administration/match/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -68,7 +68,7 @@ public class MatchController {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("match", match);
-            return "page/match/update";
+            return "page/administration/match/update";
         }
         matchDAO.update(match);
         return "redirect:/administration";

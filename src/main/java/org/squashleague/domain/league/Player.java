@@ -6,14 +6,9 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.account.User;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class Player extends ModelObject {
@@ -29,8 +24,6 @@ public class Player extends ModelObject {
     @NotNull(message = "{validation.player.league}")
     @ManyToOne
     private League league;
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Match> matches;
 
     public User getUser() {
         return user;
@@ -78,20 +71,6 @@ public class Player extends ModelObject {
 
     public void setLeague(League league) {
         this.league = league;
-    }
-
-    public Set<Match> getMatches() {
-        return matches;
-    }
-
-    public void setMatches(Set<Match> matches) {
-        this.matches = matches;
-    }
-
-    public Player withMatches(Match... matches) {
-        this.matches = new HashSet<>();
-        Collections.addAll(this.matches, matches);
-        return this;
     }
 
     @Override

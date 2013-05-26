@@ -45,11 +45,11 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withAddress("address");
         clubDAO.save(club);
         league = new League()
-                .withName("expectedLeague name")
+                .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
         division = new Division()
-                .withName("expectedDivision name")
+                .withName("division name")
                 .withLeague(league);
         divisionDAO.save(division);
     }

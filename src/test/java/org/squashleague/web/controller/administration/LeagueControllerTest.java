@@ -94,7 +94,7 @@ public class LeagueControllerTest {
         verify(uiModel).addAttribute(eq("league"), same(league));
         verify(uiModel).addAttribute(eq("clubs"), same(clubs));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/league/update", page);
+        assertEquals("page/administration/league/update", page);
     }
 
     @Test
@@ -128,7 +128,7 @@ public class LeagueControllerTest {
         verify(uiModel).addAttribute(eq("league"), same(league));
         verify(uiModel).addAttribute(eq("clubs"), same(clubs));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/league/update", page);
+        assertEquals("page/administration/league/update", page);
     }
 
     @Test

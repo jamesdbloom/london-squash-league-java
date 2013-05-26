@@ -86,7 +86,7 @@ public class ClubControllerTest {
         // then
         verify(uiModel).addAttribute(eq("club"), same(club));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/club/update", page);
+        assertEquals("page/administration/club/update", page);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ClubControllerTest {
         verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("club"), same(club));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/club/update", page);
+        assertEquals("page/administration/club/update", page);
     }
 
     @Test

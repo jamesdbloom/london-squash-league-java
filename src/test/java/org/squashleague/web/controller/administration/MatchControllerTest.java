@@ -123,7 +123,7 @@ public class MatchControllerTest {
         verify(uiModel).addAttribute(eq("rounds"), same(rounds));
         verify(uiModel).addAttribute(eq("players"), same(players));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/match/update", page);
+        assertEquals("page/administration/match/update", page);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class MatchControllerTest {
         verify(uiModel).addAttribute(eq("rounds"), same(rounds));
         verify(uiModel).addAttribute(eq("players"), same(players));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/match/update", page);
+        assertEquals("page/administration/match/update", page);
     }
 
     @Test
@@ -182,7 +182,7 @@ public class MatchControllerTest {
         verify(uiModel).addAttribute(eq("rounds"), same(rounds));
         verify(uiModel).addAttribute(eq("players"), same(players));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/match/update", page);
+        assertEquals("page/administration/match/update", page);
     }
 
     @Test

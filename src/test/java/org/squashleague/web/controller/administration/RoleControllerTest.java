@@ -85,7 +85,7 @@ public class RoleControllerTest {
         // then
         verify(uiModel).addAttribute(eq("role"), same(role));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/role/update", page);
+        assertEquals("page/administration/role/update", page);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class RoleControllerTest {
         verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
         verify(uiModel).addAttribute(eq("role"), same(role));
         verify(uiModel).addAttribute(eq("environment"), same(environment));
-        assertEquals("page/role/update", page);
+        assertEquals("page/administration/role/update", page);
     }
 
     @Test

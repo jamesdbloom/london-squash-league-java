@@ -38,7 +38,7 @@ public class ClubController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("club", clubDAO.findById(id));
-        return "page/club/update";
+        return "page/administration/club/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
@@ -47,7 +47,7 @@ public class ClubController {
             uiModel.addAttribute("environment", environment);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("club", club);
-            return "page/club/update";
+            return "page/administration/club/update";
         }
         clubDAO.update(club);
         return "redirect:/administration";

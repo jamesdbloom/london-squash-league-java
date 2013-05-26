@@ -44,6 +44,7 @@
     -->
 
     <logger name="org.squashleague" level="TRACE"/>
+    <!--<logger name="org.hibernate" level="TRACE"/>-->
 
     <root level="WARN">
         <appender-ref ref="FILE"/>

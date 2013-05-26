@@ -80,6 +80,6 @@ public class AdministrationController {
         if (!uiModel.containsAttribute("player")) {
             uiModel.addAttribute("player", new Player());
         }
-        return "page/administration";
+        return "page/administration/administration";
     }
 }
