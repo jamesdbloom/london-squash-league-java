@@ -72,15 +72,15 @@
                     <td class="key">${user.id}</td>
                     <td class="name">${user.name}</td>
                     <td class="email">${user.email}</td>
-                    <td class="mobile">${user.mobile}</td>
-                    <td class="mobilePrivacy">${user.mobilePrivacy}</td>
+                    <td class="mobile">${user.mobile!""}</td>
+                    <td class="mobilePrivacy">${user.mobilePrivacy!""}</td>
                     <td class="roles"><#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list></td>
                     <td class="button_column last"><a class="button" href="/user/delete/${user.id}">Delete</a><a class="button" href="/user/update/${user.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_user">
                 <td class="key last"></td>
-                <td class="name last"><@spring.formInput  path="user.name" attributes='required="required" pattern=".{3,25}" maxlength="25" title="${environment.getProperty("validation.user.name")}" class="show_validation"'/></td>
+                <td class="name last"><@spring.formInput  path="user.name" attributes='required="required" pattern=".{3,50}" maxlength="50" title="${environment.getProperty("validation.user.name")}" class="show_validation"'/></td>
                 <td class="email last"><@spring.formInput  path="user.email" fieldType="email" attributes='required="required" maxlength="25" title="${environment.getProperty("validation.user.email")}" class="show_validation"'/></td>
                 <td class="mobile last"><@spring.formInput  path="user.mobile" attributes='required="required" pattern="[\\d\\s]{6,15}" maxlength="25" title="${environment.getProperty("validation.user.mobile")}" class="show_validation"'/></td>
                 <td class="status hide_on_small_screen last">
