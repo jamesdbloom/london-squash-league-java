@@ -80,6 +80,16 @@ public class UserDAO {
     }
 
     @Transactional
+    public void updatePassword(User user) {
+        entityManager.createQuery("update User as user set user.password = '" + user.getPassword() + "', user.oneTimeToken = '' where user.email = '" + user.getEmail() + "'").executeUpdate();
+    }
+
+    @Transactional
+    public void updateOneTimeToken(User user) {
+        entityManager.createQuery("update User as user set user.oneTimeToken = '" + user.getOneTimeToken() + "' where user.email = '" + user.getEmail() + "'").executeUpdate();
+    }
+
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id")
     public void save(User user) {
         entityManager.persist(user);

@@ -22,14 +22,10 @@ import org.squashleague.web.controller.administration.MockDAOConfiguration;
 import javax.annotation.Resource;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
@@ -53,7 +49,6 @@ public class RegistrationPageIntegrationTest {
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-
     @Resource
     private UserDAO userDAO;
 
@@ -77,8 +72,7 @@ public class RegistrationPageIntegrationTest {
                 .withName("test name")
                 .withEmail("test@email.com")
                 .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                .withPassword("abc123$%^");
+                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
 
         // when
         mockMvc.perform(post("/register")
@@ -87,20 +81,18 @@ public class RegistrationPageIntegrationTest {
                 .param("email", user.getEmail())
                 .param("mobile", user.getMobile())
                 .param("mobilePrivacy", user.getMobilePrivacy().name())
-                .param("passwordOne", user.getPassword())
-                .param("passwordTwo", user.getPassword())
         )
 
-        // then
-                .andExpect(redirectedUrl("/"));
+                // then
+                .andExpect(redirectedUrl("/login"));
         verify(userDAO).register(any(User.class));
     }
 
     @Test
-    public void shouldGetPageWithPasswordErrors() throws Exception {
+    public void shouldGetPageWithNameError() throws Exception {
         // given
         User user = new User()
-                .withName("test name")
+                .withName("ab")
                 .withEmail("test@email.com")
                 .withMobile("123456789")
                 .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
@@ -112,8 +104,6 @@ public class RegistrationPageIntegrationTest {
                 .param("email", user.getEmail())
                 .param("mobile", user.getMobile())
                 .param("mobilePrivacy", user.getMobilePrivacy().name())
-                .param("passwordOne", "")
-                .param("passwordTwo", "ab")
         )
 
                 // then
@@ -122,7 +112,91 @@ public class RegistrationPageIntegrationTest {
                 .andReturn();
 
         RegistrationPage registrationPage = new RegistrationPage(response);
-        registrationPage.hasErrors("user", 2);
+        registrationPage.hasErrors("user", 1);
+        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+    }
+
+    @Test
+    public void shouldGetPageWithEmailError() throws Exception {
+        // given
+        User user = new User()
+                .withName("test name")
+                .withEmail("a@b")
+                .withMobile("123456789")
+                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("name", user.getName())
+                .param("email", user.getEmail())
+                .param("mobile", user.getMobile())
+                .param("mobilePrivacy", user.getMobilePrivacy().name())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        RegistrationPage registrationPage = new RegistrationPage(response);
+        registrationPage.hasErrors("user", 1);
+        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+    }
+
+    @Test
+    public void shouldGetPageWithMobileError() throws Exception {
+        // given
+        User user = new User()
+                .withName("test name")
+                .withEmail("test@email.com")
+                .withMobile("12345")
+                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
+
+        // when
+        MvcResult response = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("name", user.getName())
+                .param("email", user.getEmail())
+                .param("mobile", user.getMobile())
+                .param("mobilePrivacy", user.getMobilePrivacy().name())
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        RegistrationPage registrationPage = new RegistrationPage(response);
+        registrationPage.hasErrors("user", 1);
+        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+    }
+
+
+    @Test
+    public void shouldGetPageWithMobilePrivacyError() throws Exception {
+        // given
+        User user = new User()
+                .withName("test name")
+                .withEmail("test@email.com")
+                .withMobile("123456789");
+
+        // when
+        MvcResult response = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("name", user.getName())
+                .param("email", user.getEmail())
+                .param("mobile", user.getMobile())
+                .param("mobilePrivacy", "")
+        )
+
+                // then
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        RegistrationPage registrationPage = new RegistrationPage(response);
+        registrationPage.hasErrors("user", 1);
         registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
     }
 
@@ -141,8 +215,6 @@ public class RegistrationPageIntegrationTest {
                 .param("email", user.getEmail())
                 .param("mobile", user.getMobile())
                 .param("mobilePrivacy", "")
-                .param("passwordOne", "")
-                .param("passwordTwo", "ab")
         )
 
                 // then
@@ -151,7 +223,7 @@ public class RegistrationPageIntegrationTest {
                 .andReturn();
 
         RegistrationPage registrationPage = new RegistrationPage(response);
-        registrationPage.hasErrors("user", 6);
+        registrationPage.hasErrors("user", 4);
         registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
     }
 
@@ -162,8 +234,7 @@ public class RegistrationPageIntegrationTest {
                 .withName("duplicate name")
                 .withEmail("duplicate@stupid.com")
                 .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                .withPassword("abc123$%^");
+                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
         when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
 
         MvcResult response = mockMvc.perform(post("/register")
@@ -172,8 +243,6 @@ public class RegistrationPageIntegrationTest {
                 .param("email", user.getEmail())
                 .param("mobile", user.getMobile())
                 .param("mobilePrivacy", user.getMobilePrivacy().name())
-                .param("passwordOne", user.getPassword())
-                .param("passwordTwo", user.getPassword())
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))

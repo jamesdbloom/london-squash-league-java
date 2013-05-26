@@ -58,23 +58,6 @@ public class ContactUsPageIntegrationTest {
     }
 
     @Test
-    public void shouldDisplayConfirmationPage() throws Exception {
-        String email = "email";
-        User user = mock(User.class);
-        when(securityUserContext.getCurrentUser()).thenReturn(user);
-        when(user.getEmail()).thenReturn(email);
-
-        MvcResult response = mockMvc.perform(get("/confirmation").accept(MediaType.TEXT_HTML))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andReturn();
-
-        MessagePage confirmationPage = new MessagePage(response);
-        confirmationPage.hasConfirmationMessage("Your message has been sent, a copy of your message has also been sent to " + email);
-        confirmationPage.hasTitle("Message Sent");
-    }
-
-    @Test
     public void shouldDisplayContactUsForm() throws Exception {
         String email = "email";
         User user = mock(User.class);
@@ -104,7 +87,7 @@ public class ContactUsPageIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("message", message)
         )
-                .andExpect(redirectedUrl("/confirmation"));
+                .andExpect(redirectedUrl("/message"));
 
 
         String ip = "127.0.0.1";
@@ -121,19 +104,16 @@ public class ContactUsPageIntegrationTest {
         byte[] randomBytes = new byte[4096];
         Arrays.fill(randomBytes, (byte) 'a');
         String userAgentHeader = "userAgentHeader";
-        MvcResult response = mockMvc.perform(post("/contact_us")
+        mockMvc.perform(post("/contact_us")
                 .accept(MediaType.TEXT_HTML)
                 .header("User-Agent", userAgentHeader)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("message", new String(randomBytes))
         )
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andReturn();
+                .andExpect(redirectedUrl("/message"))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(flash().attributeExists("title"));
 
-        MessagePage confirmationPage = new MessagePage(response);
-        confirmationPage.hasConfirmationMessage("Your message was too large please try a shorter message");
-        confirmationPage.hasTitle("Message Failure");
         verifyNoMoreInteractions(emailService);
     }
 }

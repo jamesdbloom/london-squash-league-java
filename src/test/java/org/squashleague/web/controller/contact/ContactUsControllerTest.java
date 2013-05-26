@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
 import org.squashleague.service.http.RequestParser;
@@ -35,21 +36,6 @@ public class ContactUsControllerTest {
     private ContactUsController contactUsController = new ContactUsController();
 
     @Test
-    public void shouldReturnCorrectConfirmationPage() {
-        // given
-        Model uiModel = mock(Model.class);
-        User user = mock(User.class);
-        String address = "user@email.com";
-        when(securityUserContext.getCurrentUser()).thenReturn(user);
-        when(user.getEmail()).thenReturn(address);
-
-        // then
-        assertEquals("page/message", contactUsController.confirmationPage(uiModel));
-        verify(uiModel).addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + securityUserContext.getCurrentUser().getEmail());
-        verify(uiModel).addAttribute("title", "Message Sent");
-    }
-
-    @Test
     public void shouldReturnCorrectContactUsFormAndAddUserToModel() {
         // given
         Model uiModel = mock(Model.class);
@@ -76,8 +62,12 @@ public class ContactUsControllerTest {
         String message = "message";
         String userAgent = "userAgent";
 
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
         // then
-        assertEquals("redirect:/confirmation", contactUsController.sendMessage(message, userAgent, request, mock(Model.class)));
+        assertEquals("redirect:/message", contactUsController.sendMessage(message, userAgent, request, redirectAttributes));
+        verify(redirectAttributes).addFlashAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + securityUserContext.getCurrentUser().getEmail());
+        verify(redirectAttributes).addFlashAttribute("title", "Message Sent");
         verify(emailService).sendContactUsMessage(same(message), same(userAgent), same(ip), same(address));
     }
 
@@ -89,8 +79,6 @@ public class ContactUsControllerTest {
         when(securityUserContext.getCurrentUser()).thenReturn(user);
         when(user.getEmail()).thenReturn(address);
 
-        Model uiModel = mock(Model.class);
-
         String ip = "127.0.0.1";
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(requestParser.getIpAddress(same(request))).thenReturn(ip);
@@ -98,11 +86,12 @@ public class ContactUsControllerTest {
         byte[] randomBytes = new byte[4096];
         Arrays.fill(randomBytes, (byte) 'a');
         String userAgent = "userAgent";
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
         // then
-        assertEquals("page/message", contactUsController.sendMessage(new String(randomBytes), userAgent, request, uiModel));
-        verify(uiModel).addAttribute("message", "Your message was too large please try a shorter message");
-        verify(uiModel).addAttribute("title", "Message Failure");
+        assertEquals("redirect:/message", contactUsController.sendMessage(new String(randomBytes), userAgent, request, redirectAttributes));
+        verify(redirectAttributes).addFlashAttribute("message", "Your message was too large please try a shorter message");
+        verify(redirectAttributes).addFlashAttribute("title", "Message Failure");
         verifyNoMoreInteractions(emailService);
     }
 

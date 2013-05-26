@@ -4,6 +4,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,7 +37,11 @@ public class UserController {
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
+        boolean userAlreadyExists = user.getEmail() != null && (userDAO.findByEmail(user.getEmail()) != null);
+        if (bindingResult.hasErrors() || userAlreadyExists) {
+            if (userAlreadyExists) {
+                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.alreadyExists")));
+            }
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
             redirectAttributes.addFlashAttribute("user", user);
             return "redirect:/administration#users";
@@ -54,6 +59,7 @@ public class UserController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid User user, BindingResult bindingResult, Model uiModel) {
+        // todo do I need to handle users who change their email to an email that already exists, how will that fail, is that acceptable??
         if (bindingResult.hasErrors()) {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);

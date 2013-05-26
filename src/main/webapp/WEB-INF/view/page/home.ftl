@@ -14,7 +14,7 @@
     <@security.authorize access='isAnonymous()'>
         <li><a href="/login" title="Login">Login</a></li>
         <li><a href="/register" title="Register">Register</a></li>
-        <li><a href="/retrieve_password" title="Lost Password?">Lost Password?</a></li>
+        <li><a href="/retrievePassword" title="Lost Password?">Lost Password?</a></li>
     </@security.authorize>
 
     <@security.authorize access='isAuthenticated()'>

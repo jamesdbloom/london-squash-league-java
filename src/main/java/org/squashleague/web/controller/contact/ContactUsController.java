@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
 import org.squashleague.service.http.RequestParser;
@@ -30,13 +32,6 @@ public class ContactUsController {
     @Resource
     private RequestParser requestParser;
 
-    @RequestMapping(value = "/confirmation", method = RequestMethod.GET)
-    public String confirmationPage(Model uiModel) {
-        uiModel.addAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + securityUserContext.getCurrentUser().getEmail());
-        uiModel.addAttribute("title", "Message Sent");
-        return "page/message";
-    }
-
     @RequestMapping(value = "/contact_us", method = RequestMethod.GET)
     public String contactUsPage(Model uiModel) {
         uiModel.addAttribute("user", securityUserContext.getCurrentUser());
@@ -44,16 +39,18 @@ public class ContactUsController {
     }
 
     @RequestMapping(value = "/contact_us", method = RequestMethod.POST)
-    public String sendMessage(@RequestParam("message") String message, @RequestHeader("User-Agent") String userAgent, HttpServletRequest request, Model uiModel) {
+    public String sendMessage(@RequestParam("message") String message, @RequestHeader("User-Agent") String userAgent, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         if (MESSAGE_PATTERN.matcher(message).matches()) {
             User user = securityUserContext.getCurrentUser();
             String address = (user != null ? user.getEmail() : "unknown");
             emailService.sendContactUsMessage(message, (USER_AGENT_PATTERN.matcher(userAgent).matches() ? userAgent : "too long"), requestParser.getIpAddress(request), address);
-            return "redirect:/confirmation";
+            redirectAttributes.addFlashAttribute("message", "Your message has been sent, a copy of your message has also been sent to " + securityUserContext.getCurrentUser().getEmail());
+            redirectAttributes.addFlashAttribute("title", "Message Sent");
+            return "redirect:/message";
         } else {
-            uiModel.addAttribute("message", "Your message was too large please try a shorter message");
-            uiModel.addAttribute("title", "Message Failure");
-            return "page/message";
+            redirectAttributes.addFlashAttribute("message", "Your message was too large please try a shorter message");
+            redirectAttributes.addFlashAttribute("title", "Message Failure");
+            return "redirect:/message";
         }
     }
 }

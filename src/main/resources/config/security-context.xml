@@ -26,10 +26,13 @@
         <security:intercept-url pattern="/resources/**" access="permitAll()" requires-channel="https"/>
         <security:intercept-url pattern="/bundle/**" access="permitAll()" requires-channel="https"/>
         <security:intercept-url pattern="/" access="permitAll()" requires-channel="https"/>
-        <security:intercept-url pattern="/register" access="permitAll()" requires-channel="https"/>
+        <security:intercept-url pattern="/message" access="permitAll()" requires-channel="https"/>
         <!-- NOT LOGGED IN --> <!-- todo - do I want to add this restriction -->
         <security:intercept-url pattern="/login" access="isAnonymous()" requires-channel="https"/>
-        <security:intercept-url pattern="/retrieve_password" access="isAnonymous()" requires-channel="https"/>
+        <security:intercept-url pattern="/register" access="isAnonymous()" requires-channel="https"/>
+        <security:intercept-url pattern="/retrievePassword" access="isAnonymous()" requires-channel="https"/>
+        <security:intercept-url pattern="/updatePassword" access="isAnonymous()" requires-channel="https"/>
+        <security:intercept-url pattern="/sendUpdatePasswordEmail" access="isAnonymous()" requires-channel="https"/>
         <!-- ANY USER -->
         <security:intercept-url pattern="/league" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/ranking" access="isAuthenticated()" requires-channel="https"/>
@@ -50,6 +53,8 @@
         <security:intercept-url pattern="/round/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/player/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/match/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <!-- cover all remaining pages -->
+        <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="https"/>
     </security:http>
 
     <!-- users - todo: to be replaced with stronger solution -->

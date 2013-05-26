@@ -2,12 +2,14 @@ package org.squashleague.configuration;
 
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.squashleague.service.configuration.ServiceConfiguration;
 import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
 import ro.isdc.wro.manager.factory.WroManagerFactory;
 
 import javax.annotation.Resource;
 import java.util.Properties;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * This configuration contains top level beans and any configuration required by filters (as WebMvcConfiguration only loaded within Dispatcher Servlet)
@@ -36,5 +38,15 @@ public class RootConfiguration {
         }});
 
         return wroManagerFactory;
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor taskExecutor() {
+        return new ThreadPoolTaskExecutor() {{
+            setCorePoolSize(5);
+            setMaxPoolSize(10);
+            setQueueCapacity(50);
+            setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        }};
     }
 }

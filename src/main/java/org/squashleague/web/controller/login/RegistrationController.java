@@ -1,7 +1,8 @@
 package org.squashleague.web.controller.login;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +14,6 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
-import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.service.uuid.UUIDService;
 
 import javax.annotation.Resource;
@@ -21,22 +21,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.regex.Pattern;
 
 @Controller
 public class RegistrationController {
 
-    private static final Pattern PASSWORD_MATCHER = Pattern.compile(User.PASSWORD_PATTERN);
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Resource
     private UserDAO userDAO;
     @Resource
-    private SpringSecurityUserContext securityUserContext;
-    @Resource
     private Environment environment;
-    @Resource
-    private PasswordEncoder passwordEncoder;
     @Resource
     private EmailService emailService;
     @Resource
@@ -57,18 +50,11 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid User user, BindingResult bindingResult, String passwordOne, String passwordTwo, HttpServletRequest request, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
-        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(passwordOne)).matches();
-        boolean passwordsMatchError = !String.valueOf(passwordOne).equals(passwordTwo);
+    public String register(@Valid final User user, BindingResult bindingResult, final HttpServletRequest request, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
+
         boolean userAlreadyExists = user.getEmail() != null && (userDAO.findByEmail(user.getEmail()) != null);
-        if (bindingResult.hasErrors() || passwordFormatError || passwordsMatchError || userAlreadyExists) {
+        if (bindingResult.hasErrors() || userAlreadyExists) {
             setupModel(uiModel);
-            if (passwordFormatError) {
-                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.password")));
-            }
-            if (passwordsMatchError) {
-                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.passwordNonMatching")));
-            }
             if (userAlreadyExists) {
                 bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.alreadyExists")));
             }
@@ -79,19 +65,9 @@ public class RegistrationController {
 
         userDAO.register(user
                 .withRole(("jamesdbloom@gmail.com".equals(user.getEmail()) ? Role.ROLE_ADMIN : Role.ROLE_USER))
-                .withPassword(passwordEncoder.encode(passwordOne))
                 .withOneTimeToken(uuidService.generateUUID())
         );
-        emailService.sendRegistrationMessage(
-                user.getEmail(),
-                new URL(
-                        "https",
-                        request.getLocalName(),
-                        request.getLocalPort(),
-                        "/validate?user=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&token=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
-                )
-        );
-        securityUserContext.setCurrentUser(user);
-        return "redirect:/";
+        emailService.sendRegistrationMessage(user, request);
+        return "redirect:/login";
     }
 }

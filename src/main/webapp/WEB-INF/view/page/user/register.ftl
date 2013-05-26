@@ -25,18 +25,10 @@
     #mobilePrivacy:invalid.filled + .error_message::after {
         content: "${environment.getProperty("validation.user.mobilePrivacy")}";
     }
-
-    #passwordOne:invalid.filled + .error_message::after {
-        content: "${environment.getProperty("validation.user.password")}";
-    }
-
-    #passwordTwo.invalid + .error_message::after {
-        content: "${environment.getProperty("validation.user.passwordNonMatching")}";
-    }
 </style>
 <form action="/register" method="POST">
 
-    <p class="message">Please enter your details and you will receive an e-mailed to validate your email address.</p>
+    <p class="message">Please enter your details and you will be emailed a link to update your password.</p>
 
     <@errors.print_errors "user"/>
     <div class="standard_form">
@@ -63,16 +55,6 @@
 
         <div style="width:100%; height: 1.5em;"></div>
 
-        <p>
-            <label class="user_password" for="passwordOne">Password One:</label> <input type="password" id="passwordOne" name="passwordOne" value="${passwordOne!""}" required="required" pattern="${passwordPattern}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
-        </p>
-
-        <p>
-            <label class="user_password" for="passwordTwo">Password Two:</label> <input type="password" id="passwordTwo" name="passwordTwo" value="${passwordTwo!""}" required="required" pattern="${passwordPattern}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
-        </p>
-
-        <div style="width:100%; height: 1em;"></div>
-
         <p class="submit">
             <input class="submit primary" type="submit" formnovalidate name="register" value="Register">
         </p>
@@ -81,11 +63,8 @@
 <script>
     var errors = errors || {},
             validation = {
-                filled: ['name', 'email', 'mobile', 'passwordOne'],
+                filled: ['name', 'email', 'mobile'],
                 changed: ['mobilePrivacy'],
-                matches: [
-                    {id: 'passwordTwo', matches: 'passwordOne'}
-                ],
                 onload: errors && errors.user
             };
 </script>
