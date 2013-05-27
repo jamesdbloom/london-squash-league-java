@@ -18,12 +18,11 @@ import javax.validation.constraints.Size;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Role extends ModelObject {
+public class Role extends ModelObject<Role> {
 
     public static final Role ROLE_ANONYMOUS = new Role().withName("ROLE_ANONYMOUS").withDescription("Anonymous User Role");
     public static final Role ROLE_USER = new Role().withName("ROLE_USER").withDescription("Authentication User Role");
     public static final Role ROLE_ADMIN = new Role().withName("ROLE_ADMIN").withDescription("Administrator Role");
-
     @Column(unique = true)
     @NotNull(message = "{validation.role.name}")
     @Size(min = 5, max = 25, message = "{validation.role.name}")
@@ -70,6 +69,20 @@ public class Role extends ModelObject {
 
     public Role withClub(Club club) {
         setClub(club);
+        return this;
+    }
+
+    @Override
+    public Role merge(Role role) {
+        if (role.name != null) {
+            this.name = role.name;
+        }
+        if (role.description != null) {
+            this.description = role.description;
+        }
+        if (role.club != null) {
+            this.club = role.club;
+        }
         return this;
     }
 

@@ -52,8 +52,8 @@ public class UpdatePasswordController {
     }
 
     @RequestMapping(value = "/sendUpdatePasswordEmail", method = {RequestMethod.GET, RequestMethod.POST})
-    public String sendUpdatePasswordEmail(String email, final HttpServletRequest request, final RedirectAttributes redirectAttributes) throws MalformedURLException, UnsupportedEncodingException {
-        final User user = userDAO.findByEmail(email);
+    public String sendUpdatePasswordEmail(String email, HttpServletRequest request, RedirectAttributes redirectAttributes) throws MalformedURLException, UnsupportedEncodingException {
+        User user = userDAO.findByEmail(email);
         if (user != null) {
             userDAO.updateOneTimeToken(user.withOneTimeToken(uuidService.generateUUID()));
             emailService.sendRegistrationMessage(user, request);
@@ -65,7 +65,7 @@ public class UpdatePasswordController {
 
     private boolean hasInvalidToken(User user, String oneTimeToken, RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         if (!uuidService.hasMatchingUUID(user, oneTimeToken)) {
-            redirectAttributes.addFlashAttribute("message", "Invalid email or one-time-token " + (user != null ? " - click <a href=\"/sendUpdatePasswordEmail?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "\">resend email</a> to receive a new email" : ""));
+            redirectAttributes.addFlashAttribute("message", "Invalid email or one-time-token" + (user != null ? " - click <a href=\"/sendUpdatePasswordEmail?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "\">resend email</a> to receive a new email" : ""));
             redirectAttributes.addFlashAttribute("title", "Invalid Request");
             redirectAttributes.addFlashAttribute("error", true);
             return true;
@@ -121,11 +121,11 @@ public class UpdatePasswordController {
     }
 
     @RequestMapping(value = "/account/updatePassword", method = RequestMethod.POST)
-    public String authenticatedUpdatePassword(String email, String password, String passwordConfirm, Model uiModel) throws UnsupportedEncodingException {
-        User user = userDAO.findByEmail(email);
-        boolean incorrectCredentials = credentialValidation.checkCredentials(password, user);
-        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(password)).matches();
-        boolean passwordsMatchError = !String.valueOf(password).equals(passwordConfirm);
+    public String authenticatedUpdatePassword(String email, String existingPassword, String newPassword, String passwordConfirm, Model uiModel) throws UnsupportedEncodingException {
+        User user = securityUserContext.getCurrentUser();
+        boolean incorrectCredentials = !credentialValidation.checkCredentials(existingPassword, user);
+        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(newPassword)).matches();
+        boolean passwordsMatchError = !String.valueOf(newPassword).equals(passwordConfirm);
         if (incorrectCredentials || passwordFormatError || passwordsMatchError) {
             uiModel.addAttribute("passwordPattern", User.PASSWORD_PATTERN);
             uiModel.addAttribute("environment", environment);
@@ -142,7 +142,7 @@ public class UpdatePasswordController {
             uiModel.addAttribute("validationErrors", errors);
             return "page/account/updatePassword";
         }
-        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(password)));
+        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(newPassword)));
         return "redirect:/account";
     }
 }

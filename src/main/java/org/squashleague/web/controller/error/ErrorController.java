@@ -18,6 +18,7 @@ public class ErrorController {
     public String displayForbiddenMessage(Model uiModel) {
         uiModel.addAttribute("message", "You are not permitted to view the requested page or to perform the action you just attempted");
         uiModel.addAttribute("title", "Not Allowed");
+        uiModel.addAttribute("error", true);
         return "page/message";
     }
 

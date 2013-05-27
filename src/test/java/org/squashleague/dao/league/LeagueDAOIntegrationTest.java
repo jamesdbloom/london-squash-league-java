@@ -1,5 +1,6 @@
 package org.squashleague.dao.league;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
+import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
@@ -59,8 +61,12 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         leagueDAO.save(expectedLeague);
 
         // then
-        assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
-        leagueDAO.delete(expectedLeague);
+        League actualLeague = leagueDAO.findById(expectedLeague.getId());
+        try {
+            assertEquals(expectedLeague, actualLeague);
+        } finally {
+            leagueDAO.delete(expectedLeague);
+        }
     }
 
     @Test
@@ -77,8 +83,12 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         leagueDAO.update(expectedLeague);
 
         // then
-        assertEquals(expectedLeague.incrementVersion(), leagueDAO.findById(expectedLeague.getId()));
-        leagueDAO.delete(expectedLeague);
+        League actualLeague = leagueDAO.findById(expectedLeague.getId());
+        try {
+            assertEquals(expectedLeague.incrementVersion(), actualLeague);
+        } finally {
+            leagueDAO.delete(expectedLeague);
+        }
     }
 
     @Test
@@ -96,11 +106,46 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         leagueDAO.save(expectedLeague);
 
         // then
-        assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
-        for(Division division : expectedLeague.getDivisions()) {
-            divisionDAO.delete(division);
+        League actualLeague = leagueDAO.findById(expectedLeague.getId());
+        try {
+            assertEquals(expectedLeague, actualLeague);
+        } finally {
+            for(Division division : expectedLeague.getDivisions()) {
+                divisionDAO.delete(division);
+            }
+            leagueDAO.delete(expectedLeague);
         }
-        leagueDAO.delete(expectedLeague);
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        League expectedLeague = new League()
+                .withName("league name")
+                .withClub(club)
+                .withDivisions(
+                        new Division().withName("league one"),
+                        new Division().withName("league two")
+                );
+
+        // when
+        leagueDAO.save(expectedLeague);
+        League updatedLeague =
+                expectedLeague.merge(new League()
+                        .withName("new league name"));
+        leagueDAO.update(updatedLeague);
+
+        // then
+        League actualLeague = leagueDAO.findById(expectedLeague.getId());
+        try {
+            assertEquals(updatedLeague.incrementVersion(), actualLeague);
+            assertEquals("new league name", actualLeague.getName());
+        } finally {
+            for(Division division : expectedLeague.getDivisions()) {
+                divisionDAO.delete(division);
+            }
+            leagueDAO.delete(expectedLeague);
+        }
     }
 
     @Test
@@ -118,9 +163,13 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         leagueDAO.save(leagueTwo);
 
         // then
-        assertArrayEquals(new League[]{leagueOne, leagueTwo}, leagueDAO.findAll().toArray());
-        leagueDAO.delete(leagueOne);
-        leagueDAO.delete(leagueTwo);
+        Object[] actualLeagues = leagueDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new League[]{leagueOne, leagueTwo}, actualLeagues);
+        } finally {
+            leagueDAO.delete(leagueOne);
+            leagueDAO.delete(leagueTwo);
+        }
     }
 
     @Test
@@ -156,27 +205,27 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(leagueDAO.findById(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         leagueDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         leagueDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         leagueDAO.delete((League) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         leagueDAO.delete(1l);
     }
 

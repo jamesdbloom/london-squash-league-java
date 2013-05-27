@@ -74,12 +74,12 @@ public class SetupDataController {
                         users.add(user);
                         players.add(new Player()
                                 .withCurrentDivision(division)
-                                .withPlayerStatus(PlayerStatus.ACTIVE)
+                                .withStatus(PlayerStatus.ACTIVE)
                                 .withUser(user));
                     }
                     players.add(new Player()
                             .withCurrentDivision(division)
-                            .withPlayerStatus(PlayerStatus.ACTIVE)
+                            .withStatus(PlayerStatus.ACTIVE)
                             .withUser(userDAO.findById(securityUserContext.getCurrentUser().getId())));
                     for (User user : users) {
                         userDAO.save(user);

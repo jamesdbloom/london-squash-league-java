@@ -16,7 +16,6 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 import static junit.framework.Assert.assertNull;
@@ -97,10 +96,15 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.register(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
-        assertEquals(newRole, roleDAO.findByName(newRole.getName()));
-        userDAO.delete(expectedUser);
-        roleDAO.delete(newRole);
+        User actualUser = userDAO.findById(expectedUser.getId());
+        Role actualyNewRole = roleDAO.findByName(newRole.getName());
+        try {
+            assertEquals(expectedUser, actualUser);
+            assertEquals(newRole, actualyNewRole);
+        } finally {
+            userDAO.delete(expectedUser);
+            roleDAO.delete(newRole);
+        }
     }
 
     @Test
@@ -116,9 +120,13 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.register(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
-        assertEquals(role, roleDAO.findByName(role.getName()));
-        userDAO.delete(expectedUser);
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals(expectedUser, actualUser);
+            assertEquals(role, roleDAO.findByName(role.getName()));
+        } finally {
+            userDAO.delete(expectedUser);
+        }
     }
 
     @Test
@@ -137,11 +145,17 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.register(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
-        assertEquals(newRole, roleDAO.findByName(newRole.getName()));
-        assertEquals(role, roleDAO.findByName(role.getName()));
-        userDAO.delete(expectedUser);
-        roleDAO.delete(newRole);
+        Role actualNewRole = roleDAO.findByName(newRole.getName());
+        Role actualExisting = roleDAO.findByName(role.getName());
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals(expectedUser, actualUser);
+            assertEquals(newRole, actualNewRole);
+            assertEquals(role, actualExisting);
+        } finally {
+            userDAO.delete(expectedUser);
+            roleDAO.delete(newRole);
+        }
     }
 
     @Test
@@ -157,8 +171,12 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.save(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
-        userDAO.delete(expectedUser);
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals(expectedUser, actualUser);
+        } finally {
+            userDAO.delete(expectedUser);
+        }
     }
 
     @Test
@@ -178,8 +196,12 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.update(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
-        userDAO.delete(expectedUser);
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals(expectedUser.incrementVersion(), actualUser);
+        } finally {
+            userDAO.delete(expectedUser);
+        }
     }
 
     @Test
@@ -197,22 +219,75 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         expectedUser.withPlayers(
                 new Player()
                         .withCurrentDivision(divisionOne)
-                        .withPlayerStatus(PlayerStatus.ACTIVE)
+                        .withStatus(PlayerStatus.ACTIVE)
                         .withUser(expectedUser),
                 new Player()
                         .withCurrentDivision(divisionTwo)
-                        .withPlayerStatus(PlayerStatus.ACTIVE)
+                        .withStatus(PlayerStatus.ACTIVE)
                         .withUser(expectedUser));
 
         // when
         userDAO.save(expectedUser);
 
         // then
-        assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
-        for (Player player : expectedUser.getPlayers()) {
-            playerDAO.delete(player);
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals(expectedUser, actualUser);
+        } finally {
+            for (Player player : expectedUser.getPlayers()) {
+                playerDAO.delete(player);
+            }
+            userDAO.delete(expectedUser);
         }
-        userDAO.delete(expectedUser);
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobile("07515 900 569")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRole(role)
+                .withPassword("password")
+                .withOneTimeToken("oneTimeToken");
+
+        expectedUser.withPlayers(
+                new Player()
+                        .withCurrentDivision(divisionOne)
+                        .withStatus(PlayerStatus.ACTIVE)
+                        .withUser(expectedUser),
+                new Player()
+                        .withCurrentDivision(divisionTwo)
+                        .withStatus(PlayerStatus.ACTIVE)
+                        .withUser(expectedUser));
+
+
+        // when
+        userDAO.save(expectedUser);
+        User updatedUser =
+                expectedUser.merge(new User()
+                        .withEmail("new@email.com")
+                        .withName("new user name")
+                        .withMobile("666 6666 6666")
+                        .withMobilePrivacy(MobilePrivacy.SECRET)
+                        .withRole(role)
+                        .withPassword("new password")
+                        .withOneTimeToken("new oneTimeToken"));
+        userDAO.update(updatedUser);
+
+        // then
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals(updatedUser.incrementVersion(), actualUser);
+            assertEquals("new@email.com", actualUser.getEmail());
+        } finally {
+            for (Player player : expectedUser.getPlayers()) {
+                playerDAO.delete(player);
+            }
+            userDAO.delete(expectedUser);
+        }
     }
 
     @Test
@@ -232,14 +307,16 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         // when
         userDAO.save(userOne);
         userDAO.save(userTwo);
-        List<User> actualUser = userDAO.findAll();
-
-        userDAO.delete(userOne);
-        userDAO.delete(userTwo);
 
         // then
-        assertEquals(userOne, actualUser.get(0));
-        assertEquals(userTwo, actualUser.get(1));
+        List<User> actualUser = userDAO.findAll();
+        try {
+            assertEquals(userOne, actualUser.get(0));
+            assertEquals(userTwo, actualUser.get(1));
+        } finally {
+            userDAO.delete(userOne);
+            userDAO.delete(userTwo);
+        }
     }
 
     @Test
@@ -260,7 +337,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
         assertNull(userDAO.findById(expectedUser.getId()));
     }
 
-    @Test(expected = PersistenceException.class)
+    @Test(expected = Exception.class)
     public void shouldNotAllowDuplicateNames() throws Exception {
         // given
         User expectedUserOne = new User()
@@ -301,32 +378,32 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(userDAO.findById(null));
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullEmail() {
+    public void shouldThrowExceptionWhenFindingNullEmail() {
         assertNull(userDAO.findByEmail(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         userDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         userDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         userDAO.delete((User) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         userDAO.delete(1l);
     }
 

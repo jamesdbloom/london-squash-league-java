@@ -9,6 +9,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.squashleague.domain.ModelObject;
+import org.squashleague.domain.account.User;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
@@ -21,8 +22,9 @@ import javax.validation.constraints.Pattern;
 @Cacheable
 @Table(name = "Matches")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Match extends ModelObject {
+public class Match extends ModelObject<Match> {
 
+    public final static String SCORE_PATTERN = "[0-9]{1,2}-[0-9]{1,2}";
     @NotNull(message = "{validation.match.playerOne}")
     @ManyToOne
     private Player playerOne;
@@ -36,6 +38,10 @@ public class Match extends ModelObject {
     private String score;
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime scoreEntered;
+
+    public boolean isMyMatch(User user) {
+        return user != null && (playerOne.getUser().getId().equals(user.getId()) || playerTwo.getUser().getId().equals(user.getId()));
+    }
 
     public Player getPlayerOne() {
         return playerOne;
@@ -94,6 +100,25 @@ public class Match extends ModelObject {
 
     public DateTime getScoreEntered() {
         return scoreEntered;
+    }
+
+    public Match merge(Match match) {
+        if (match.playerOne != null) {
+            this.playerOne = match.playerOne;
+        }
+        if (match.playerTwo != null) {
+            this.playerTwo = match.playerTwo;
+        }
+        if (match.round != null) {
+            this.round = match.round;
+        }
+        if (match.score != null) {
+            this.score = match.score;
+        }
+        if (match.scoreEntered != null) {
+            this.scoreEntered = match.scoreEntered;
+        }
+        return this;
     }
 
     @Override

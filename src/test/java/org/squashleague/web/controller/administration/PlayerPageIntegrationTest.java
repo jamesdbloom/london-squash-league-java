@@ -18,7 +18,6 @@ import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
@@ -185,7 +184,7 @@ public class PlayerPageIntegrationTest {
         // given
         Player player = (Player) new Player()
                 .withUser(user)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withId(2l);
         player.setVersion(5);
 
@@ -216,7 +215,7 @@ public class PlayerPageIntegrationTest {
         Player player = (Player) new Player()
                 .withUser(null)
                 .withCurrentDivision(currentDivision)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withId(2l);
         player.setVersion(5);
 
@@ -247,7 +246,7 @@ public class PlayerPageIntegrationTest {
         Player player = (Player) new Player()
                 .withUser(user)
                 .withCurrentDivision(currentDivision)
-                .withPlayerStatus(null)
+                .withStatus(null)
                 .withId(2l);
         player.setVersion(5);
 

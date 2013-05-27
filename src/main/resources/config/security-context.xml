@@ -34,15 +34,18 @@
         <security:intercept-url pattern="/updatePassword" access="isAnonymous()" requires-channel="https"/>
         <security:intercept-url pattern="/sendUpdatePasswordEmail" access="isAnonymous()" requires-channel="https"/>
         <!-- ANY USER -->
+        <security:intercept-url pattern="/logout" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/leagueTable" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/league" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/ranking" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/contact_us" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/account" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/account/updatePassword" access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/logout" access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/match/update/**" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/account/unregister/*" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/account/register/*" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/user/update/**" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/match/update/**" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/score/**" access="isAuthenticated()" requires-channel="https"/>
         <!-- ADMIN ONLY -->
         <security:intercept-url pattern="/print" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/administration" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>

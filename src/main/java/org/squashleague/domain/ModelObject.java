@@ -11,7 +11,7 @@ import javax.persistence.*;
  * @author jamesdbloom
  */
 @MappedSuperclass
-public abstract class ModelObject {
+public abstract class ModelObject<T> {
 
     static {
         ReflectionToStringBuilder.setDefaultStyle(ToStringStyle.MULTI_LINE_STYLE);
@@ -51,4 +51,6 @@ public abstract class ModelObject {
         }
         return this;
     }
+
+    public abstract T merge(T entity);
 }

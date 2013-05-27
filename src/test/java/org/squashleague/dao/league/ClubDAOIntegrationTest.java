@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.League;
 import org.squashleague.service.security.AdministratorLoggedInTest;
@@ -40,8 +41,12 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
         clubDAO.save(expectedClub);
 
         // then
-        assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
-        clubDAO.delete(expectedClub);
+        Club actualClub = clubDAO.findById(expectedClub.getId());
+        try {
+            assertEquals(expectedClub, actualClub);
+        } finally {
+            clubDAO.delete(expectedClub);
+        }
     }
 
     @Test
@@ -59,8 +64,12 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
         clubDAO.update(expectedClub);
 
         // then
-        assertEquals(expectedClub.incrementVersion(), clubDAO.findById(expectedClub.getId()));
-        clubDAO.delete(expectedClub);
+        Club actualClub = clubDAO.findById(expectedClub.getId());
+        try {
+            assertEquals(expectedClub.incrementVersion(), actualClub);
+        } finally {
+            clubDAO.delete(expectedClub);
+        }
     }
 
     @Test
@@ -78,11 +87,40 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
         clubDAO.save(expectedClub);
 
         // then
-        assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
-        for(League league : expectedClub.getLeagues()) {
-            leagueDAO.delete(league);
+        Club actualClub = clubDAO.findById(expectedClub.getId());
+        try {
+            assertEquals(expectedClub, actualClub);
+        } finally {
+            for(League league : expectedClub.getLeagues()) {
+                leagueDAO.delete(league);
+            }
+            clubDAO.delete(expectedClub);
         }
-        clubDAO.delete(expectedClub);
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        Club expectedClub = new Club()
+                .withName("club name")
+                .withAddress("club description");
+
+        // when
+        clubDAO.save(expectedClub);
+        Club updatedClub =
+                expectedClub.merge(new Club()
+                        .withName("new club name")
+                        .withAddress("new club description"));
+        clubDAO.update(updatedClub);
+
+        // then
+        Club actualClub = clubDAO.findById(expectedClub.getId());
+        try {
+            assertEquals(updatedClub.incrementVersion(), actualClub);
+            assertEquals("new club name", actualClub.getName());
+        } finally {
+            clubDAO.delete(expectedClub);
+        }
     }
 
     @Test
@@ -100,9 +138,13 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
         clubDAO.save(clubTwo);
 
         // then
-        assertArrayEquals(new Club[]{clubOne, clubTwo}, clubDAO.findAll().toArray());
-        clubDAO.delete(clubOne);
-        clubDAO.delete(clubTwo);
+        Object[] actualClubs = clubDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new Club[]{clubOne, clubTwo}, actualClubs);
+        } finally {
+            clubDAO.delete(clubOne);
+            clubDAO.delete(clubTwo);
+        }
     }
 
     @Test
@@ -138,27 +180,27 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(clubDAO.findById(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         clubDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         clubDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         clubDAO.delete((Club) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         clubDAO.delete(1l);
     }
 

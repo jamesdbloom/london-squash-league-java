@@ -24,7 +24,7 @@ public class ErrorPage {
         Element titleElement = html.select("#header").first();
         assertNotNull(titleElement);
         assertEquals(titleElement.text(), title);
-        Element messageElement = html.select(".message").first();
+        Element messageElement = html.select(".error_message").first();
         assertNotNull(messageElement);
         assertEquals(messageElement.text(), message);
     }

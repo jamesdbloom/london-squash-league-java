@@ -18,7 +18,7 @@
     <input type="hidden" name="redirect_to" value="/">
 
     <#if SPRING_SECURITY_LAST_EXCEPTION??>
-      <p class="errors_warnings">Login Failed:&nbsp;&nbsp;&nbsp;${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+        <p class="errors_warnings">Login Failed:&nbsp;&nbsp;&nbsp;${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
     </#if>
 
     <div class="standard_form">
@@ -30,16 +30,19 @@
             <label class="password" for="password">Password:</label> <input id="password" type="password" name="password" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required">
         </p>
 
-        <#-- TODO can I easily implement a remember cookie for username? -->
-        <#--<p>-->
-            <#--<label class="remember_me" for="remember_me">Remember:</label> <input id="remember_me" name="remember_me" type="checkbox" value="forever">-->
-        <#--</p>-->
+    <#-- TODO can I easily implement a remember cookie for username? -->
+    <#--<p>-->
+    <#--<label class="remember_me" for="remember_me">Remember:</label> <input id="remember_me" name="remember_me" type="checkbox" value="forever">-->
+    <#--</p>-->
 
         <p class="submit">
             <input class="submit primary" type="submit" name="submit" value="Login">
         </p>
     </div>
 </form>
+<script>
+    document.getElementById("email").focus();
+</script>
 </#macro>
 
 <@page_html/>

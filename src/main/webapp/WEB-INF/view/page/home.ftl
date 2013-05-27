@@ -25,7 +25,7 @@
         <@security.authorize ifAnyGranted="ROLE_ADMIN">
             <li><a href="/print" title="Print League">Print League</a></li>
         </@security.authorize>
-        <li><a href="/league" title="View League">View Your League</a></li>
+        <li><a href="/leagueTable" title="View League">View Your League</a></li>
         <li><a href="/ranking" title="Player Ranking">Player Ranking</a></li>
         <li><a href="/score" title="Enter Match Score">Enter Match Score</a></li>
         <li><a href="/account" title="Account">Account Settings</a></li>

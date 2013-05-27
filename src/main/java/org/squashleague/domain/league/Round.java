@@ -19,7 +19,7 @@ import java.util.List;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Round extends ModelObject {
+public class Round extends ModelObject<Round> {
 
     @NotNull(message = "{validation.round.startDate}")
     @Future(message = "{validation.round.startDate}")
@@ -112,6 +112,22 @@ public class Round extends ModelObject {
         this.matches = new ArrayList<>();
         for (Match match : matches) {
             this.matches.add(match.withRound(this));
+        }
+        return this;
+    }
+
+    public Round merge(Round round) {
+        if (round.startDate != null) {
+            this.startDate = round.startDate;
+        }
+        if (round.endDate != null) {
+            this.endDate = round.endDate;
+        }
+        if (round.division != null) {
+            this.division = round.division;
+        }
+        if (round.matches != null) {
+            this.matches = round.matches;
         }
         return this;
     }

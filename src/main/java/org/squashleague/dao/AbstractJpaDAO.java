@@ -13,10 +13,9 @@ import java.util.List;
 /**
  * @author jamesdbloom
  */
-public abstract class AbstractJpaDAO<T extends ModelObject> {
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
+public abstract class AbstractJpaDAO<T extends ModelObject<T>> {
     private final Class<T> clazz;
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
     @PersistenceContext
     protected EntityManager entityManager;
 
@@ -47,7 +46,9 @@ public abstract class AbstractJpaDAO<T extends ModelObject> {
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void update(T entity) {
-        entityManager.merge(entity);
+        if (entity != null && entity.getId() != null) {
+            entityManager.merge(findById(entity.getId()).merge(entity));
+        }
     }
 
     @Transactional

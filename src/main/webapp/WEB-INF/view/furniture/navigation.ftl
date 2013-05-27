@@ -13,7 +13,7 @@
         <@security.authorize access='hasAnyRole("ROLE_ADMIN")'>
             <li class="hide_on_small_screen "><a href="/print" title="Print League">Print League</a></li>
         </@security.authorize>
-        <li><a href="/league" title="View League">View League</a></li>
+        <li><a href="/leagueTable" title="View League">View League</a></li>
         <li class="hide_on_small_screen "><a href="/ranking" title="Player Ranking">Player Ranking</a></li>
         <li><a href="/account" title="Account">Account</a></li>
         <@security.authorize access='hasAnyRole("ROLE_ADMIN")'>

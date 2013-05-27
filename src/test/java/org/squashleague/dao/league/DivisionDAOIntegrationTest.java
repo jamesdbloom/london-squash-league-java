@@ -69,8 +69,12 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         divisionDAO.save(expectedDivision);
 
         // then
-        assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
-        divisionDAO.delete(expectedDivision);
+        Division actualDivision = divisionDAO.findById(expectedDivision.getId());
+        try {
+            assertEquals(expectedDivision, actualDivision);
+        } finally {
+            divisionDAO.delete(expectedDivision);
+        }
     }
 
     @Test
@@ -87,8 +91,12 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         divisionDAO.update(expectedDivision);
 
         // then
-        assertEquals(expectedDivision.incrementVersion(), divisionDAO.findById(expectedDivision.getId()));
-        divisionDAO.delete(expectedDivision);
+        Division actualDivision = divisionDAO.findById(expectedDivision.getId());
+        try {
+            assertEquals(expectedDivision.incrementVersion(), actualDivision);
+        } finally {
+            divisionDAO.delete(expectedDivision);
+        }
     }
 
     @Test
@@ -106,11 +114,47 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         divisionDAO.save(expectedDivision);
 
         // then
-        assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
-        for (Round round : expectedDivision.getRounds()) {
-            roundDAO.delete(round);
+        Division actualDivision = divisionDAO.findById(expectedDivision.getId());
+        try {
+            assertEquals(expectedDivision, actualDivision);
+        } finally {
+            for (Round round : expectedDivision.getRounds()) {
+                roundDAO.delete(round);
+            }
+            divisionDAO.delete(expectedDivision);
         }
-        divisionDAO.delete(expectedDivision);
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        Division expectedDivision = new Division()
+                .withName("division name")
+                .withLeague(league)
+                .withRounds(
+                        new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)),
+                        new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2))
+                );
+
+        // when
+        divisionDAO.save(expectedDivision);
+        Division updatedDivision =
+                expectedDivision.merge(new Division()
+                        .withName("new division name")
+                        .withLeague(league));
+        divisionDAO.update(updatedDivision);
+
+        // then
+        Division actualDivision = divisionDAO.findById(expectedDivision.getId());
+        try {
+            assertEquals(updatedDivision.incrementVersion(), actualDivision);
+            assertEquals("new division name", actualDivision.getName());
+        } finally {
+            for (Round round : expectedDivision.getRounds()) {
+                roundDAO.delete(round);
+            }
+            divisionDAO.delete(expectedDivision);
+        }
     }
 
     @Test
@@ -128,9 +172,13 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         divisionDAO.save(divisionTwo);
 
         // then
-        assertArrayEquals(new Division[]{divisionOne, divisionTwo}, divisionDAO.findAll().toArray());
-        divisionDAO.delete(divisionOne);
-        divisionDAO.delete(divisionTwo);
+        Object[] actualDivisions = divisionDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new Division[]{divisionOne, divisionTwo}, actualDivisions);
+        } finally {
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
+        }
     }
 
     @Test
@@ -166,27 +214,27 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(divisionDAO.findById(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         divisionDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         divisionDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         divisionDAO.delete((Division) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         divisionDAO.delete(1l);
     }
 

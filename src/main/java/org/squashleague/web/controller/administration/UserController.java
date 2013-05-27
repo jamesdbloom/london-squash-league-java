@@ -17,8 +17,8 @@ import org.squashleague.domain.account.User;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@RequestMapping("/user")
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     @Resource
@@ -66,8 +66,7 @@ public class UserController {
             uiModel.addAttribute("user", user);
             return "page/administration/user/update";
         }
-        User existingUser = userDAO.findById(user.getId());
-        userDAO.update(user.withPassword((existingUser != null ? existingUser.getPassword() : null)));
+        userDAO.update(user);
         return "redirect:/account";
     }
 

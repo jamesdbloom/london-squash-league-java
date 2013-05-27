@@ -371,7 +371,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="score last"><@spring.formInput  path="match.score" attributes='pattern="[0-9]{1,2}-[0-9]{1,2}" title="${environment.getProperty("validation.match.score")}" class="show_validation"'/></td>
+                <td class="score last"><@spring.formInput  path="match.score" attributes='pattern="${scorePattern}" title="${environment.getProperty("validation.match.score")}" class="show_validation"'/></td>
                 <td class="score_entered last"></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>

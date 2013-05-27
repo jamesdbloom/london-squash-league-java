@@ -21,6 +21,10 @@
     #round:invalid.filled + .error_message::after {
         content: "${environment.getProperty("validation.match.round")}";
     }
+
+    #score:invalid.filled + .error_message::after {
+        content: "${environment.getProperty("validation.match.score")}";
+    }
 </style>
 <form action="/match/update" method="POST">
 
@@ -68,6 +72,16 @@
             </#if>
         </p>
 
+
+        <p>
+            <label for="score">Score:</label> <@spring.formInput  path="match.score" attributes='pattern="[0-9]{1,2}-[0-9]{1,2}" maxlength="5" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"'/>
+            <span class="error_message"></span>
+        </p>
+
+        <p>
+            <label for="scoreEntered">Score Entered:</label><input id="scoreEntered" type="text" value="<#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if>" readonly="readonly">
+        </p>
+
         <p class="submit">
             <input class="submit primary" type="submit" name="update" value="Update">
         </p>
@@ -76,6 +90,7 @@
 <script>
     var errors = errors || {},
             validation = {
+                filled: ['score'],
                 changed: ['playerOne', 'playerTwo', 'round'],
                 onload: errors && errors.match
             };

@@ -148,7 +148,7 @@ public class UpdatePasswordControllerTest {
         String page = updatePasswordController.updatePassword(user.getEmail(), user.getPassword(), user.getPassword(), "wrong_token", uiModel, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute("message", "Invalid email or one-time-token - click <a href=\"/sendUpdatePasswordEmail?email=" + user.getEmail() + "\">resend email</a> to receive a new email");
+        verify(redirectAttributes).addFlashAttribute("message", "Invalid email or one-time-token - click <a href=\"/sendUpdatePasswordEmail?email=user%40email.com\">resend email</a> to receive a new email");
         verify(redirectAttributes).addFlashAttribute("title", "Invalid Request");
         verify(redirectAttributes).addFlashAttribute("error", true);
         assertEquals("redirect:/message", page);
@@ -170,7 +170,10 @@ public class UpdatePasswordControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));
-        verify(uiModel).addAttribute("errors", Arrays.asList(environment.getProperty("validation.user.passwordNonMatching")));
+        verify(uiModel).addAttribute("environment", environment);
+        verify(uiModel).addAttribute("email", "user@email.com");
+        verify(uiModel).addAttribute("oneTimeToken", user.getOneTimeToken());
+        verify(uiModel).addAttribute("validationErrors", Arrays.asList(environment.getProperty("validation.user.password")));
         assertEquals("page/user/updatePassword", page);
     }
 
@@ -190,7 +193,10 @@ public class UpdatePasswordControllerTest {
 
         // then
         verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));
-        verify(uiModel).addAttribute("errors", Arrays.asList(environment.getProperty("validation.user.passwordNonMatching")));
+        verify(uiModel).addAttribute("environment", environment);
+        verify(uiModel).addAttribute("email", "user@email.com");
+        verify(uiModel).addAttribute("oneTimeToken", user.getOneTimeToken());
+        verify(uiModel).addAttribute("validationErrors", Arrays.asList(environment.getProperty("validation.user.passwordNonMatching")));
         assertEquals("page/user/updatePassword", page);
     }
 

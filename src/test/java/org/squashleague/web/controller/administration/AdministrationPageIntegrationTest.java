@@ -20,7 +20,6 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
@@ -125,7 +124,7 @@ public class AdministrationPageIntegrationTest {
         Player player = new Player()
                 .withUser((User) new User().withId(1l))
                 .withCurrentDivision((Division) new Division().withId(2l))
-                .withPlayerStatus(PlayerStatus.ACTIVE);
+                .withStatus(PlayerStatus.ACTIVE);
         getAdministrationPage("player", 2, player).hasPlayerFields(player.getUser().getId(), player.getCurrentDivision().getId(), player.getStatus());
     }
 

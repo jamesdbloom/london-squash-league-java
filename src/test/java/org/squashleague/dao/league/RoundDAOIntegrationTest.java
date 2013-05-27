@@ -73,8 +73,12 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         roundDAO.save(expectedRound);
 
         // then
-        assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
-        roundDAO.delete(expectedRound);
+        Round actualRound = roundDAO.findById(expectedRound.getId());
+        try {
+            assertEquals(expectedRound, actualRound);
+        } finally {
+            roundDAO.delete(expectedRound);
+        }
     }
 
     @Test
@@ -93,8 +97,12 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         roundDAO.update(expectedRound);
 
         // then
-        assertEquals(expectedRound.incrementVersion(), roundDAO.findById(expectedRound.getId()));
-        roundDAO.delete(expectedRound);
+        Round actualRound = roundDAO.findById(expectedRound.getId());
+        try {
+            assertEquals(expectedRound.incrementVersion(), actualRound);
+        } finally {
+            roundDAO.delete(expectedRound);
+        }
     }
 
     @Test
@@ -109,8 +117,38 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         roundDAO.save(expectedRound);
 
         // then
-        assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
-        roundDAO.delete(expectedRound);
+        Round actualRound = roundDAO.findById(expectedRound.getId());
+        try {
+            assertEquals(expectedRound, actualRound);
+        } finally {
+            roundDAO.delete(expectedRound);
+        }
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        Round expectedRound = new Round()
+                        .withStartDate(new DateTime().plusDays(1))
+                        .withEndDate(new DateTime().plusDays(2))
+                        .withDivision(division);
+
+        // when
+        roundDAO.save(expectedRound);
+        DateTime newEndDate = new DateTime().plusDays(10);
+        Round updatedRound =
+                expectedRound.merge(new Round()
+                        .withEndDate(newEndDate));
+        roundDAO.update(updatedRound);
+
+        // then
+        Round actualRound = roundDAO.findById(expectedRound.getId());
+        try {
+            assertEquals(updatedRound.incrementVersion(), actualRound);
+            assertEquals(newEndDate, actualRound.getEndDate());
+        } finally {
+            roundDAO.delete(expectedRound);
+        }
     }
 
     @Test
@@ -130,9 +168,13 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         roundDAO.save(roundTwo);
 
         // then
-        assertArrayEquals(new Round[]{roundOne, roundTwo}, roundDAO.findAll().toArray());
-        roundDAO.delete(roundOne);
-        roundDAO.delete(roundTwo);
+        Object[] actualRounds = roundDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new Round[]{roundOne, roundTwo}, actualRounds);
+        } finally {
+            roundDAO.delete(roundOne);
+            roundDAO.delete(roundTwo);
+        }
     }
 
     @Test
@@ -170,27 +212,27 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(roundDAO.findById(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         roundDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         roundDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         roundDAO.delete((Round) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         roundDAO.delete(1l);
     }
 

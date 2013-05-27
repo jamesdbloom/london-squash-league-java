@@ -19,8 +19,6 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
-import java.util.Random;
-
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -108,15 +106,19 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Player expectedPlayer = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
 
         // when
         playerDAO.save(expectedPlayer);
 
         // then
-        assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
-        playerDAO.delete(expectedPlayer);
+        Player actualPlayer = playerDAO.findById(expectedPlayer.getId());
+        try {
+            assertEquals(expectedPlayer, actualPlayer);
+        } finally {
+            playerDAO.delete(expectedPlayer);
+        }
     }
 
     @Test
@@ -124,18 +126,22 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Player expectedPlayer = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerDAO.save(expectedPlayer);
         expectedPlayer
-                .withPlayerStatus(PlayerStatus.INACTIVE);
+                .withStatus(PlayerStatus.INACTIVE);
 
         // when
         playerDAO.update(expectedPlayer);
 
         // then
-        assertEquals(expectedPlayer.incrementVersion(), playerDAO.findById(expectedPlayer.getId()));
-        playerDAO.delete(expectedPlayer);
+        Player actualPlayer = playerDAO.findById(expectedPlayer.getId());
+        try {
+            assertEquals(expectedPlayer.incrementVersion(), actualPlayer);
+        } finally {
+            playerDAO.delete(expectedPlayer);
+        }
     }
 
     @Test
@@ -143,15 +149,44 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Player expectedPlayer = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
 
         // when
         playerDAO.save(expectedPlayer);
 
         // then
-        assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
-        playerDAO.delete(expectedPlayer);
+        Player actualPlayer = playerDAO.findById(expectedPlayer.getId());
+        try {
+            assertEquals(expectedPlayer, actualPlayer);
+        } finally {
+            playerDAO.delete(expectedPlayer);
+        }
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        Player expectedPlayer = new Player()
+                        .withCurrentDivision(division)
+                        .withStatus(PlayerStatus.ACTIVE)
+                        .withUser(userOne);
+
+        // when
+        playerDAO.save(expectedPlayer);
+        Player updatedPlayer =
+                expectedPlayer.merge(new Player()
+                        .withStatus(PlayerStatus.INACTIVE));
+        playerDAO.update(updatedPlayer);
+
+        // then
+        Player actualPlayer = playerDAO.findById(expectedPlayer.getId());
+        try {
+            assertEquals(updatedPlayer.incrementVersion(), actualPlayer);
+            assertEquals(PlayerStatus.INACTIVE, actualPlayer.getStatus());
+        } finally {
+            playerDAO.delete(expectedPlayer);
+        }
     }
 
     @Test
@@ -159,11 +194,11 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Player playerOne = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         Player playerTwo = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userTwo);
 
         // when
@@ -171,9 +206,13 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         playerDAO.save(playerTwo);
 
         // then
-        assertArrayEquals(new Player[]{playerOne, playerTwo}, playerDAO.findAll().toArray());
-        playerDAO.delete(playerOne);
-        playerDAO.delete(playerTwo);
+        Object[] actualPlayers = playerDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new Player[]{playerOne, playerTwo}, actualPlayers);
+        } finally {
+            playerDAO.delete(playerOne);
+            playerDAO.delete(playerTwo);
+        }
     }
 
     @Test
@@ -181,7 +220,7 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Player expectedPlayer = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerDAO.save(expectedPlayer);
         assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
@@ -198,7 +237,7 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Player expectedPlayer = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerDAO.save(expectedPlayer);
         assertEquals(expectedPlayer, playerDAO.findById(expectedPlayer.getId()));
@@ -211,27 +250,27 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(playerDAO.findById(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         playerDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         playerDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         playerDAO.delete((Player) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         playerDAO.delete(1l);
     }
 

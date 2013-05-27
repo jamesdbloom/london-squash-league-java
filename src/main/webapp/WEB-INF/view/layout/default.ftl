@@ -92,7 +92,7 @@
 </script>
     <@page_js_inline/>
 <!-- google analytics start -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-32687194-3']);
     _gaq.push(['_trackPageview']);
@@ -104,7 +104,8 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
     })();
-</script><!-- google analytics end -->
+</script>-->
+<!-- google analytics end -->
 </#macro>
 
 <#macro page_js_inline>

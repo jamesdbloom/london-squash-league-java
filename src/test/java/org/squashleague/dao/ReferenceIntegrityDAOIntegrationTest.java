@@ -1,6 +1,5 @@
 package org.squashleague.dao;
 
-import com.eaio.uuid.UUID;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +20,6 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
-import java.util.Random;
 
 /**
  * @author jamesdbloom
@@ -95,11 +93,11 @@ public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInT
         roundDAO.save(round);
         playerOne = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerTwo = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userTwo);
         playerDAO.save(playerOne);
         playerDAO.save(playerTwo);

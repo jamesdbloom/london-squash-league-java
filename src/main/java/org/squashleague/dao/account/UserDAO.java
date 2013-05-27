@@ -11,11 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.Match;
-import org.squashleague.domain.league.Player;
-import org.squashleague.service.security.SpringSecurityUserContext;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
@@ -104,7 +100,9 @@ public class UserDAO {
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id")
     public void update(User user) {
-        entityManager.merge(user);
+        if (user != null && user.getId() != null) {
+            entityManager.merge(findById(user.getId()).merge(user));
+        }
     }
 
     @Transactional

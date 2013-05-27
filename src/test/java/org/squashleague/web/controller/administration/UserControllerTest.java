@@ -112,15 +112,12 @@ public class UserControllerTest {
         // given
         Model uiModel = mock(Model.class);
         User user = (User) new User().withId(5l);
-        User existingUser = new User().withPassword("password");
-        when(userDAO.findById(same(user.getId()))).thenReturn(existingUser);
 
         // when
         String page = userController.update(user, mock(BindingResult.class), uiModel);
 
         // then
         verify(userDAO).update(same(user));
-        assertEquals(user.getPassword(), existingUser.getPassword());
         assertEquals("redirect:/account", page);
     }
 

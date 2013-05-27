@@ -11,12 +11,15 @@ import org.squashleague.domain.account.User;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Player extends ModelObject {
+public class Player extends ModelObject<Player> {
 
     @NotNull(message = "{validation.player.user}")
     @ManyToOne
@@ -29,6 +32,8 @@ public class Player extends ModelObject {
     @NotNull(message = "{validation.player.league}")
     @ManyToOne
     private League league;
+    @Transient
+    private transient List<Match> matches = new ArrayList<>();
 
     public User getUser() {
         return user;
@@ -51,7 +56,7 @@ public class Player extends ModelObject {
         this.status = playerStatus;
     }
 
-    public Player withPlayerStatus(PlayerStatus playerStatus) {
+    public Player withStatus(PlayerStatus playerStatus) {
         setStatus(playerStatus);
         return this;
     }
@@ -76,6 +81,49 @@ public class Player extends ModelObject {
 
     public void setLeague(League league) {
         this.league = league;
+    }
+
+    public List<Match> getMatches() {
+        return matches;
+    }
+
+    public Player withMatches(List<Match> matches) {
+        this.matches = matches;
+        return this;
+    }
+
+    public List<String> getAllOpponentsEmails() {
+        List<String> emails = new ArrayList<>();
+        String myEmail = getUser().getEmail();
+        if (matches != null && !matches.isEmpty()) {
+            for (Match match : matches) {
+                String playerOneEmail = match.getPlayerOne().getUser().getEmail();
+                if (!playerOneEmail.equals(myEmail) && !emails.contains(playerOneEmail)) {
+                    emails.add(playerOneEmail);
+                }
+                String playerTwoEmail = match.getPlayerTwo().getUser().getEmail();
+                if (!playerTwoEmail.equals(myEmail) && !emails.contains(playerTwoEmail)) {
+                    emails.add(playerTwoEmail);
+                }
+            }
+        }
+        return emails;
+    }
+
+    public Player merge(Player player) {
+        if (player.user != null) {
+            this.user = player.user;
+        }
+        if (player.status != null) {
+            this.status = player.status;
+        }
+        if (player.currentDivision != null) {
+            this.currentDivision = player.currentDivision;
+        }
+        if (player.league != null) {
+            this.league = player.league;
+        }
+        return this;
     }
 
     @Override

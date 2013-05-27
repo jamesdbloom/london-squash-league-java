@@ -76,4 +76,20 @@ public class RoundTest {
 
         assertEquals(RoundStatus.NOT_STARTED, round.getStatus());
     }
+
+    @Test
+    public void shouldMerge() {
+        Round existing = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withDivision(new Division().withName("old"));
+
+        Round newVersion = new Round()
+                .withStartDate(new DateTime().plusDays(10))
+                .withEndDate(new DateTime().plusDays(20))
+                .withDivision(new Division().withName("new"));
+
+        assertEquals(newVersion, existing.merge(newVersion));
+        assertEquals(existing, existing.merge(new Round()));
+    }
 }

@@ -3,24 +3,20 @@ package org.squashleague.domain.league;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.squashleague.domain.ModelObject;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Club extends ModelObject {
+public class Club extends ModelObject<Club> {
 
     @NotNull(message = "{validation.club.name}")
     @Size(min = 5, max = 25, message = "{validation.club.name}")
@@ -70,6 +66,19 @@ public class Club extends ModelObject {
         this.leagues = new ArrayList<>();
         for (League league : leagues) {
             this.leagues.add(league.withClub(this));
+        }
+        return this;
+    }
+
+    public Club merge(Club club) {
+        if (club.name != null) {
+            this.name = club.name;
+        }
+        if (club.address != null) {
+            this.address = club.address;
+        }
+        if (club.leagues != null) {
+            this.leagues = club.leagues;
         }
         return this;
     }

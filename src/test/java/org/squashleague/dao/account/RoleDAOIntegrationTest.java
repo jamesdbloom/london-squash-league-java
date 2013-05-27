@@ -12,10 +12,13 @@ import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.league.Club;
+import org.squashleague.domain.league.Player;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 import javax.persistence.PersistenceException;
+
+import java.util.List;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -59,8 +62,12 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
         roleDAO.save(expectedRole);
 
         // then
-        assertEquals(expectedRole, roleDAO.findByName(expectedRole.getName()));
-        roleDAO.delete(expectedRole);
+        Role actualRole = roleDAO.findById(expectedRole.getId());
+        try {
+            assertEquals(expectedRole, actualRole);
+        } finally {
+            roleDAO.delete(expectedRole);
+        }
     }
 
     @Test
@@ -78,11 +85,15 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
         roleDAO.update(expectedRole);
 
         // then
-        assertEquals(expectedRole.incrementVersion(), roleDAO.findById(expectedRole.getId()));
-        roleDAO.delete(expectedRole);
+        Role actualRole = roleDAO.findById(expectedRole.getId());
+        try {
+            assertEquals(expectedRole.incrementVersion(), actualRole);
+        } finally {
+            roleDAO.delete(expectedRole);
+        }
     }
 
-    @Test(expected = PersistenceException.class)
+    @Test(expected = Exception.class)
     public void shouldNotAllowDuplicateNames() throws Exception {
         // given
         Role expectedRoleOne = new Role()
@@ -111,8 +122,12 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
         roleDAO.save(expectedRole);
 
         // then
-        assertEquals(expectedRole, roleDAO.findById(expectedRole.getId()));
-        roleDAO.delete(expectedRole);
+        Role actualRole = roleDAO.findById(expectedRole.getId());
+        try {
+            assertEquals(expectedRole, actualRole);
+        } finally {
+            roleDAO.delete(expectedRole);
+        }
     }
 
     @Test
@@ -127,8 +142,38 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
         roleDAO.save(expectedRole);
 
         // then
-        assertEquals(expectedRole, roleDAO.findById(expectedRole.getId()));
-        roleDAO.delete(expectedRole);
+        Role actualRole = roleDAO.findById(expectedRole.getId());
+        try {
+            assertEquals(expectedRole, actualRole);
+        } finally {
+            roleDAO.delete(expectedRole);
+        }
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        Role expectedRole = new Role()
+                .withName("role name")
+                .withDescription("role description")
+                .withClub(club);
+
+        // when
+        roleDAO.save(expectedRole);
+        Role updatedRole =
+                expectedRole.merge(new Role()
+                        .withName("new role name")
+                        .withDescription("new role description"));
+        roleDAO.update(updatedRole);
+
+        // then
+        Role actualRole = roleDAO.findById(expectedRole.getId());
+        try {
+            assertEquals(updatedRole.incrementVersion(), actualRole);
+            assertEquals("new role name", actualRole.getName());
+        } finally {
+            roleDAO.delete(expectedRole);
+        }
     }
 
     @Test
@@ -146,9 +191,13 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
         roleDAO.save(roleTwo);
 
         // then
-        assertArrayEquals(new Role[]{roleOne, roleTwo}, roleDAO.findAll().toArray());
-        roleDAO.delete(roleOne);
-        roleDAO.delete(roleTwo);
+        Object[] actualRoles = roleDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new Role[]{roleOne, roleTwo}, actualRoles);
+        } finally {
+            roleDAO.delete(roleOne);
+            roleDAO.delete(roleTwo);
+        }
     }
 
     @Test
@@ -184,32 +233,32 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(roleDAO.findById(null));
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullEmail() {
+    public void shouldThrowExceptionWhenFindingNullEmail() {
         assertNull(roleDAO.findByName(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         roleDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         roleDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         roleDAO.delete((Role) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         roleDAO.delete(1l);
     }
 

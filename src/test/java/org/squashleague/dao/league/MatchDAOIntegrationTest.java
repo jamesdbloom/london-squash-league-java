@@ -19,8 +19,6 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
-import java.util.Random;
-
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -96,11 +94,11 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         roundDAO.save(round);
         playerOne = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerTwo = new Player()
                 .withCurrentDivision(division)
-                .withPlayerStatus(PlayerStatus.ACTIVE)
+                .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userTwo);
         playerDAO.save(playerOne);
         playerDAO.save(playerTwo);
@@ -131,8 +129,12 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         matchDAO.save(expectedMatch);
 
         // then
-        assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
-        matchDAO.delete(expectedMatch);
+        Match actualMatch = matchDAO.findById(expectedMatch.getId());
+        try {
+            assertEquals(expectedMatch, actualMatch);
+        } finally {
+            matchDAO.delete(expectedMatch);
+        }
     }
 
     @Test
@@ -151,8 +153,12 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         matchDAO.update(expectedMatch);
 
         // then
-        assertEquals(expectedMatch.incrementVersion(), matchDAO.findById(expectedMatch.getId()));
-        matchDAO.delete(expectedMatch);
+        Match actualMatch = matchDAO.findById(expectedMatch.getId());
+        try {
+            assertEquals(expectedMatch.incrementVersion(), actualMatch);
+        } finally {
+            matchDAO.delete(expectedMatch);
+        }
     }
 
     @Test
@@ -167,8 +173,37 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         matchDAO.save(expectedMatch);
 
         // then
-        assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
-        matchDAO.delete(expectedMatch);
+        Match actualMatch = matchDAO.findById(expectedMatch.getId());
+        try {
+            assertEquals(expectedMatch, actualMatch);
+        } finally {
+            matchDAO.delete(expectedMatch);
+        }
+    }
+
+    @Test
+    public void shouldUpdateWhenContainsChildren() throws Exception {
+        // given
+        Match expectedMatch = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
+
+        // when
+        matchDAO.save(expectedMatch);
+        Match updatedMatch =
+                expectedMatch.merge(new Match()
+                        .withScore("3-2"));
+        matchDAO.update(updatedMatch);
+
+        // then
+        Match actualMatch = matchDAO.findById(expectedMatch.getId());
+        try {
+            assertEquals(updatedMatch.incrementVersion(), actualMatch);
+            assertEquals("3-2", actualMatch.getScore());
+        } finally {
+            matchDAO.delete(expectedMatch);
+        }
     }
 
     @Test
@@ -188,9 +223,13 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         matchDAO.save(matchTwo);
 
         // then
-        assertArrayEquals(new Match[]{matchOne, matchTwo}, matchDAO.findAll().toArray());
-        matchDAO.delete(matchOne);
-        matchDAO.delete(matchTwo);
+        Object[] actualMatches = matchDAO.findAll().toArray();
+        try {
+            assertArrayEquals(new Match[]{matchOne, matchTwo}, actualMatches);
+        } finally {
+            matchDAO.delete(matchOne);
+            matchDAO.delete(matchTwo);
+        }
     }
 
     @Test
@@ -228,27 +267,27 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
     }
 
     @Test
-    public void shouldNotThrowExceptionWhenFindingNullId() {
+    public void shouldThrowExceptionWhenFindingNullId() {
         assertNull(matchDAO.findById(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenSavingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenSavingNull() {
         matchDAO.save(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
         matchDAO.update(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingNull() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingNull() {
         matchDAO.delete((Match) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotThrowExceptionWhenDeletingInvalidId() {
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenDeletingInvalidId() {
         matchDAO.delete(1l);
     }
 

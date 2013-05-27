@@ -7,9 +7,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.AbstractJpaDAO;
-import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.PlayerStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +27,11 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
 
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #player.user.id or principal.id")
-    public List<Match> findByPlayer(Player player) {
+    public List<Match> findAllByPlayer(Player player) {
         try {
-            return entityManager.createQuery("from Match as match where match.playerOne.id = " + player.getId() + " or match.playerTwo.id = " + player.getId(), Match.class).getResultList();
+            return entityManager.createQuery("from Match as match where " +
+                    "(match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal() + ") and " +
+                    "(match.playerOne.id = " + player.getId() + " or match.playerTwo.id = " + player.getId() + ")", Match.class).getResultList();
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }
@@ -38,8 +40,15 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #match.playerOne.user.id or principal.id == #match.playerTwo.user.id")
+    public Match findById(Long id) {
+        return super.findById(id);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #match.playerOne.user.id or principal.id == #match.playerTwo.user.id")
     public void update(Match match) {
-        entityManager.merge(match);
+        super.update(match);
     }
 
 }

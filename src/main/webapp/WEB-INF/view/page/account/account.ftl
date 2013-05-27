@@ -33,7 +33,7 @@
         <tr>
             <th>Club</th>
             <th>League</th>
-            <th class="status hide_on_very_small_screen">Status</th>
+            <th class="hide_on_very_small_screen">Status</th>
             <th>Division</th>
             <th class="button_column last"></th>
         </tr>
@@ -41,59 +41,68 @@
             <tr>
                 <td>${player.league.club.name}</td>
                 <td>${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</td>
-                <td class="status hide_on_very_small_screen">${player.status}</td>
+                <td class="hide_on_very_small_screen">${player.status}</td>
                 <td>${player.currentDivision.name}</td>
-                <td class="button_column last"><#if player.status == 'ACTIVE'><a class="submit" href="/account/unregister/${player.id}">Unregister</a><#else><a class="submit" href="/account/register/${player.id}">Register</a></#if></td>
+                <td class="button_column last"><#if player.status == 'ACTIVE'><a class="button" href="/account/unregister/${player.id}">Unregister</a><#else><a class="button" href="/account/register/${player.id}">Register</a></#if></td>
             </tr>
         </#list>
 </table><h2 class="table_title">Rounds</h2>
 <table>
     <tbody>
         <tr>
-            <th class="league">Division</th>
-            <th class="league">Status</th>
-            <th class="date">Start</th>
-            <th class="date">End</th>
+            <th>Division</th>
+            <th class="hide_on_small_screen">Status</th>
+            <th>Start</th>
+            <th>End</th>
         </tr>
-    </tbody>
-    <#list user.players as player>
-        <#list player.currentDivision.rounds as round>
-            <tr>
-                <td class="division">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
-                <td class="status hide_on_small_screen">${round.status}</td>
-                <td class="date">${round.startDate.toDate()?string("dd MMM yyyy")}</td>
-                <td class="date">${round.endDate.toDate()?string("dd MMM yyyy")}</td>
-            </tr>
+        <#list user.players as player>
+            <#list player.currentDivision.rounds as round>
+                <tr>
+                    <td>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
+                    <td class="hide_on_small_screen">${round.status}</td>
+                    <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                </tr>
+            </#list>
         </#list>
-    </#list>
+    </tbody>
 </table><h2 class="table_title" id="matches">Your Matches</h2>
     <#list user.players as player>
-    <h3>${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</h3>
-    <table>
-        <tbody>
-            <tr>
-                <th class="division">Division</th>
-                <th class="round hide_on_small_screen">Round</th>
-                <th class="player">Player One</th>
-                <th class="player">Player Two</th>
-                <th class="score">Score</th>
-                <th class="score">Score Entered</th>
-            </tr>
-            <#list playerToMatches?keys as key>
-                <#if key = player.id>
-                    <#list playerToMatches[key] as match>
-                        <td class="round">${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
-                        <td class="round">${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")}</td>
-                        <td class="player">${match.playerOne.user.name}</td>
-                        <td class="player">${match.playerTwo.user.name}</td>
-                        <td class="score">${match.score!""}</td>
-                        <td class="score_entered"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
-                    </#list>
-                </#if>
-            </#list>
-        </tbody>
-    </table>
+        <#if (player.matches?size > 0)>
+        <h2 class="table_subtitle">${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</h2>
+        <table>
+            <tbody>
+                <tr>
+                    <th class="hide_on_very_small_screen">Division</th>
+                    <th>Round</th>
+                    <th>Player One</th>
+                    <th>Player Two</th>
+                    <th class="hide_on_medium_screen">Score Entered</th>
+                    <th>Score</th>
+                </tr>
+                <#list player.matches as match>
+                    <tr>
+                        <td class="hide_on_very_small_screen">${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
+                        <td>${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                        <td><@showContactDetails match.playerOne.user/></td>
+                        <td><@showContactDetails match.playerTwo.user/></td>
+                        <td class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
+                        <td style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
+                    </tr>
+                </#list>
+            </tbody>
+        </table>
+        <div class="standalone_link">
+            <a href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} opponents</a>
+        </div>
+        </#if>
     </#list>
+</#macro>
+
+<#macro showContactDetails user>
+${user.name}<br>
+    <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a></#if><br>
+<a href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span class="display_on_small_screen">email</span></a>
 </#macro>
 
 <@page_html/>

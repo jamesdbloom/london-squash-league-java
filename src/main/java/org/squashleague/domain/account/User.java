@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Player;
@@ -13,15 +15,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author jamesdbloom
  */
 @Entity
-public class User extends ModelObject {
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class User extends ModelObject<User> {
 
     public static final String PASSWORD_PATTERN = "^.*(?=.{8,})(?=.*\\d)(?=.*(\\£|\\!|\\@|\\#|\\$|\\%|\\^|\\&|\\*|\\(|\\)|\\-|\\_|\\[|\\]|\\{|\\}|\\<|\\>|\\~|\\`|\\+|\\=|\\,|\\.|\\;|\\:|\\/|\\?|\\|))(?=.*[a-zA-Z]).*$";
     public static final String EMAIL_PATTERN = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
@@ -49,6 +51,11 @@ public class User extends ModelObject {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Player> players;
+
+
+    public boolean showMobileToOpponent() {
+        return getMobilePrivacy() == MobilePrivacy.SHOW_ALL || getMobilePrivacy() == MobilePrivacy.SHOW_OPPONENTS;
+    }
 
     public String getName() {
         return name;
@@ -169,6 +176,31 @@ public class User extends ModelObject {
         return this;
     }
 
+    public User merge(User user) {
+        if (user.name != null) {
+            this.name = user.name;
+        }
+        if (user.email != null) {
+            this.email = user.email;
+        }
+        if (user.mobile != null) {
+            this.mobile = user.mobile;
+        }
+        if (user.mobilePrivacy != null) {
+            this.mobilePrivacy = user.mobilePrivacy;
+        }
+        if (user.password != null) {
+            this.password = user.password;
+        }
+        if (user.roles != null) {
+            this.roles = user.roles;
+        }
+        if (user.players != null) {
+            this.players = user.players;
+        }
+        return this;
+    }
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toStringExclude(this, "logger", "players");
@@ -177,6 +209,8 @@ public class User extends ModelObject {
     @Override
     public boolean equals(Object other) {
         return other instanceof User && new EqualsBuilder()
+                .append(getId(), ((User) other).getId())
+                .append(getVersion(), ((User) other).getVersion())
                 .append(name, ((User) other).name)
                 .append(email, ((User) other).email)
                 .append(mobile, ((User) other).mobile)

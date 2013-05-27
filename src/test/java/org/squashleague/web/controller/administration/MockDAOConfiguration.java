@@ -78,7 +78,7 @@ public class MockDAOConfiguration {
                     (Player) new Player()
                             .withUser(users.get(i))
                             .withCurrentDivision(divisions.get(i))
-                            .withPlayerStatus(PlayerStatus.ACTIVE)
+                            .withStatus(PlayerStatus.ACTIVE)
                             .withId((long) i)
             );
             matches.add(

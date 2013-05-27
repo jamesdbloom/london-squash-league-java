@@ -39,34 +39,18 @@ public class EmailService {
     @VisibleForTesting
     @PreAuthorize("isAuthenticated()")
     protected void sendMessage(final String from, final String[] to, final String subject, final String msg) {
-        taskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    mailSender.send(new MimeMessagePreparator() {
-                        public void prepare(MimeMessage mimeMessage) throws MessagingException {
-                            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-                            message.setFrom(from);
-                            message.setTo(to);
-                            message.setSubject(subject);
-                            message.setText(msg, true);
-                        }
-                    });
-                } catch (Exception e) {
-                    logger.warn("Failed to send " + subject + "email to " + to, e);
-                }
-            }
-        });
+        taskExecutor.execute(new SendMessageTask(from, to, subject, msg, mailSender));
     }
 
     public void sendContactUsMessage(String message, String userAgent, String ip, String address) {
         String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "Contact Us";
-        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>" +
+        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>\n" +
                 "<p>A message has been submitted as follows:</p>\n" +
-                "<p>Email: " + address + "</p>\n" +
-                "<p>Message: " + message + "</p>\n" +
-                "<p>User Agent: " + userAgent + "</p>\n" +
-                "<p>Remote Address: " + ip + "</p>" +
+                "<p><b>Email:</b> " + address + "</p>\n" +
+                "<p><b>User Agent:</b> " + userAgent + "</p>\n" +
+                "<p><b>Remote Address:</b> " + ip + "</p>\n" +
+                "<div style=\"width:100%; height: 1.5em;\"></div>\n" +
+                "<p><b>Message:</b> " + message + "</p>\n" +
                 "</body></html>";
         sendMessage(address, new String[]{environment.getProperty("email.contact.address"), address}, subject, formattedMessage);
     }
@@ -79,11 +63,44 @@ public class EmailService {
                 "/updatePassword?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&oneTimeToken=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
         );
         String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "New Registration";
-        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>" +
+        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>\n" +
                 "<h1>" + subject + "</h1>\n" +
                 "<p>A new has just been registered for " + user.getEmail() + "</p>\n" +
                 "<p>To validate this email address please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
                 "</body></html>";
         sendMessage(environment.getProperty("email.contact.address"), new String[]{user.getEmail()}, subject, formattedMessage);
+    }
+
+    public class SendMessageTask implements Runnable {
+        private final String from;
+        private final String[] to;
+        private final String subject;
+        private final String msg;
+        private final JavaMailSender mailSender;
+
+        public SendMessageTask(String from, String[] to, String subject, String msg, JavaMailSender mailSender) {
+            this.from = from;
+            this.to = to;
+            this.subject = subject;
+            this.msg = msg;
+            this.mailSender = mailSender;
+        }
+
+        public void run() {
+            try {
+                mailSender.send(new MimeMessagePreparator() {
+                    public void prepare(MimeMessage mimeMessage) throws MessagingException {
+                        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+                        message.setFrom(from);
+                        message.setTo(to);
+                        message.setSubject(subject);
+                        message.setText(msg, true);
+                    }
+                });
+            } catch (Exception e) {
+                logger.warn("Failed to send " + subject + "email to " + to, e);
+            }
+        }
+
     }
 }

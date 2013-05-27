@@ -13,14 +13,12 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class League extends ModelObject {
+public class League extends ModelObject<League> {
 
     @NotNull(message = "{validation.league.name}")
     @Size(min = 5, max = 25, message = "{validation.league.name}")
@@ -70,6 +68,19 @@ public class League extends ModelObject {
         this.divisions = new ArrayList<>();
         for (Division division : divisions) {
             this.divisions.add(division.withLeague(this));
+        }
+        return this;
+    }
+
+    public League merge(League league) {
+        if (league.name != null) {
+            this.name = league.name;
+        }
+        if (league.club != null) {
+            this.club = league.club;
+        }
+        if (league.divisions != null) {
+            this.divisions = league.divisions;
         }
         return this;
     }

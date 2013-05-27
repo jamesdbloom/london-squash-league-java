@@ -97,12 +97,13 @@ public class EmailServiceTest {
         assertEquals(leagueEmail, mimeMessage.getAllRecipients()[0].toString());
         assertEquals(from, mimeMessage.getAllRecipients()[1].toString());
         assertEquals(subject, mimeMessage.getSubject());
-        assertEquals("<html><head><title>" + subject + "</title></head><body>" +
+        assertEquals("<html><head><title>" + subject + "</title></head><body>\n" +
                 "<p>A message has been submitted as follows:</p>\n" +
-                "<p>Email: " + from + "</p>\n" +
-                "<p>Message: " + message + "</p>\n" +
-                "<p>User Agent: " + userAgent + "</p>\n" +
-                "<p>Remote Address: " + ip + "</p>" +
+                "<p><b>Email:</b> " + from + "</p>\n" +
+                "<p><b>User Agent:</b> " + userAgent + "</p>\n" +
+                "<p><b>Remote Address:</b> " + ip + "</p>\n" +
+                "<div style=\"width:100%; height: 1.5em;\"></div>\n" +
+                "<p><b>Message:</b> " + message + "</p>\n" +
                 "</body></html>", mimeMessage.getContent().toString());
     }
 
@@ -135,7 +136,7 @@ public class EmailServiceTest {
         assertEquals(email, mimeMessage.getAllRecipients()[0].toString());
         assertEquals(subject, mimeMessage.getSubject());
 
-        assertEquals("<html><head><title>" + subject + "</title></head><body>" +
+        assertEquals("<html><head><title>" + subject + "</title></head><body>\n" +
                 "<h1>" + subject + "</h1>\n" +
                 "<p>A new has just been registered for " + email + "</p>\n" +
                 "<p>To validate this email address please click on the following link <a href=https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + ">https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + "</a></p>\n" +

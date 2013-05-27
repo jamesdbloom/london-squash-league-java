@@ -43,6 +43,7 @@ public class AdministrationController {
 
     @RequestMapping(value = "/administration", method = RequestMethod.GET)
     public String list(Model uiModel) {
+        uiModel.addAttribute("scorePattern", Match.SCORE_PATTERN);
         uiModel.addAttribute("environment", environment);
 
         uiModel.addAttribute("roles", roleDAO.findAll());
