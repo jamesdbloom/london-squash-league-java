@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
+import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 
 import javax.annotation.Resource;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 classes = RootConfiguration.class),
         @ContextConfiguration(
                 name = "dispatcher",
-                classes = WebMvcConfiguration.class)
+                classes = {WebMvcConfiguration.class})
 })
 public class ErrorPageIntegrationTest {
 

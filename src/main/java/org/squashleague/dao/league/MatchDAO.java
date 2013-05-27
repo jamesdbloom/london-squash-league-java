@@ -11,6 +11,7 @@ import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,16 +27,11 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
 
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #player.user.id or principal.id")
-    public User findByPlayer(Player player) {
+    public List<Match> findByPlayer(Player player) {
         try {
-            List<User> resultList = entityManager.createQuery("from Match as match where match.playerOne.id = " + player.getId() + " or match.playerTwo.id = " + player.getId(), User.class).getResultList();
-            if (resultList.size() > 0) {
-                return resultList.get(0);
-            } else {
-                return null;
-            }
+            return entityManager.createQuery("from Match as match where match.playerOne.id = " + player.getId() + " or match.playerTwo.id = " + player.getId(), Match.class).getResultList();
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return new ArrayList<>();
         }
     }
 

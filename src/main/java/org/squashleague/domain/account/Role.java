@@ -3,13 +3,12 @@ package org.squashleague.domain.account;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Club;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,6 +16,8 @@ import javax.validation.constraints.Size;
  * @author jamesdbloom
  */
 @Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Role extends ModelObject {
 
     public static final Role ROLE_ANONYMOUS = new Role().withName("ROLE_ANONYMOUS").withDescription("Anonymous User Role");

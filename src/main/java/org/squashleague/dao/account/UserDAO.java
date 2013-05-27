@@ -83,11 +83,7 @@ public class UserDAO {
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #id")
     public User findById(Long id) {
         try {
-            User user = entityManager.find(User.class, id);
-            for(Player player : user.getPlayers()) {
-                player.toString();
-            }
-            return user;
+            return entityManager.find(User.class, id);
         } catch (Exception e) {
             logger.error(String.format("Exception while finding user with id %s", id), e);
         }

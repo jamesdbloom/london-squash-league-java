@@ -10,7 +10,7 @@
 
 <#macro content_section>
 <style>
-    #password:invalid.filled + .error_message::after {
+    #newPassword:invalid.filled + .error_message::after {
         content: "${environment.getProperty("validation.user.password")}";
     }
 
@@ -18,7 +18,7 @@
         content: "${environment.getProperty("validation.user.passwordNonMatching")}";
     }
 </style>
-<form action="/updatePassword" method="POST">
+<form action="/account/updatePassword" method="POST">
     <#if validationErrors?? && (validationErrors?size > 0)>
         <div id="validation_error_password" class="errors_warnings">
             <p>There were problems with the data you entered:</p>
@@ -32,15 +32,16 @@
         </script>
     </#if>
     <div class="standard_form">
-        <input id="email" name="email" type="hidden" value="${email!""}">
-        <input id="oneTimeToken" name="oneTimeToken" type="hidden" value="${oneTimeToken!""}">
-
         <p>
-            <label for="password">Password:</label> <input type="password" id="password" name="password" value="" required="required" pattern="${passwordPattern}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
+            <label for="existingPassword">Existing Password:</label> <input type="password" id="existingPassword" name="existingPassword" value="" required="required" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
         </p>
 
         <p>
-            <label for="passwordConfirm">Password Confirm:</label> <input type="password" id="passwordConfirm" name="passwordConfirm" value="" required="required" pattern="${passwordPattern}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
+            <label for="newPassword">New Password:</label> <input type="password" id="newPassword" name="newPassword" value="" required="required" pattern="${passwordPattern}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
+        </p>
+
+        <p>
+            <label for="passwordConfirm">New Password Confirm:</label> <input type="password" id="passwordConfirm" name="passwordConfirm" value="" required="required" pattern="${passwordPattern}" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>
         </p>
 
         <div style="width:100%; height: 1em;"></div>
@@ -53,7 +54,7 @@
 <script>
     var errors = errors || {},
             validation = {
-                filled: ['password'],
+                filled: ['existingPassword', 'newPassword'],
                 matches: [
                     {id: 'passwordConfirm', matches: 'password'}
                 ],

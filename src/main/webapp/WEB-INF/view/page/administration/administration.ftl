@@ -331,7 +331,7 @@
             <#list matches as match>
                 <tr>
                     <td class="key">${match.id}</td>
-                    <td class="round">${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
+                    <td class="round">${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name} &ndash; (${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")})</td>
                     <td class="player">${match.playerOne.user.name}</td>
                     <td class="player">${match.playerTwo.user.name}</td>
                     <td class="score">${match.score!""}</td>

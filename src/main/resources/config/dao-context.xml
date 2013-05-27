@@ -40,6 +40,7 @@
         </property>
     </bean>
 
+
     <!-- transactions -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">

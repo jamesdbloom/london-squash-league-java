@@ -20,6 +20,7 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
+import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
@@ -42,7 +43,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = {RootConfiguration.class}
         ),
         @ContextConfiguration(
                 name = "dispatcher",

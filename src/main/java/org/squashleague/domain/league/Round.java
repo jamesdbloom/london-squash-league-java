@@ -3,6 +3,8 @@ package org.squashleague.domain.league;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,11 +14,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Round extends ModelObject {
 
     @NotNull(message = "{validation.round.startDate}")
@@ -29,13 +31,11 @@ public class Round extends ModelObject {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime endDate;
-    @NotNull
-    private RoundStatus status = RoundStatus.UNKNOWN;
     @NotNull(message = "{validation.round.division}")
     @ManyToOne
     private Division division;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "matches_id")
+    @JoinColumn(name = "round_id")
     private List<Match> matches;
 
     public DateTime getStartDate() {
@@ -48,18 +48,7 @@ public class Round extends ModelObject {
     }
 
     private void updateStatus() {
-        if (startDate != null && endDate != null) {
-            DateTime offset = DateTime.now().plusDays(2);
-            if (startDate.isAfter(offset)) {
-                status = RoundStatus.NOT_STARTED;
-            } else if (startDate.isAfterNow() && startDate.isBefore(offset)) {
-                status = RoundStatus.STARTING_SOON;
-            } else if (startDate.isBeforeNow() && endDate.isAfterNow()) {
-                status = RoundStatus.INPLAY;
-            } else if (endDate.isBeforeNow()) {
-                status = RoundStatus.FINISHED;
-            }
-        }
+
     }
 
     public Round withStartDate(DateTime startDate) {
@@ -82,16 +71,20 @@ public class Round extends ModelObject {
     }
 
     public RoundStatus getStatus() {
+        RoundStatus status = RoundStatus.UNKNOWN;
+        if (startDate != null && endDate != null) {
+            DateTime offset = DateTime.now().plusDays(2);
+            if (startDate.isAfter(offset)) {
+                status = RoundStatus.NOT_STARTED;
+            } else if (startDate.isAfterNow() && (startDate.isBefore(offset) || startDate.isEqual(offset))) {
+                status = RoundStatus.STARTING_SOON;
+            } else if ((startDate.isBeforeNow() || startDate.isEqualNow()) && (endDate.isAfterNow() || endDate.isEqualNow())) {
+                status = RoundStatus.INPLAY;
+            } else if (endDate.isBeforeNow()) {
+                status = RoundStatus.FINISHED;
+            }
+        }
         return status;
-    }
-
-    public void setStatus(RoundStatus roundStatus) {
-        this.status = roundStatus;
-    }
-
-    public Round withRoundStatus(RoundStatus roundStatus) {
-        setStatus(roundStatus);
-        return this;
     }
 
     public Division getDivision() {
@@ -115,7 +108,7 @@ public class Round extends ModelObject {
         this.matches = matches;
     }
 
-    public Round withMatches(Match... matches) {
+    public Round withMatches(List<Match> matches) {
         this.matches = new ArrayList<>();
         for (Match match : matches) {
             this.matches.add(match.withRound(this));

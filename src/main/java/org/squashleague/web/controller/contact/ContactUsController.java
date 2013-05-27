@@ -35,7 +35,7 @@ public class ContactUsController {
     @RequestMapping(value = "/contact_us", method = RequestMethod.GET)
     public String contactUsPage(Model uiModel) {
         uiModel.addAttribute("user", securityUserContext.getCurrentUser());
-        return "page/contact_us";
+        return "page/contact/contact_us";
     }
 
     @RequestMapping(value = "/contact_us", method = RequestMethod.POST)

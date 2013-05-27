@@ -43,7 +43,7 @@ public class ContactUsControllerTest {
         when(securityUserContext.getCurrentUser()).thenReturn(user);
 
         // then
-        assertEquals("page/contact_us", contactUsController.contactUsPage(uiModel));
+        assertEquals("page/contact/contact_us", contactUsController.contactUsPage(uiModel));
         verify(uiModel).addAttribute(eq("user"), same(user));
     }
 

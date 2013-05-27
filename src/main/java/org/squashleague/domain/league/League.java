@@ -3,9 +3,13 @@ package org.squashleague.domain.league;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
 import org.squashleague.domain.ModelObject;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -14,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class League extends ModelObject {
 
     @NotNull(message = "{validation.league.name}")
@@ -23,7 +29,7 @@ public class League extends ModelObject {
     @ManyToOne
     private Club club;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "divisions_id")
+    @JoinColumn(name = "league_id")
     private List<Division> divisions;
 
     public String getName() {

@@ -32,6 +32,8 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     @Resource
     private ClubDAO clubDAO;
     private Club club;
+    @Resource
+    private DivisionDAO divisionDAO;
 
     @Before
     public void setupDatabase() {
@@ -95,6 +97,9 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertEquals(expectedLeague, leagueDAO.findById(expectedLeague.getId()));
+        for(Division division : expectedLeague.getDivisions()) {
+            divisionDAO.delete(division);
+        }
         leagueDAO.delete(expectedLeague);
     }
 

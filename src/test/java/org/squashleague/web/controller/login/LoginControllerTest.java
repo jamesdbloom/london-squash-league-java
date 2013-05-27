@@ -10,6 +10,6 @@ public class LoginControllerTest {
 
     @Test
     public void shouldReturnCorrectLogicalViewName() {
-        Assert.assertEquals("page/login", new LoginController().getPage());
+        Assert.assertEquals("page/user/login", new LoginController().getPage());
     }
 }

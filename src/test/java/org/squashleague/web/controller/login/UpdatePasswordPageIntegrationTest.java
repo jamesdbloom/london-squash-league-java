@@ -17,6 +17,7 @@ import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
+import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.service.security.SecurityMockingConfiguration;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.configuration.WebMvcConfiguration;
@@ -88,8 +89,8 @@ public class UpdatePasswordPageIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("email", user.getEmail())
                 .param("oneTimeToken", user.getOneTimeToken())
-                .param("passwordOne", user.getPassword())
-                .param("passwordTwo", user.getPassword())
+                .param("password", user.getPassword())
+                .param("passwordConfirm", user.getPassword())
         )
                 // then
                 .andExpect(redirectedUrl("/"));
@@ -115,8 +116,8 @@ public class UpdatePasswordPageIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("email", user.getEmail())
                 .param("oneTimeToken", user.getOneTimeToken())
-                .param("passwordOne", user.getPassword())
-                .param("passwordTwo", user.getPassword())
+                .param("password", user.getPassword())
+                .param("passwordConfirm", user.getPassword())
         )
                 // then
                 .andExpect(status().isOk())
@@ -146,8 +147,8 @@ public class UpdatePasswordPageIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("email", user.getEmail())
                 .param("oneTimeToken", user.getOneTimeToken())
-                .param("passwordOne", user.getPassword())
-                .param("passwordTwo", "none_matching_password")
+                .param("password", user.getPassword())
+                .param("passwordConfirm", "none_matching_password")
         )
                 // then
                 .andExpect(status().isOk())

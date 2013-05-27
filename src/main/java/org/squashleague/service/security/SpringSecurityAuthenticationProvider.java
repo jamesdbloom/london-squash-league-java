@@ -1,12 +1,12 @@
 package org.squashleague.service.security;
 
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.User;
@@ -22,14 +22,16 @@ public class SpringSecurityAuthenticationProvider implements AuthenticationProvi
     @Resource
     private UserDAO userDAO;
     @Resource
-    private PasswordEncoder passwordEncoder;
+    private Environment environment;
+    @Resource
+    private CredentialValidation credentialValidation;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
         User user = userDAO.findByEmail(token.getName());
-        if (user == null || token.getCredentials() == null || user.getPassword() == null || !passwordEncoder.matches((CharSequence) token.getCredentials(), user.getPassword())) {
-            throw new UsernameNotFoundException("Invalid username & password combination");
+        if (!credentialValidation.credentialsMatch((CharSequence) token.getCredentials(), user)) {
+            throw new UsernameNotFoundException(environment.getProperty("validation.user.invalidCredentials"));
         }
         return new UsernamePasswordAuthenticationToken(user, user.getPassword(), AuthorityUtils.createAuthorityList(user.getRoleNames()));
     }

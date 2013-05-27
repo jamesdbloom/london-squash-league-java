@@ -103,7 +103,6 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withRoundStatus(RoundStatus.INPLAY)
                 .withDivision(division);
 
         // when

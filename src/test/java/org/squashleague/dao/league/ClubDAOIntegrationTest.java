@@ -26,6 +26,8 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Resource
     private ClubDAO clubDAO;
+    @Resource
+    private LeagueDAO leagueDAO;
 
     @Test
     public void shouldSaveRequiredFieldsAndRetrieveById() throws Exception {
@@ -77,6 +79,9 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
 
         // then
         assertEquals(expectedClub, clubDAO.findById(expectedClub.getId()));
+        for(League league : expectedClub.getLeagues()) {
+            leagueDAO.delete(league);
+        }
         clubDAO.delete(expectedClub);
     }
 

@@ -16,6 +16,7 @@ import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
+import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
@@ -42,7 +43,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
         ),
         @ContextConfiguration(
                 name = "dispatcher",
-                classes = WebMvcConfiguration.class,
+                classes = {WebMvcConfiguration.class},
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })

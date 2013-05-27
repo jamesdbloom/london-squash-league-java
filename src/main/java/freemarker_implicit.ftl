@@ -28,8 +28,8 @@
 <!-- registration -->
 [#-- @ftlvariable name="emailPattern" type="java.lang.String" --]
 [#-- @ftlvariable name="passwordPattern" type="java.lang.String" --]
-[#-- @ftlvariable name="passwordOne" type="java.lang.String" --]
-[#-- @ftlvariable name="passwordTwo" type="java.lang.String" --]
+[#-- @ftlvariable name="password" type="java.lang.String" --]
+[#-- @ftlvariable name="passwordConfirm" type="java.lang.String" --]
 [#-- @ftlvariable name="email" type="java.lang.String" --]
 [#-- @ftlvariable name="oneTimeToken" type="java.lang.String" --]
 [#-- @ftlvariable name="validationErrors" type="java.util.List<java.lang.String>" --]
@@ -37,3 +37,6 @@
 <!-- message -->
 [#-- @ftlvariable name="title" type="java.lang.String" --]
 [#-- @ftlvariable name="message" type="java.lang.String" --]
+
+<!-- account -->
+[#-- @ftlvariable name="playerToMatches" type="java.util.Map<java.lang.Long, java.util.List<org.squashleague.domain.league.Match>>" --]

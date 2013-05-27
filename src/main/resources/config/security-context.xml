@@ -39,12 +39,14 @@
         <security:intercept-url pattern="/ranking" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/contact_us" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/account" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/account/updatePassword" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/logout" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/match/update/**" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/user/update/**" access="isAuthenticated()" requires-channel="https"/>
         <!-- ADMIN ONLY -->
         <security:intercept-url pattern="/print" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/administration" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/setupTestData" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <!-- DOMAIN PAGES ONLY -->
         <security:intercept-url pattern="/role/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
@@ -55,10 +57,9 @@
         <security:intercept-url pattern="/player/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/match/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <!-- cover all remaining pages -->
-        <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/**" access="denyAll()" requires-channel="https"/>
     </security:http>
 
-    <!-- users - todo: to be replaced with stronger solution -->
     <security:authentication-manager>
         <security:authentication-provider ref="springSecurityAuthenticationProvider" />
     </security:authentication-manager>

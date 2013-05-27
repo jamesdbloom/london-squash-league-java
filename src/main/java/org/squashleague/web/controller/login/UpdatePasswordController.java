@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
+import org.squashleague.service.security.CredentialValidation;
+import org.squashleague.service.security.SpringSecurityAuthenticationProvider;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.service.uuid.UUIDService;
 
@@ -39,6 +41,8 @@ public class UpdatePasswordController {
     private EmailService emailService;
     @Resource
     private UUIDService uuidService;
+    @Resource
+    private CredentialValidation credentialValidation;
 
     @RequestMapping(value = "/retrievePassword", method = RequestMethod.GET)
     public String retrievePasswordForm(Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
@@ -82,13 +86,13 @@ public class UpdatePasswordController {
     }
 
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
-    public String updatePassword(String email, String passwordOne, String passwordTwo, String oneTimeToken, Model uiModel, RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
+    public String updatePassword(String email, String password, String passwordConfirm, String oneTimeToken, Model uiModel, RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         User user = userDAO.findByEmail(email);
         if (hasInvalidToken(user, oneTimeToken, redirectAttributes)) {
             return "redirect:/message";
         }
-        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(passwordOne)).matches();
-        boolean passwordsMatchError = !String.valueOf(passwordOne).equals(passwordTwo);
+        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(password)).matches();
+        boolean passwordsMatchError = !String.valueOf(password).equals(passwordConfirm);
         if (passwordFormatError || passwordsMatchError) {
             uiModel.addAttribute("passwordPattern", User.PASSWORD_PATTERN);
             uiModel.addAttribute("environment", environment);
@@ -104,8 +108,41 @@ public class UpdatePasswordController {
             uiModel.addAttribute("validationErrors", errors);
             return "page/user/updatePassword";
         }
-        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(passwordOne)));
+        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(password)));
         securityUserContext.setCurrentUser(user);
         return "redirect:/";
+    }
+
+    @RequestMapping(value = "/account/updatePassword", method = RequestMethod.GET)
+    public String authenticatedUpdatePasswordForm(Model uiModel) throws UnsupportedEncodingException {
+        uiModel.addAttribute("passwordPattern", User.PASSWORD_PATTERN);
+        uiModel.addAttribute("environment", environment);
+        return "page/account/updatePassword";
+    }
+
+    @RequestMapping(value = "/account/updatePassword", method = RequestMethod.POST)
+    public String authenticatedUpdatePassword(String email, String password, String passwordConfirm, Model uiModel) throws UnsupportedEncodingException {
+        User user = userDAO.findByEmail(email);
+        boolean incorrectCredentials = credentialValidation.checkCredentials(password, user);
+        boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(password)).matches();
+        boolean passwordsMatchError = !String.valueOf(password).equals(passwordConfirm);
+        if (incorrectCredentials || passwordFormatError || passwordsMatchError) {
+            uiModel.addAttribute("passwordPattern", User.PASSWORD_PATTERN);
+            uiModel.addAttribute("environment", environment);
+            List<String> errors = new ArrayList<>();
+            if (incorrectCredentials) {
+                errors.add(environment.getProperty("validation.user.invalidCredentials"));
+            }
+            if (passwordFormatError) {
+                errors.add(environment.getProperty("validation.user.password"));
+            }
+            if (passwordsMatchError) {
+                errors.add(environment.getProperty("validation.user.passwordNonMatching"));
+            }
+            uiModel.addAttribute("validationErrors", errors);
+            return "page/account/updatePassword";
+        }
+        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(password)));
+        return "redirect:/account";
     }
 }
