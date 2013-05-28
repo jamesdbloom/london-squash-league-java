@@ -16,11 +16,9 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -79,16 +77,16 @@ public class AdministrationControllerTest {
         administrationController.list(uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
-        verify(uiModel).addAttribute(eq("roles"), same(roles));
-        verify(uiModel).addAttribute(eq("users"), same(users));
+        verify(uiModel).addAttribute("environment", environment);
+        verify(uiModel).addAttribute("roles", roles);
+        verify(uiModel).addAttribute("users", users);
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("clubs"), same(clubs));
-        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
-        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
-        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
-        verify(uiModel).addAttribute(eq("matches"), same(matches));
-        verify(uiModel).addAttribute(eq("players"), same(players));
+        verify(uiModel).addAttribute("clubs", clubs);
+        verify(uiModel).addAttribute("leagues", leagues);
+        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("matches", matches);
+        verify(uiModel).addAttribute("players", players);
         verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
 
         verify(uiModel).addAttribute("role", new Role());

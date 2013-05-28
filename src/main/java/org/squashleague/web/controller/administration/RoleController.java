@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.RoleDAO;
-import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 
 import javax.annotation.Resource;

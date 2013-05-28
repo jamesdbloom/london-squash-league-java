@@ -36,7 +36,7 @@ public class RoundController {
     public String create(@Valid Round round, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate());
         if (bindingResult.hasErrors() || startDateAfterEndDate) {
-            if(startDateAfterEndDate) {
+            if (startDateAfterEndDate) {
                 bindingResult.addError(new ObjectError("round", environment.getProperty("validation.round.startDateAfterEndDate")));
             }
             redirectAttributes.addFlashAttribute("bindingResult", bindingResult);
@@ -58,7 +58,7 @@ public class RoundController {
     public String update(@Valid Round round, BindingResult bindingResult, Model uiModel) {
         boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate());
         if (bindingResult.hasErrors() || startDateAfterEndDate) {
-            if(startDateAfterEndDate) {
+            if (startDateAfterEndDate) {
                 bindingResult.addError(new ObjectError("round", environment.getProperty("validation.round.startDateAfterEndDate")));
             }
             setupModel(uiModel);

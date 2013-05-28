@@ -4,24 +4,19 @@ import com.eaio.uuid.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
 import org.squashleague.service.uuid.UUIDService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
-import java.net.URLEncoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -52,9 +47,7 @@ public class RegistrationControllerTest {
         String oneTimeToken = new UUID().toString();
         when(uuidService.generateUUID()).thenReturn(oneTimeToken);
 
-        user = mock(User.class);
-        when(user.withOneTimeToken(same(oneTimeToken))).thenReturn(user);
-        when(user.getOneTimeToken()).thenReturn(oneTimeToken);
+        user = new User().withOneTimeToken(oneTimeToken);
 
         request = mock(HttpServletRequest.class);
         when(request.getLocalName()).thenReturn("www.london-squash-league.com");
@@ -72,55 +65,50 @@ public class RegistrationControllerTest {
         String page = registrationController.registerForm(uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("environment", environment);
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));
-        verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
-        verify(uiModel).addAttribute(eq("user"), eq(new User()));
+        verify(uiModel).addAttribute("passwordPattern", User.PASSWORD_PATTERN);
+        verify(uiModel).addAttribute("emailPattern", User.EMAIL_PATTERN);
+        verify(uiModel).addAttribute("user", new User());
         assertEquals("page/user/register", page);
     }
 
     @Test
     public void shouldRegisterAdminUserAndRedirect() throws Exception {
         // given
-        when(user.getEmail()).thenReturn("jamesdbloom@gmail.com");
-        when(user.withRole(same(Role.ROLE_ADMIN))).thenReturn(user);
+        user.withEmail("jamesdbloom@gmail.com");
 
         // when
         String page = registrationController.register(user, mock(BindingResult.class), request, uiModel);
 
         // then
-        verify(user).withRole(same(Role.ROLE_ADMIN));
-        verify(userDAO).register(eq(user));
+        verify(userDAO).register(user);
         assertEquals("redirect:/login", page);
     }
 
     @Test
     public void shouldRegisterNonAdminUserAndRedirect() throws Exception {
         // given
-        when(user.getEmail()).thenReturn("user@email.com");
-        when(user.withRole(same(Role.ROLE_USER))).thenReturn(user);
+        user.withEmail("jamesdbloom@gmail.com");
 
         // when
         String page = registrationController.register(user, mock(BindingResult.class), request, uiModel);
 
         // then
-        verify(user).withRole(same(Role.ROLE_USER));
-        verify(userDAO).register(eq(user));
+        verify(userDAO).register(user);
         assertEquals("redirect:/login", page);
     }
 
     @Test
     public void shouldSendEmail() throws Exception {
         // given
-        when(user.getEmail()).thenReturn("user@email.com");
-        when(user.withRole(same(Role.ROLE_USER))).thenReturn(user);
+        user.withEmail("jamesdbloom@gmail.com");
 
         // when
         registrationController.register(user, mock(BindingResult.class), request, uiModel);
 
         // then
-        verify(emailService).sendRegistrationMessage(same(user), same(request));
+        verify(emailService).sendRegistrationMessage(user, request);
     }
 
     @Test
@@ -134,13 +122,13 @@ public class RegistrationControllerTest {
         String page = registrationController.register(user, bindingResult, request, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("environment", environment);
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));
-        verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("user"), same(user));
+        verify(uiModel).addAttribute("passwordPattern", User.PASSWORD_PATTERN);
+        verify(uiModel).addAttribute("emailPattern", User.EMAIL_PATTERN);
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("user", user);
         assertEquals("page/user/register", page);
     }
 

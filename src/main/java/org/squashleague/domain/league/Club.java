@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Club extends ModelObject<Club> {
+public class Club extends ModelObject<Club> implements Comparable<Club> {
 
     @NotNull(message = "{validation.club.name}")
     @Size(min = 5, max = 25, message = "{validation.club.name}")
@@ -68,6 +68,11 @@ public class Club extends ModelObject<Club> {
             this.leagues.add(league.withClub(this));
         }
         return this;
+    }
+
+    @Override
+    public int compareTo(Club other) {
+        return name.compareTo(other.name);
     }
 
     public Club merge(Club club) {

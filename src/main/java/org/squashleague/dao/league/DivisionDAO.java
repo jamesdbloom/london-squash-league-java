@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.AbstractJpaDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.League;
 
 import java.util.List;
 

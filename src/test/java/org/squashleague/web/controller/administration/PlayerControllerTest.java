@@ -20,12 +20,10 @@ import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -70,7 +68,7 @@ public class PlayerControllerTest {
         String page = playerController.create(player, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(playerDAO).save(same(player));
+        verify(playerDAO).save(player);
         assertEquals("redirect:/administration", page);
     }
 
@@ -87,8 +85,8 @@ public class PlayerControllerTest {
         String page = playerController.create(player, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(player));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, player);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -98,18 +96,18 @@ public class PlayerControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Player player = new Player();
-        when(playerDAO.findById(same(id))).thenReturn(player);
+        when(playerDAO.findById(id)).thenReturn(player);
 
         // when
         String page = playerController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("player"), same(player));
+        verify(uiModel).addAttribute("player", player);
         verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("users"), same(users));
-        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
-        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("users", users);
+        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("leagues", leagues);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/player/update", page);
     }
 
@@ -124,7 +122,7 @@ public class PlayerControllerTest {
         String page = playerController.update(player, bindingResult, uiModel);
 
         // then
-        verify(playerDAO).update(same(player));
+        verify(playerDAO).update(player);
         assertEquals("redirect:/administration", page);
     }
 
@@ -140,13 +138,13 @@ public class PlayerControllerTest {
         String page = playerController.update(player, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("player"), same(player));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("player", player);
         verify(uiModel).addAttribute("playerStatuses", PlayerStatus.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("users"), same(users));
-        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
-        verify(uiModel).addAttribute(eq("leagues"), same(leagues));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("users", users);
+        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("leagues", leagues);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/player/update", page);
     }
 
@@ -159,7 +157,7 @@ public class PlayerControllerTest {
         String page = playerController.delete(id);
 
         // then
-        verify(playerDAO).delete(same(id));
+        verify(playerDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

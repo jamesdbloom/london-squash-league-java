@@ -15,7 +15,6 @@ import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 import org.squashleague.web.controller.administration.MockDAOConfiguration;

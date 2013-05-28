@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Division extends ModelObject<Division> {
+public class Division extends ModelObject<Division> implements Comparable<Division> {
 
     @NotNull(message = "{validation.division.name}")
     @Size(min = 5, max = 25, message = "{validation.division.name}")
@@ -78,6 +78,12 @@ public class Division extends ModelObject<Division> {
             }
         }
         return rounds;
+    }
+
+
+    @Override
+    public int compareTo(Division other) {
+        return (league.compareTo(other.league) == 0 ? name.compareTo(other.name) : league.compareTo(other.league));
     }
 
     public Division merge(Division division) {

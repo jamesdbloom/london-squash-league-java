@@ -63,12 +63,12 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("one@email.com")
                 .withName("playerOne name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userTwo = new User()
                 .withEmail("two@email.com")
                 .withName("playerTwo name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userDAO.save(userOne);
         userDAO.save(userTwo);
         club = new Club()
@@ -168,9 +168,9 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldUpdateWhenContainsChildren() throws Exception {
         // given
         Player expectedPlayer = new Player()
-                        .withCurrentDivision(division)
-                        .withStatus(PlayerStatus.ACTIVE)
-                        .withUser(userOne);
+                .withCurrentDivision(division)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
 
         // when
         playerDAO.save(expectedPlayer);

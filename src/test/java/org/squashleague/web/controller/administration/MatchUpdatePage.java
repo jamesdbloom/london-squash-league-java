@@ -5,7 +5,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
-import org.squashleague.domain.league.Player;
 
 import java.io.UnsupportedEncodingException;
 

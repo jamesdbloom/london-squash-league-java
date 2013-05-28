@@ -11,8 +11,8 @@ public class RoundTest {
     public void shouldHaveFinishedStatus() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime().minusDays(10));
-        round.setEndDate(new DateTime().minusDays(1));
+        round.withStartDate(new DateTime().minusDays(10));
+        round.withEndDate(new DateTime().minusDays(1));
 
         assertEquals(RoundStatus.FINISHED, round.getStatus());
     }
@@ -21,8 +21,8 @@ public class RoundTest {
     public void shouldHaveInPlayStatus() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime().minusDays(1));
-        round.setEndDate(new DateTime().plusDays(1));
+        round.withStartDate(new DateTime().minusDays(1));
+        round.withEndDate(new DateTime().plusDays(1));
 
         assertEquals(RoundStatus.INPLAY, round.getStatus());
     }
@@ -31,8 +31,8 @@ public class RoundTest {
     public void shouldHaveInPlayStatusIfStartDateOnBorder() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime());
-        round.setEndDate(new DateTime().plusDays(1));
+        round.withStartDate(new DateTime());
+        round.withEndDate(new DateTime().plusDays(1));
 
         assertEquals(RoundStatus.INPLAY, round.getStatus());
     }
@@ -41,8 +41,8 @@ public class RoundTest {
     public void shouldHaveInPlayStatusIfEndDateOnBorder() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime().minusDays(1));
-        round.setEndDate(new DateTime());
+        round.withStartDate(new DateTime().minusDays(1));
+        round.withEndDate(new DateTime());
 
         assertEquals(RoundStatus.INPLAY, round.getStatus());
     }
@@ -51,8 +51,8 @@ public class RoundTest {
     public void shouldHaveStartingSoonStatus() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime().plusDays(1));
-        round.setEndDate(new DateTime().plusDays(10));
+        round.withStartDate(new DateTime().plusDays(1));
+        round.withEndDate(new DateTime().plusDays(10));
 
         assertEquals(RoundStatus.STARTING_SOON, round.getStatus());
     }
@@ -61,8 +61,8 @@ public class RoundTest {
     public void shouldHaveStartingSoonStatusIfStartDateOnBorder() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime().plusDays(2));
-        round.setEndDate(new DateTime().plusDays(2));
+        round.withStartDate(new DateTime().plusDays(2));
+        round.withEndDate(new DateTime().plusDays(2));
 
         assertEquals(RoundStatus.STARTING_SOON, round.getStatus());
     }
@@ -71,8 +71,8 @@ public class RoundTest {
     public void shouldHaveNotStartedStatus() {
         Round round = new Round();
 
-        round.setStartDate(new DateTime().plusDays(5));
-        round.setEndDate(new DateTime().plusDays(10));
+        round.withStartDate(new DateTime().plusDays(5));
+        round.withEndDate(new DateTime().plusDays(10));
 
         assertEquals(RoundStatus.NOT_STARTED, round.getStatus());
     }

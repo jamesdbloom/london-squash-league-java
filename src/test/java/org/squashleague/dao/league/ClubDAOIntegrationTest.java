@@ -6,7 +6,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.account.Role;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.League;
 import org.squashleague.service.security.AdministratorLoggedInTest;
@@ -91,7 +90,7 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
         try {
             assertEquals(expectedClub, actualClub);
         } finally {
-            for(League league : expectedClub.getLeagues()) {
+            for (League league : expectedClub.getLeagues()) {
                 leagueDAO.delete(league);
             }
             clubDAO.delete(expectedClub);

@@ -38,7 +38,11 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
     }
 
     @Override
-    @Transactional
+    public List<Match> findAll() {
+        return entityManager.createQuery("from Match as match where match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal(), Match.class).getResultList();
+    }
+
+    @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #match.playerOne.user.id or principal.id == #match.playerTwo.user.id")
     public Match findById(Long id) {
         return super.findById(id);

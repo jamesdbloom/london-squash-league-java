@@ -17,12 +17,10 @@ import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -56,7 +54,7 @@ public class UserControllerTest {
         String page = userController.create(user, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(userDAO).save(same(user));
+        verify(userDAO).save(user);
         assertEquals("redirect:/administration", page);
     }
 
@@ -73,8 +71,8 @@ public class UserControllerTest {
         String page = userController.create(user, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(user));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, user);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -84,7 +82,7 @@ public class UserControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         User user = new User();
-        when(userDAO.findById(same(id))).thenReturn(user);
+        when(userDAO.findById(id)).thenReturn(user);
         List<Role> roles = Lists.newArrayList(
                 new Role()
                         .withName("role one name")
@@ -99,11 +97,11 @@ public class UserControllerTest {
         String page = userController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("user"), same(user));
-        verify(uiModel).addAttribute(eq("roles"), same(roles));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("user", user);
+        verify(uiModel).addAttribute("roles", roles);
+        verify(uiModel).addAttribute("environment", environment);
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
+        verify(uiModel).addAttribute("emailPattern", User.EMAIL_PATTERN);
         assertEquals("page/administration/user/update", page);
     }
 
@@ -117,7 +115,7 @@ public class UserControllerTest {
         String page = userController.update(user, mock(BindingResult.class), uiModel);
 
         // then
-        verify(userDAO).update(same(user));
+        verify(userDAO).update(user);
         assertEquals("redirect:/account", page);
     }
 
@@ -142,12 +140,12 @@ public class UserControllerTest {
         String page = userController.update(user, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("user"), same(user));
-        verify(uiModel).addAttribute(eq("roles"), same(roles));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("user", user);
+        verify(uiModel).addAttribute("roles", roles);
+        verify(uiModel).addAttribute("environment", environment);
         verify(uiModel).addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
-        verify(uiModel).addAttribute(eq("emailPattern"), same(User.EMAIL_PATTERN));
+        verify(uiModel).addAttribute("emailPattern", User.EMAIL_PATTERN);
         assertEquals("page/administration/user/update", page);
     }
 
@@ -160,7 +158,7 @@ public class UserControllerTest {
         String page = userController.delete(id);
 
         // then
-        verify(userDAO).delete(same(id));
+        verify(userDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

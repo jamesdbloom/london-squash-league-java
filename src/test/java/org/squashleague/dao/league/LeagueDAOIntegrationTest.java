@@ -1,6 +1,5 @@
 package org.squashleague.dao.league;
 
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
-import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
@@ -110,7 +108,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         try {
             assertEquals(expectedLeague, actualLeague);
         } finally {
-            for(Division division : expectedLeague.getDivisions()) {
+            for (Division division : expectedLeague.getDivisions()) {
                 divisionDAO.delete(division);
             }
             leagueDAO.delete(expectedLeague);
@@ -141,7 +139,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
             assertEquals(updatedLeague.incrementVersion(), actualLeague);
             assertEquals("new league name", actualLeague.getName());
         } finally {
-            for(Division division : expectedLeague.getDivisions()) {
+            for (Division division : expectedLeague.getDivisions()) {
                 divisionDAO.delete(division);
             }
             leagueDAO.delete(expectedLeague);

@@ -14,11 +14,8 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.squashleague.domain.account.User;
 
-import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
-import java.net.URLEncoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -37,13 +34,12 @@ public class EmailServiceTest {
     private ThreadPoolTaskExecutor taskExecutor;
     @InjectMocks
     private EmailService emailService = new EmailService();
-
     private ArgumentCaptor<Runnable> runnableArgumentCaptor;
     private ArgumentCaptor<MimeMessagePreparator> preparatorArgumentCaptor;
     private MimeMessage mimeMessage;
 
     @Before
-    public void setupMocks(){
+    public void setupMocks() {
         runnableArgumentCaptor = ArgumentCaptor.forClass(Runnable.class);
         doNothing().when(taskExecutor).execute(runnableArgumentCaptor.capture());
 
@@ -52,8 +48,6 @@ public class EmailServiceTest {
 
         mimeMessage = new JavaMailSenderImpl().createMimeMessage();
     }
-
-
 
     @Test
     public void shouldSendEmail() throws Exception {
@@ -112,9 +106,9 @@ public class EmailServiceTest {
         // given
         String token = "token";
         String email = "to@email.com";
-        User user = mock(User.class);
-        when(user.getEmail()).thenReturn(email);
-        when(user.getOneTimeToken()).thenReturn(token);
+        User user = new User()
+                .withEmail(email)
+                .withOneTimeToken(token);
 
         String hostName = "hostName";
         int port = 666;

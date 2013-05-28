@@ -1,5 +1,6 @@
 package org.squashleague.web.configuration;
 
+import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.TemplateException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -130,7 +131,12 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     public FreeMarkerConfigurer freemarkerConfig() throws IOException, TemplateException {
-        FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
+        FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer() {
+            protected void postProcessConfiguration(freemarker.template.Configuration config) throws IOException, TemplateException {
+                super.postProcessConfiguration(config);
+                ((DefaultObjectWrapper) config.getObjectWrapper()).setExposeFields(true);
+            }
+        };
         freeMarkerConfigurer.setTemplateLoaderPath("/");
         freeMarkerConfigurer.setFreemarkerSettings(new Properties() {{
             setProperty("template_exception_handler", "DEBUG");

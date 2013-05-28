@@ -16,6 +16,6 @@ public abstract class AdministratorLoggedInTest {
 
     @Before
     public void setupUser() {
-        securityUserContext.setCurrentUser(new User().withRole(Role.ROLE_ADMIN));
+        securityUserContext.setCurrentUser(new User().withRoles(Role.ROLE_ADMIN));
     }
 }

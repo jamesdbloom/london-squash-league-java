@@ -18,14 +18,12 @@ import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
 
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -340,7 +338,7 @@ public class MatchPageIntegrationTest {
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(matchDAO).delete(same(id));
+        verify(matchDAO).delete(id);
     }
 
 }

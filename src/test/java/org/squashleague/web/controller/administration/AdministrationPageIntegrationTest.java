@@ -86,7 +86,7 @@ public class AdministrationPageIntegrationTest {
                 .withEmail("test@email.com")
                 .withMobile("123456789")
                 .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                .withRole(role);
+                .withRoles(role);
         getAdministrationPage("user", 2, user).hasUserFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy(), role.getName());
     }
 

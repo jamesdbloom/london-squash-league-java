@@ -12,7 +12,6 @@ import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
 

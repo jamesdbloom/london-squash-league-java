@@ -9,7 +9,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.league.*;
+import org.squashleague.domain.league.Club;
+import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.League;
+import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
@@ -129,9 +132,9 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldUpdateWhenContainsChildren() throws Exception {
         // given
         Round expectedRound = new Round()
-                        .withStartDate(new DateTime().plusDays(1))
-                        .withEndDate(new DateTime().plusDays(2))
-                        .withDivision(division);
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withDivision(division);
 
         // when
         roundDAO.save(expectedRound);

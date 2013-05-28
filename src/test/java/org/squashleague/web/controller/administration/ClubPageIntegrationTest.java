@@ -14,13 +14,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.domain.league.Club;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
 
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -207,7 +205,7 @@ public class ClubPageIntegrationTest {
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(clubDAO).delete(same(id));
+        verify(clubDAO).delete(id);
     }
 
 }

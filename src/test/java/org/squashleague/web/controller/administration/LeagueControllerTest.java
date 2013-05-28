@@ -15,12 +15,10 @@ import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.Club;
 import org.squashleague.domain.league.League;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -57,7 +55,7 @@ public class LeagueControllerTest {
         String page = leagueController.create(league, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(leagueDAO).save(same(league));
+        verify(leagueDAO).save(league);
         assertEquals("redirect:/administration", page);
     }
 
@@ -74,8 +72,8 @@ public class LeagueControllerTest {
         String page = leagueController.create(league, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(league));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, league);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -85,15 +83,15 @@ public class LeagueControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         League league = new League();
-        when(leagueDAO.findById(same(id))).thenReturn(league);
+        when(leagueDAO.findById(id)).thenReturn(league);
 
         // when
         String page = leagueController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("league"), same(league));
-        verify(uiModel).addAttribute(eq("clubs"), same(clubs));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("league", league);
+        verify(uiModel).addAttribute("clubs", clubs);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/league/update", page);
     }
 
@@ -108,7 +106,7 @@ public class LeagueControllerTest {
         String page = leagueController.update(league, bindingResult, uiModel);
 
         // then
-        verify(leagueDAO).update(same(league));
+        verify(leagueDAO).update(league);
         assertEquals("redirect:/administration", page);
     }
 
@@ -124,10 +122,10 @@ public class LeagueControllerTest {
         String page = leagueController.update(league, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("league"), same(league));
-        verify(uiModel).addAttribute(eq("clubs"), same(clubs));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("league", league);
+        verify(uiModel).addAttribute("clubs", clubs);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/league/update", page);
     }
 
@@ -140,7 +138,7 @@ public class LeagueControllerTest {
         String page = leagueController.delete(id);
 
         // then
-        verify(leagueDAO).delete(same(id));
+        verify(leagueDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

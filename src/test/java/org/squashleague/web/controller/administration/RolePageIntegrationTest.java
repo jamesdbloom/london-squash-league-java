@@ -14,13 +14,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.domain.account.Role;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
 
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -205,7 +203,7 @@ public class RolePageIntegrationTest {
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(roleDAO).delete(same(id));
+        verify(roleDAO).delete(id);
     }
 
 }

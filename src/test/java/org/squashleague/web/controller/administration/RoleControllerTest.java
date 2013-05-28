@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.domain.account.Role;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class RoleControllerTest {
         String page = roleController.create(role, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(roleDAO).save(same(role));
+        verify(roleDAO).save(role);
         assertEquals("redirect:/administration", page);
     }
 
@@ -66,8 +65,8 @@ public class RoleControllerTest {
         String page = roleController.create(role, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(role));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, role);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -77,14 +76,14 @@ public class RoleControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Role role = new Role();
-        when(roleDAO.findById(same(id))).thenReturn(role);
+        when(roleDAO.findById(id)).thenReturn(role);
 
         // when
         String page = roleController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("role"), same(role));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("role", role);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/role/update", page);
     }
 
@@ -99,7 +98,7 @@ public class RoleControllerTest {
         String page = roleController.update(role, bindingResult, uiModel);
 
         // then
-        verify(roleDAO).update(same(role));
+        verify(roleDAO).update(role);
         assertEquals("redirect:/administration", page);
     }
 
@@ -115,9 +114,9 @@ public class RoleControllerTest {
         String page = roleController.update(role, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("role"), same(role));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("role", role);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/role/update", page);
     }
 
@@ -130,7 +129,7 @@ public class RoleControllerTest {
         String page = roleController.delete(id);
 
         // then
-        verify(roleDAO).delete(same(id));
+        verify(roleDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

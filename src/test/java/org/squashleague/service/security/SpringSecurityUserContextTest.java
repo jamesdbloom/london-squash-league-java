@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
 import static junit.framework.Assert.assertNull;
@@ -22,7 +23,7 @@ public class SpringSecurityUserContextTest {
     public void shouldGetCurrentUser() {
         // given
         UsernamePasswordAuthenticationToken token = mock(UsernamePasswordAuthenticationToken.class);
-        User user = mock(User.class);
+        User user = new User();
         when(token.getPrincipal()).thenReturn(user);
         SecurityContextHolder.getContext().setAuthentication(token);
 
@@ -64,11 +65,12 @@ public class SpringSecurityUserContextTest {
     @Test
     public void shouldSetUser() {
         // given
-        User user = mock(User.class);
-        String password = "password";
-        when(user.getPassword()).thenReturn(password);
-        String[] roles = {"roles"};
-        when(user.getRoleNames()).thenReturn(roles);
+        User user = new User()
+                .withPassword("password")
+                .withRoles(
+                        new Role().withName("one"),
+                        new Role().withName("two")
+                );
 
         // when
         new SpringSecurityUserContext().setCurrentUser(user);
@@ -76,7 +78,7 @@ public class SpringSecurityUserContextTest {
         // then
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         assertSame(user, authentication.getPrincipal());
-        assertSame(password, authentication.getCredentials());
-        assertEquals(AuthorityUtils.createAuthorityList(roles), authentication.getAuthorities());
+        assertSame(user.getPassword(), authentication.getCredentials());
+        assertEquals(AuthorityUtils.createAuthorityList(user.getRoleNames()), authentication.getAuthorities());
     }
 }

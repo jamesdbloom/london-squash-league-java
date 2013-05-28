@@ -10,7 +10,6 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +18,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 
 /**
@@ -79,7 +77,7 @@ public class UserDAOTest {
 
         // then
         assertEquals(newRole, userDAO.findOrCreateRole(newRole));
-        verify(entityManager).persist(same(newRole));
+        verify(entityManager).persist(newRole);
     }
 
     @Test
@@ -94,7 +92,7 @@ public class UserDAOTest {
 
         // then
         assertEquals(newRole, userDAO.findOrCreateRole(newRole));
-        verify(entityManager).persist(same(newRole));
+        verify(entityManager).persist(newRole);
     }
 
     @Test

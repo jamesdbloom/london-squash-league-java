@@ -64,7 +64,7 @@ public class RegistrationController {
         }
 
         userDAO.register(user
-                .withRole(("jamesdbloom@gmail.com".equals(user.getEmail()) ? Role.ROLE_ADMIN : Role.ROLE_USER))
+                .withRoles(("jamesdbloom@gmail.com".equals(user.getEmail()) ? Role.ROLE_ADMIN : Role.ROLE_USER))
                 .withOneTimeToken(uuidService.generateUUID())
         );
         emailService.sendRegistrationMessage(user, request);

@@ -16,14 +16,12 @@ import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
 
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -211,7 +209,7 @@ public class DivisionPageIntegrationTest {
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(divisionDAO).delete(same(id));
+        verify(divisionDAO).delete(id);
     }
 
 }

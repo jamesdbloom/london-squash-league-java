@@ -13,13 +13,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.domain.account.User;
-import org.squashleague.service.configuration.ServiceConfiguration;
 import org.squashleague.service.email.EmailMockingConfiguration;
 import org.squashleague.service.email.EmailService;
 import org.squashleague.service.security.SecurityMockingConfiguration;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.configuration.WebMvcConfiguration;
-import org.squashleague.web.controller.MessagePage;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -53,34 +51,28 @@ public class ContactUsPageIntegrationTest {
     @Resource
     private EmailService emailService;
 
+    private static final String IP = "127.0.0.1";
+    private static final String EMAIL = "user@email.com";
+
     @Before
     public void setupFixture() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
+        when(securityUserContext.getCurrentUser()).thenReturn(new User().withEmail(EMAIL));
     }
 
     @Test
     public void shouldDisplayContactUsForm() throws Exception {
-        String email = "email";
-        User user = mock(User.class);
-        when(securityUserContext.getCurrentUser()).thenReturn(user);
-        when(user.getEmail()).thenReturn(email);
-
         MvcResult response = mockMvc.perform(get("/contact_us").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         ContactUsPage confirmationPage = new ContactUsPage(response);
-        confirmationPage.hasReadOnlyEmailField(email);
+        confirmationPage.hasReadOnlyEmailField(EMAIL);
     }
 
     @Test
     public void shouldSendEmail() throws Exception {
-        String email = "email";
-        User user = mock(User.class);
-        when(securityUserContext.getCurrentUser()).thenReturn(user);
-        when(user.getEmail()).thenReturn(email);
-
         String message = "message";
         String userAgentHeader = "userAgentHeader";
         mockMvc.perform(post("/contact_us")
@@ -91,17 +83,11 @@ public class ContactUsPageIntegrationTest {
                 .andExpect(redirectedUrl("/message"));
 
 
-        String ip = "127.0.0.1";
-        verify(emailService).sendContactUsMessage(message, userAgentHeader, ip, email);
+        verify(emailService).sendContactUsMessage(message, userAgentHeader, IP, EMAIL);
     }
 
     @Test
     public void shouldHandleValidationErrors() throws Exception {
-        String email = "email";
-        User user = mock(User.class);
-        when(securityUserContext.getCurrentUser()).thenReturn(user);
-        when(user.getEmail()).thenReturn(email);
-
         byte[] randomBytes = new byte[4096];
         Arrays.fill(randomBytes, (byte) 'a');
         String userAgentHeader = "userAgentHeader";

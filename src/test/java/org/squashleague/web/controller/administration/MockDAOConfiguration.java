@@ -46,7 +46,7 @@ public class MockDAOConfiguration {
                             .withEmail("user_" + i + "@email.com")
                             .withMobile("123456789")
                             .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                            .withRole(Role.ROLE_USER)
+                            .withRoles(Role.ROLE_USER)
                             .withId((long) i)
             );
             clubs.add(

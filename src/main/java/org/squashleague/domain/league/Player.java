@@ -14,7 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Cacheable
@@ -33,7 +35,7 @@ public class Player extends ModelObject<Player> {
     @ManyToOne
     private League league;
     @Transient
-    private transient List<Match> matches = new ArrayList<>();
+    private transient Set<Match> matches = new LinkedHashSet<>();
 
     public User getUser() {
         return user;
@@ -84,24 +86,26 @@ public class Player extends ModelObject<Player> {
     }
 
     public List<Match> getMatches() {
-        return matches;
+        return new ArrayList<>(matches);
     }
 
     public Player withMatches(List<Match> matches) {
-        this.matches = matches;
+        for (Match match : matches) {
+            this.matches.add(match);
+        }
         return this;
     }
 
     public List<String> getAllOpponentsEmails() {
         List<String> emails = new ArrayList<>();
-        String myEmail = getUser().getEmail();
+        String myEmail = user.getEmail();
         if (matches != null && !matches.isEmpty()) {
             for (Match match : matches) {
-                String playerOneEmail = match.getPlayerOne().getUser().getEmail();
+                String playerOneEmail = match.getPlayerOne().user.getEmail();
                 if (!playerOneEmail.equals(myEmail) && !emails.contains(playerOneEmail)) {
                     emails.add(playerOneEmail);
                 }
-                String playerTwoEmail = match.getPlayerTwo().getUser().getEmail();
+                String playerTwoEmail = match.getPlayerTwo().user.getEmail();
                 if (!playerTwoEmail.equals(myEmail) && !emails.contains(playerTwoEmail)) {
                     emails.add(playerTwoEmail);
                 }

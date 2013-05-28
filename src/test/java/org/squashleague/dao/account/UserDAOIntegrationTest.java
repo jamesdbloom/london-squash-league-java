@@ -90,7 +90,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(newRole);
+                .withRoles(newRole);
 
         // when
         userDAO.register(expectedUser);
@@ -114,7 +114,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
 
         // when
         userDAO.register(expectedUser);
@@ -139,7 +139,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(newRole, role);
+                .withRoles(newRole, role);
 
         // when
         userDAO.register(expectedUser);
@@ -165,7 +165,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
 
         // when
         userDAO.save(expectedUser);
@@ -186,7 +186,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userDAO.save(expectedUser);
         expectedUser
                 .withEmail("new@email.com")
@@ -212,7 +212,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("user name")
                 .withMobile("07515 900 569")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role)
+                .withRoles(role)
                 .withPassword("password")
                 .withOneTimeToken("oneTimeToken");
 
@@ -249,7 +249,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("user name")
                 .withMobile("07515 900 569")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role)
+                .withRoles(role)
                 .withPassword("password")
                 .withOneTimeToken("oneTimeToken");
 
@@ -272,7 +272,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                         .withName("new user name")
                         .withMobile("666 6666 6666")
                         .withMobilePrivacy(MobilePrivacy.SECRET)
-                        .withRole(role)
+                        .withRoles(role)
                         .withPassword("new password")
                         .withOneTimeToken("new oneTimeToken"));
         userDAO.update(updatedUser);
@@ -297,12 +297,12 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("one@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         User userTwo = new User()
                 .withEmail("two@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
 
         // when
         userDAO.save(userOne);
@@ -326,7 +326,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userDAO.save(expectedUser);
         assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
 
@@ -344,12 +344,12 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         User expectedUserTwo = new User()
                 .withEmail(expectedUserOne.getEmail())
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         try {
             // when
             userDAO.save(expectedUserOne);
@@ -366,7 +366,7 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("user@email.com")
                 .withName("user name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userDAO.save(expectedUser);
         assertEquals(expectedUser, userDAO.findById(expectedUser.getId()));
 

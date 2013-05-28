@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.dao.league.LeagueDAO;
-import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.League;
 
 import javax.annotation.Resource;

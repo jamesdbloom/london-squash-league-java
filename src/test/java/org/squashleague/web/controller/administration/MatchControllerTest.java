@@ -18,12 +18,10 @@ import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -63,7 +61,7 @@ public class MatchControllerTest {
         String page = matchController.create(match, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(matchDAO).save(same(match));
+        verify(matchDAO).save(match);
         assertEquals("redirect:/administration", page);
     }
 
@@ -80,8 +78,8 @@ public class MatchControllerTest {
         String page = matchController.create(match, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(match));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, match);
         assertEquals("redirect:/administration#" + objectName + "es", page);
     }
 
@@ -102,8 +100,8 @@ public class MatchControllerTest {
 
         // then
         verify(bindingResult).addError(new ObjectError(objectName, playersIdentical));
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(match));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, match);
         assertEquals("redirect:/administration#" + objectName + "es", page);
     }
 
@@ -113,16 +111,16 @@ public class MatchControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Match match = new Match();
-        when(matchDAO.findById(same(id))).thenReturn(match);
+        when(matchDAO.findById(id)).thenReturn(match);
 
         // when
         String page = matchController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("match"), same(match));
-        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
-        verify(uiModel).addAttribute(eq("players"), same(players));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("match", match);
+        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("players", players);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/match/update", page);
     }
 
@@ -137,7 +135,7 @@ public class MatchControllerTest {
         String page = matchController.update(match, bindingResult, uiModel);
 
         // then
-        verify(matchDAO).update(same(match));
+        verify(matchDAO).update(match);
         assertEquals("redirect:/administration", page);
     }
 
@@ -153,11 +151,11 @@ public class MatchControllerTest {
         String page = matchController.update(match, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("match"), same(match));
-        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
-        verify(uiModel).addAttribute(eq("players"), same(players));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("match", match);
+        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("players", players);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/match/update", page);
     }
 
@@ -177,11 +175,11 @@ public class MatchControllerTest {
 
         // then
         verify(bindingResult).addError(new ObjectError(objectName, playersIdentical));
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("match"), same(match));
-        verify(uiModel).addAttribute(eq("rounds"), same(rounds));
-        verify(uiModel).addAttribute(eq("players"), same(players));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("match", match);
+        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("players", players);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/match/update", page);
     }
 
@@ -194,7 +192,7 @@ public class MatchControllerTest {
         String page = matchController.delete(id);
 
         // then
-        verify(matchDAO).delete(same(id));
+        verify(matchDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

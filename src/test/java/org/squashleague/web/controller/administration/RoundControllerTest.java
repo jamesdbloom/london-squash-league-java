@@ -17,7 +17,6 @@ import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Round;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class RoundControllerTest {
         String page = roundController.create(round, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(roundDAO).save(same(round));
+        verify(roundDAO).save(round);
         assertEquals("redirect:/administration", page);
     }
 
@@ -75,8 +74,8 @@ public class RoundControllerTest {
         String page = roundController.create(round, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(round));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, round);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -90,16 +89,15 @@ public class RoundControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
         String startDateAfterEndDate = "startDateAfterEndDate";
         when(environment.getProperty("validation.round.startDateAfterEndDate")).thenReturn(startDateAfterEndDate);
-        round.setEndDate(new DateTime());
-        round.setStartDate(new DateTime().plusDays(1));
+        round.withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime());
 
         // when
         String page = roundController.create(round, bindingResult, redirectAttributes);
 
         // then
         verify(bindingResult).addError(new ObjectError(objectName, startDateAfterEndDate));
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(round));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, round);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -109,15 +107,15 @@ public class RoundControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Round round = new Round();
-        when(roundDAO.findById(same(id))).thenReturn(round);
+        when(roundDAO.findById(id)).thenReturn(round);
 
         // when
         String page = roundController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("round"), same(round));
-        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("round", round);
+        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/round/update", page);
     }
 
@@ -132,7 +130,7 @@ public class RoundControllerTest {
         String page = roundController.update(round, bindingResult, uiModel);
 
         // then
-        verify(roundDAO).update(same(round));
+        verify(roundDAO).update(round);
         assertEquals("redirect:/administration", page);
     }
 
@@ -148,10 +146,10 @@ public class RoundControllerTest {
         String page = roundController.update(round, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("round"), same(round));
-        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("round", round);
+        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/round/update", page);
     }
 
@@ -164,18 +162,17 @@ public class RoundControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         String startDateAfterEndDate = "startDateAfterEndDate";
         when(environment.getProperty("validation.round.startDateAfterEndDate")).thenReturn(startDateAfterEndDate);
-        round.setEndDate(new DateTime());
-        round.setStartDate(new DateTime().plusDays(1));
+        round.withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime());
 
         // when
         String page = roundController.update(round, bindingResult, uiModel);
 
         // then
         verify(bindingResult).addError(new ObjectError("round", startDateAfterEndDate));
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("round"), same(round));
-        verify(uiModel).addAttribute(eq("divisions"), same(divisions));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("round", round);
+        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/round/update", page);
     }
 
@@ -188,7 +185,7 @@ public class RoundControllerTest {
         String page = roundController.delete(id);
 
         // then
-        verify(roundDAO).delete(same(id));
+        verify(roundDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

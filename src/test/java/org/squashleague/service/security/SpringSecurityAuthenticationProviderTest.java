@@ -11,15 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
-
-import javax.annotation.Resource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,20 +38,19 @@ public class SpringSecurityAuthenticationProviderTest {
     @Test
     public void shouldAuthenticate() throws AuthenticationException {
         // given
-        String name = "name";
-        String password = "password";
-        String credentials = "credentials";
-        String[] roles = {"roles"};
-
-        User user = mock(User.class);
-        when(user.getPassword()).thenReturn(password);
-        when(user.getRoleNames()).thenReturn(roles);
+        String[] roles = {"one", "two"};
+        User user = new User()
+                .withPassword("password")
+                .withRoles(
+                        new Role().withName(roles[0]),
+                        new Role().withName(roles[1])
+                );
 
         UsernamePasswordAuthenticationToken token = mock(UsernamePasswordAuthenticationToken.class);
-        when(token.getName()).thenReturn(name);
-        when(token.getCredentials()).thenReturn(credentials);
-        when(userDAO.findByEmail(same(name))).thenReturn(user);
-        when(credentialValidation.credentialsMatch(same(credentials), same(user))).thenReturn(true);
+        when(token.getName()).thenReturn(user.getEmail());
+        when(token.getCredentials()).thenReturn(user.getPassword());
+        when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
+        when(credentialValidation.credentialsMatch(user.getPassword(), user)).thenReturn(true);
 
         // when
         Authentication result = springSecurityAuthenticationProvider.authenticate(token);
@@ -64,21 +60,16 @@ public class SpringSecurityAuthenticationProviderTest {
     @Test(expected = UsernameNotFoundException.class)
     public void shouldNotAuthenticateForPasswordDoesNotMatch() throws AuthenticationException {
         // given
-        String name = "name";
-        String password = "password";
-        String credentials = "credentials";
-        String[] roles = {"roles"};
-
-        User user = mock(User.class);
-        when(user.getPassword()).thenReturn(password);
-        when(user.getRoleNames()).thenReturn(roles);
+        User user = new User()
+                .withEmail("email")
+                .withPassword("password");
 
         UsernamePasswordAuthenticationToken token = mock(UsernamePasswordAuthenticationToken.class);
-        when(token.getName()).thenReturn(name);
-        when(token.getCredentials()).thenReturn(credentials);
+        when(token.getName()).thenReturn(user.getEmail());
+        when(token.getCredentials()).thenReturn(user.getPassword());
 
-        when(userDAO.findByEmail(same(name))).thenReturn(user);
-        when(credentialValidation.credentialsMatch(same(credentials), same(user))).thenReturn(false);
+        when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
+        when(credentialValidation.credentialsMatch(user.getPassword(), user)).thenReturn(false);
 
         // when
         springSecurityAuthenticationProvider.authenticate(token);

@@ -54,7 +54,7 @@ public class User extends ModelObject<User> {
 
 
     public boolean showMobileToOpponent() {
-        return getMobilePrivacy() == MobilePrivacy.SHOW_ALL || getMobilePrivacy() == MobilePrivacy.SHOW_OPPONENTS;
+        return mobilePrivacy == MobilePrivacy.SHOW_ALL || mobilePrivacy == MobilePrivacy.SHOW_OPPONENTS;
     }
 
     public String getName() {
@@ -129,8 +129,13 @@ public class User extends ModelObject<User> {
         this.roles = roles;
     }
 
-    public User withRole(Role... role) {
-        setRoles(Lists.newArrayList(role));
+    public User withRoles(List<Role> roles) {
+        setRoles(roles);
+        return this;
+    }
+
+    public User withRoles(Role... roles) {
+        setRoles(Lists.newArrayList(roles));
         return this;
     }
 

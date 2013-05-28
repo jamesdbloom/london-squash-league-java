@@ -60,7 +60,7 @@ public class UserDAO {
         for (Role role : user.getRoles()) {
             roles.add(findOrCreateRole(role));
         }
-        user.setRoles(roles);
+        user.withRoles(roles);
         entityManager.persist(user);
         entityManager.flush();
     }

@@ -9,11 +9,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.squashleague.domain.account.User;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -27,40 +24,30 @@ public class CredentialValidationTest {
     @InjectMocks
     private CredentialValidation credentialValidation = new CredentialValidation();
 
+    private final User user = new User().withPassword("password");
+
     @Test
     public void shouldAuthenticate() throws AuthenticationException {
         // given
-        String password = "password";
-        User user = mock(User.class);
-
-        when(user.getPassword()).thenReturn(password);
-        when(passwordEncoder.matches(same(password), same(password))).thenReturn(true);
+        when(passwordEncoder.matches(user.getPassword(), user.getPassword())).thenReturn(true);
 
         // then
-        assertTrue(credentialValidation.credentialsMatch(password, user));
+        assertTrue(credentialValidation.credentialsMatch(user.getPassword(), user));
     }
 
     @Test
     public void shouldNotAuthenticateForPasswordDoesNotMatch() throws AuthenticationException {
         // given
-        String password = "password";
-        User user = mock(User.class);
-
-        when(user.getPassword()).thenReturn(password);
-        when(passwordEncoder.matches(same(password), same(password))).thenReturn(false);
+        when(passwordEncoder.matches(user.getPassword(), user.getPassword())).thenReturn(false);
 
         // then
-        assertFalse(credentialValidation.credentialsMatch(password, user));
+        assertFalse(credentialValidation.credentialsMatch(user.getPassword(), user));
     }
 
     @Test
     public void shouldNotAuthenticateForPasswordNull() throws AuthenticationException {
         // given
-        String password = "password";
-        User user = mock(User.class);
-
-        when(user.getPassword()).thenReturn(password);
-        when(passwordEncoder.matches(same(password), same(password))).thenReturn(true);
+        when(passwordEncoder.matches(user.getPassword(), user.getPassword())).thenReturn(true);
 
         // then
         assertFalse(credentialValidation.credentialsMatch(null, user));
@@ -70,10 +57,8 @@ public class CredentialValidationTest {
     public void shouldNotAuthenticateForUserNotFound() throws AuthenticationException {
         // given
         String password = "password";
-        User user = mock(User.class);
 
-        when(user.getPassword()).thenReturn(password);
-        when(passwordEncoder.matches(same(password), same(password))).thenReturn(true);
+        when(passwordEncoder.matches(password, password)).thenReturn(true);
 
         // then
         assertFalse(credentialValidation.credentialsMatch(password, null));

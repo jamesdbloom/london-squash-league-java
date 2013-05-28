@@ -70,7 +70,7 @@ public class SetupDataController {
                                 .withEmail(p + "_" + d + "_" + l + "_" + c + "@email.com")
                                 .withName(p + "_" + d + "_" + l + "_" + c + " name")
                                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                                .withRole(Role.ROLE_USER);
+                                .withRoles(Role.ROLE_USER);
                         users.add(user);
                         players.add(new Player()
                                 .withCurrentDivision(division)
@@ -92,10 +92,10 @@ public class SetupDataController {
                                 .withStartDate(new DateTime().plusDays(1 + r + d + l + c))
                                 .withEndDate(new DateTime().plusDays(5 + r + d + l + c))
                                 .withDivision(division);
-                        roundDAO.save(round.withMatches(createMatches(players, round)));
-//                        for (Match match : matches) {
-//                            matchDAO.save(match);
-//                        }
+                        roundDAO.save(round);
+                        for (Match match : createMatches(players, round)) {
+                            matchDAO.save(match);
+                        }
                     }
                 }
             }

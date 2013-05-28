@@ -1,22 +1,24 @@
 package org.squashleague.web.controller.league;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.squashleague.dao.account.RoleDAO;
-import org.squashleague.dao.account.UserDAO;
-import org.squashleague.dao.league.*;
+import org.squashleague.dao.league.MatchDAO;
+import org.squashleague.dao.league.PlayerDAO;
+import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
-import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author jamesdbloom
@@ -24,18 +26,6 @@ import java.util.Map;
 @Controller
 public class LeagueTableController {
 
-    @Resource
-    private RoleDAO roleDAO;
-    @Resource
-    private UserDAO userDAO;
-    @Resource
-    private ClubDAO clubDAO;
-    @Resource
-    private LeagueDAO leagueDAO;
-    @Resource
-    private DivisionDAO divisionDAO;
-    @Resource
-    private RoundDAO roundDAO;
     @Resource
     private PlayerDAO playerDAO;
     @Resource
@@ -46,40 +36,29 @@ public class LeagueTableController {
     @Transactional
     @RequestMapping(value = "/leagueTable", method = RequestMethod.GET)
     public String getPage(Model uiModel) {
+        final User user = securityUserContext.getCurrentUser();
+        user.setPlayers(playerDAO.findAllActiveByUser(user));
+
         List<Match> matches = matchDAO.findAll();
-        Map<Long, Map<Long, Map<Long, Match>>> roundMatches = new HashMap<>();
-        Map<Long, Map<Long, Player>> roundPlayers = new HashMap<>();
-        Map<Long, Round> rounds = new HashMap<>();
-        for (Match match : matches) {
-            Map<Long, Map<Long, Match>> matchGrid;
-            Map<Long, Player> players;
-            Round round = match.getRound();
-            rounds.put(round.getId(), round);
-            if(roundMatches.containsKey(round.getId())) {
-                matchGrid = roundMatches.get(round.getId());
-                players = roundPlayers.get(round.getId());
-            } else {
-                matchGrid = new HashMap<>();
-                roundMatches.put(round.getId(), matchGrid);
-                players = new HashMap<>();
-                roundPlayers.put(round.getId(), players);
+        Map<Long, Round> roundsById = new HashMap<>();
+        for (Round round : Lists.transform(matches, new Function<Match, Round>() {
+            public Round apply(Match match) {
+                return match.getRound().addMatch(match);
             }
-            Player playerOne = match.getPlayerOne();
-            Player playerTwo = match.getPlayerTwo();
-            players.put(playerOne.getId(), playerOne);
-            players.put(playerTwo.getId(), playerTwo);
-            if (matchGrid.containsKey(playerOne.getId())) {
-                matchGrid.get(playerOne.getId()).put(playerTwo.getId(), match);
-            } else {
-                Map<Long, Match> column = new HashMap<>();
-                column.put(playerTwo.getId(), match);
-                matchGrid.put(playerOne.getId(), column);
-            }
+        })) {
+            roundsById.put(round.getId(), round);
         }
-        uiModel.addAttribute("roundMatches", roundMatches);
-        uiModel.addAttribute("roundPlayers", roundPlayers);
+        List<Round> rounds = new ArrayList<>(roundsById.values());
+        Collections.sort(rounds);
+        Collection<Round> userRounds = Collections2.filter(rounds, new Predicate<Round>() {
+            public boolean apply(Round round) {
+                return CollectionUtils.containsAny(round.getPlayers(), user.getPlayers());
+            }
+        });
+
+        uiModel.addAttribute("userRounds", userRounds);
         uiModel.addAttribute("rounds", rounds);
-        uiModel.addAttribute("user", securityUserContext.getCurrentUser());
+        uiModel.addAttribute("user", user);
         return "page/league/leagueTable";
     }
 }

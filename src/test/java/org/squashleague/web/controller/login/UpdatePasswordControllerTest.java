@@ -18,7 +18,6 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.service.uuid.UUIDService;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -50,14 +49,14 @@ public class UpdatePasswordControllerTest {
     @Before
     public void setupFixture() {
         String password = "abd123$%^";
-        when(passwordEncoder.encode(same(password))).thenReturn(password);
+        when(passwordEncoder.encode(password)).thenReturn(password);
 
         String oneTimeToken = new UUID().toString();
 
         user = mock(User.class);
-        when(user.withPassword(same(password))).thenReturn(user);
+        when(user.withPassword(password)).thenReturn(user);
         when(user.getPassword()).thenReturn(password);
-        when(user.withOneTimeToken(same(oneTimeToken))).thenReturn(user);
+        when(user.withOneTimeToken(oneTimeToken)).thenReturn(user);
         when(user.getOneTimeToken()).thenReturn(oneTimeToken);
 
         uiModel = mock(Model.class);
@@ -77,14 +76,14 @@ public class UpdatePasswordControllerTest {
     @Test
     public void shouldDisplayUpdatePasswordForm() throws Exception {
         // given
-        String email= "user@email.com";
+        String email = "user@email.com";
         Model uiModel = mock(Model.class);
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         when(uuidService.hasMatchingUUID(user, user.getOneTimeToken())).thenReturn(true);
         when(userDAO.findByEmail(email)).thenReturn(user);
 
         // when
-        String page  = updatePasswordController.updatePasswordForm(email, user.getOneTimeToken(), uiModel, redirectAttributes);
+        String page = updatePasswordController.updatePasswordForm(email, user.getOneTimeToken(), uiModel, redirectAttributes);
 
         // then
         verify(uiModel).addAttribute("passwordPattern", User.PASSWORD_PATTERN);
@@ -97,14 +96,14 @@ public class UpdatePasswordControllerTest {
     @Test
     public void shouldValidateTokenIncorrectWhenRetrievingUpdatePasswordForm() throws Exception {
         // given
-        String email= "user@email.com";
+        String email = "user@email.com";
         String oneTimeToken = "oneTimeToken";
         Model uiModel = mock(Model.class);
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         when(uuidService.hasMatchingUUID(user, user.getOneTimeToken())).thenReturn(false);
 
         // when
-        String page  = updatePasswordController.updatePasswordForm(email, oneTimeToken, uiModel, redirectAttributes);
+        String page = updatePasswordController.updatePasswordForm(email, oneTimeToken, uiModel, redirectAttributes);
 
         // then
         verify(redirectAttributes).addFlashAttribute(eq("message"), any(String.class));
@@ -118,7 +117,6 @@ public class UpdatePasswordControllerTest {
         // given
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
         when(user.getEmail()).thenReturn("user@email.com");
-        when(user.getEmail()).thenReturn("user@email.com");
         when(user.getOneTimeToken()).thenReturn(new UUID().toString());
         when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
         when(uuidService.hasMatchingUUID(user, user.getOneTimeToken())).thenReturn(true);
@@ -129,8 +127,8 @@ public class UpdatePasswordControllerTest {
         // then
         verify(passwordEncoder).encode(user.getPassword());
         verify(user, times(3)).withPassword(user.getPassword());
-        verify(userDAO).updatePassword(eq(user));
-        verify(securityUserContext).setCurrentUser(eq(user));
+        verify(userDAO).updatePassword(user);
+        verify(securityUserContext).setCurrentUser(user);
         assertEquals("redirect:/", page);
 
     }
@@ -169,7 +167,7 @@ public class UpdatePasswordControllerTest {
         String page = updatePasswordController.updatePassword(user.getEmail(), "not_correct_format", "not_correct_format", user.getOneTimeToken(), uiModel, redirectAttributes);
 
         // then
-        verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));
+        verify(uiModel).addAttribute("passwordPattern", User.PASSWORD_PATTERN);
         verify(uiModel).addAttribute("environment", environment);
         verify(uiModel).addAttribute("email", "user@email.com");
         verify(uiModel).addAttribute("oneTimeToken", user.getOneTimeToken());
@@ -192,7 +190,7 @@ public class UpdatePasswordControllerTest {
         String page = updatePasswordController.updatePassword(user.getEmail(), "abc123$%^", "123abc$%^", user.getOneTimeToken(), uiModel, redirectAttributes);
 
         // then
-        verify(uiModel).addAttribute(eq("passwordPattern"), same(User.PASSWORD_PATTERN));
+        verify(uiModel).addAttribute("passwordPattern", User.PASSWORD_PATTERN);
         verify(uiModel).addAttribute("environment", environment);
         verify(uiModel).addAttribute("email", "user@email.com");
         verify(uiModel).addAttribute("oneTimeToken", user.getOneTimeToken());

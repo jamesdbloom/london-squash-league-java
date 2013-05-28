@@ -67,12 +67,12 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEmail("one@email.com")
                 .withName("playerOne name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userTwo = new User()
                 .withEmail("two@email.com")
                 .withName("playerTwo name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRole(role);
+                .withRoles(role);
         userDAO.save(userOne);
         userDAO.save(userTwo);
         club = new Club()

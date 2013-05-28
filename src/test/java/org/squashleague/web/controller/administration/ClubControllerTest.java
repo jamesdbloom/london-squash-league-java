@@ -13,12 +13,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.domain.league.Club;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -50,7 +48,7 @@ public class ClubControllerTest {
         String page = clubController.create(club, mock(BindingResult.class), redirectAttributes);
 
         // then
-        verify(clubDAO).save(same(club));
+        verify(clubDAO).save(club);
         assertEquals("redirect:/administration", page);
     }
 
@@ -67,8 +65,8 @@ public class ClubControllerTest {
         String page = clubController.create(club, bindingResult, redirectAttributes);
 
         // then
-        verify(redirectAttributes).addFlashAttribute(eq("bindingResult"), same(bindingResult));
-        verify(redirectAttributes).addFlashAttribute(eq(objectName), same(club));
+        verify(redirectAttributes).addFlashAttribute("bindingResult", bindingResult);
+        verify(redirectAttributes).addFlashAttribute(objectName, club);
         assertEquals("redirect:/administration#" + objectName + "s", page);
     }
 
@@ -78,14 +76,14 @@ public class ClubControllerTest {
         Model uiModel = mock(Model.class);
         Long id = 1l;
         Club club = new Club();
-        when(clubDAO.findById(same(id))).thenReturn(club);
+        when(clubDAO.findById(id)).thenReturn(club);
 
         // when
         String page = clubController.updateForm(id, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("club"), same(club));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("club", club);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/club/update", page);
     }
 
@@ -100,7 +98,7 @@ public class ClubControllerTest {
         String page = clubController.update(club, bindingResult, uiModel);
 
         // then
-        verify(clubDAO).update(same(club));
+        verify(clubDAO).update(club);
         assertEquals("redirect:/administration", page);
     }
 
@@ -116,9 +114,9 @@ public class ClubControllerTest {
         String page = clubController.update(club, bindingResult, uiModel);
 
         // then
-        verify(uiModel).addAttribute(eq("bindingResult"), same(bindingResult));
-        verify(uiModel).addAttribute(eq("club"), same(club));
-        verify(uiModel).addAttribute(eq("environment"), same(environment));
+        verify(uiModel).addAttribute("bindingResult", bindingResult);
+        verify(uiModel).addAttribute("club", club);
+        verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/club/update", page);
     }
 
@@ -131,7 +129,7 @@ public class ClubControllerTest {
         String page = clubController.delete(id);
 
         // then
-        verify(clubDAO).delete(same(id));
+        verify(clubDAO).delete(id);
         assertEquals("redirect:/administration", page);
     }
 

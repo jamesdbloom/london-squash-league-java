@@ -12,13 +12,9 @@ import org.squashleague.dao.league.ClubDAO;
 import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.league.Club;
-import org.squashleague.domain.league.Player;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
-import javax.persistence.PersistenceException;
-
-import java.util.List;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;

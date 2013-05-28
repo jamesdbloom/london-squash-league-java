@@ -24,7 +24,6 @@ import org.squashleague.web.controller.PropertyMockingApplicationContextInitiali
 import javax.annotation.Resource;
 import java.util.Arrays;
 
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -306,7 +305,7 @@ public class PlayerPageIntegrationTest {
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(playerDAO).delete(same(id));
+        verify(playerDAO).delete(id);
     }
 
 }
