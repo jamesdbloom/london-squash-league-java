@@ -37,11 +37,11 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     @ManyToOne
     private Division division;
     @Transient
-    private transient Set<Match> matches = new LinkedHashSet<>();
+    private transient Map<Long, Match> matches = new LinkedHashMap<>();
     @Transient
     private transient Map<Long, Map<Long, Match>> matchGrid = new HashMap<>();
     @Transient
-    private transient Set<Player> players = new LinkedHashSet<>();
+    private transient Map<Long, Player> players = new LinkedHashMap<>();
 
     public DateTime getStartDate() {
         return startDate;
@@ -102,9 +102,9 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     public Round addMatch(Match match) {
         Player playerOne = match.getPlayerOne();
         Player playerTwo = match.getPlayerTwo();
-        matches.add(match);
-        players.add(playerOne);
-        players.add(playerTwo);
+        matches.put(match.getId(), match);
+        players.put(playerOne.getId(), playerOne);
+        players.put(playerTwo.getId(), playerTwo);
         if (!matchGrid.containsKey(playerOne.getId())) {
             matchGrid.put(playerOne.getId(), new HashMap<Long, Match>());
         }
@@ -113,7 +113,7 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     }
 
     public List<Match> getMatches() {
-        return new ArrayList<>(matches);
+        return new ArrayList<>(matches.values());
     }
 
     public Match getMatch(Long playerOneId, Long playerTwoId) {
@@ -127,7 +127,7 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     }
 
     public List<Player> getPlayers() {
-        return new ArrayList<>(players);
+        return new ArrayList<>(players.values());
     }
 
     @Override

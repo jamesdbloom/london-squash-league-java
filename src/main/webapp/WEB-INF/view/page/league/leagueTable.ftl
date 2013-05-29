@@ -10,22 +10,10 @@
 
 <#macro content_section>
 <div class="section">
-    <div class="message">
-        <div class="table_message">This page shows the divisions you are playing in, to view all divisions in one of your leagues select a league:</div>
-        <form method="get" action="/leagueTable">
-            <div class="select_league_form">
-                <div class="select"><select name="league_id">
-                    <option value="1">Hammersmith GLL &ndash; Evening</option>
-                    <option value="2">Hammersmith GLL &ndash; Lunchtime</option>
-                </select></div>
-                <input type="hidden" name="print" value="true"><input type="hidden" name="finished" value="false">
-
-                <div><input class="submit" type="submit" value="select"></div>
-            </div>
-        </form>
-    </div>
-    <div class="standalone_link"><a href="/leagueTable?finished=true">Show finished rounds</a></div>
-    <div class="standalone_link"><a href="/account#matches">Contact your opponents</a></div>
+    <#if !(print?? && print)>
+        <div class="standalone_link"><#if showAllDivisions?? && !showAllDivisions><a href="/leagueTable?showAllDivisions=true">View your leagues</a><#else><a href="/leagueTable">View your divisions</a></#if></div>
+        <div class="standalone_link"><a href="/account#matches">Contact your opponents</a></div>
+    </#if>
 
     <#if (rounds?size > 0)>
         <#assign dateHash = rounds[0].startDate.hashCode() + "_" + rounds[0].endDate.hashCode() />
@@ -33,7 +21,7 @@
         <#list rounds as round>
             <#if dateHash != round.startDate.hashCode() + "_" + round.endDate.hashCode()>
                 <#assign dateHash = round.startDate.hashCode() + "_" + round.endDate.hashCode() />
-                <h2 class="table_title" style="margin-top: 2em;">(${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</h2>
+                <h2 class="table_title page_break" style="margin-top: 2em;">(${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</h2>
             </#if>
             <h2 class="table_subtitle">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</h2>
             <table class="small_screen">
@@ -47,7 +35,7 @@
                         <tr>
                             <td>${match.playerOne.user.name}</td>
                             <td>${match.playerTwo.user.name}</td>
-                            <td style="white-space: nowrap"><#if match.score?? >${match.score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
+                            <@matchCell match/>
                         </tr>
                     </#list>
                 </tbody>
@@ -66,13 +54,9 @@
                             <#list round.players as playerColumn>
                                 <#if playerRow.id != playerColumn.id >
                                     <#if round.getMatch(playerRow.id, playerColumn.id)?? >
-                                        <#local match = round.getMatch(playerRow.id, playerColumn.id) />
-                                        <td style="white-space: nowrap"><#if match.score?? >${match.score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
+                                        <@matchCell round.getMatch(playerRow.id, playerColumn.id)/>
                                     <#elseif round.getMatch(playerColumn.id, playerRow.id)?? >
-                                        <#local match = round.getMatch(playerColumn.id, playerRow.id) />
-                                        <td style="white-space: nowrap"><#if match.score?? >${match.score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
-                                    <#else>
-                                        <td style="white-space: nowrap">OOPS ${playerColumn.id} ${playerRow.id}</td>
+                                        <@matchCell round.getMatch(playerColumn.id, playerRow.id)/>
                                     </#if>
                                 <#else>
                                     <td style="white-space: nowrap">X</td>
@@ -84,9 +68,12 @@
             </table>
         </#list>
     </#if>
-
+    <#if print?? && print><script>window.print();</script></#if>
 </#macro>
 
+<#macro matchCell match>
+    <td style="white-space: nowrap"><#if match.score?? >${match.score}<#elseif user?? && match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
+</#macro>
 
 
 <@page_html/>

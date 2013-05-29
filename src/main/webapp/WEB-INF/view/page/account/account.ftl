@@ -82,7 +82,7 @@
                 </tr>
                 <#list player.matches as match>
                     <tr>
-                        <td class="hide_on_very_small_screen">${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
+                        <td class="hide_on_very_small_screen">${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
                         <td>${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
                         <td><@showContactDetails match.playerOne.user/></td>
                         <td><@showContactDetails match.playerTwo.user/></td>
@@ -93,7 +93,7 @@
             </tbody>
         </table>
         <div class="standalone_link">
-            <a href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} opponents</a>
+            <a href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
         </div>
         </#if>
     </#list>

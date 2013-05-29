@@ -14,6 +14,7 @@ import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
+import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.SpringSecurityUserContext;
 
@@ -35,7 +36,7 @@ public class LeagueTableController {
 
     @Transactional
     @RequestMapping(value = "/leagueTable", method = RequestMethod.GET)
-    public String getPage(Model uiModel) {
+    public String getPage(boolean showAllDivisions, Model uiModel) {
         final User user = securityUserContext.getCurrentUser();
         user.setPlayers(playerDAO.findAllActiveByUser(user));
 
@@ -48,17 +49,47 @@ public class LeagueTableController {
         })) {
             roundsById.put(round.getId(), round);
         }
-        List<Round> rounds = new ArrayList<>(roundsById.values());
-        Collections.sort(rounds);
-        Collection<Round> userRounds = Collections2.filter(rounds, new Predicate<Round>() {
+        List<Round> allRounds = new ArrayList<>(roundsById.values());
+        Collections.sort(allRounds);
+        Collection<Round> usersPlayerRounds = Collections2.filter(allRounds, new Predicate<Round>() {
             public boolean apply(Round round) {
                 return CollectionUtils.containsAny(round.getPlayers(), user.getPlayers());
             }
         });
+        Collection<Round> usersLeagueRounds = Collections2.filter(allRounds, new Predicate<Round>() {
+            public boolean apply(Round round) {
+                for (Player player : user.getPlayers()) {
+                    if (player.getLeague().getId().equals(round.getDivision().getLeague().getId())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
-        uiModel.addAttribute("userRounds", userRounds);
-        uiModel.addAttribute("rounds", rounds);
+        uiModel.addAttribute("showAllDivisions", showAllDivisions);
+        uiModel.addAttribute("rounds", (showAllDivisions ? usersLeagueRounds : usersPlayerRounds));
         uiModel.addAttribute("user", user);
+        return "page/league/leagueTable";
+    }
+
+    @Transactional
+    @RequestMapping(value = "/print", method = RequestMethod.GET)
+    public String getPage(Model uiModel) {
+        List<Match> matches = matchDAO.findAll();
+        Map<Long, Round> roundsById = new HashMap<>();
+        for (Round round : Lists.transform(matches, new Function<Match, Round>() {
+            public Round apply(Match match) {
+                return match.getRound().addMatch(match);
+            }
+        })) {
+            roundsById.put(round.getId(), round);
+        }
+        List<Round> allRounds = new ArrayList<>(roundsById.values());
+        Collections.sort(allRounds);
+
+        uiModel.addAttribute("print", true);
+        uiModel.addAttribute("rounds", allRounds);
         return "page/league/leagueTable";
     }
 }
