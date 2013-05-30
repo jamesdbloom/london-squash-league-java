@@ -13,16 +13,7 @@
 
     <p style="margin: 3%">Please enter the score for your match <strong>${match.playerOne.user.name}</strong> vs <strong>${match.playerOne.user.name}</strong><br/><br/>Note: please use format X-Y where X is the number of games won by <strong>${match.playerOne.user.name}</strong> and Y is the number of games won by <strong>${match.playerOne.user.name}</strong>.</p>
 
-    <#if error??>
-        <div id="validation_error_password" class="errors_warnings">
-            <p>There were problems with the data you entered:</p>
-                <p class="validation_error" style="margin-left: 2em;">&ndash; ${error}</p>
-        </div>
-        <script>
-            var errors = errors || {};
-            errors.score = true;
-        </script>
-    </#if>
+    <@errors.print_errors_list "score"/>
     <div class="standard_form">
         <input id="id" name="id" type="hidden" value="${match.id}">
 

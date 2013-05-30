@@ -33,7 +33,7 @@
 </style>
 <form action="/user/update" method="POST">
 
-    <@errors.print_errors "user"/>
+    <@errors.print_binding_errors "user"/>
     <div class="standard_form">
 
         <p>
@@ -77,7 +77,7 @@
                 </#if>
             </@security.authorize>
             <@security.authorize access='!hasRole("ROLE_ADMIN")'>
-                <input id="roles" name="roles" type="text" value="<#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list>" readonly="readonly">
+                <input id="roles" value="<#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list>" readonly="readonly">
             </@security.authorize>
         </p>
 

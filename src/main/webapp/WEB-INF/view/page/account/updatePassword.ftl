@@ -19,18 +19,10 @@
     }
 </style>
 <form action="/account/updatePassword" method="POST">
-    <#if validationErrors?? && (validationErrors?size > 0)>
-        <div id="validation_error_password" class="errors_warnings">
-            <p>There were problems with the data you entered:</p>
-            <#list validationErrors as error>
-                <p class="validation_error" style="margin-left: 2em;">&ndash; ${error}</p>
-            </#list>
-        </div>
-        <script>
-            var errors = errors || {};
-            errors.password = true;
-        </script>
-    </#if>
+
+    <p class="message">${environment.getProperty("validation.user.password")}</p>
+
+    <@errors.print_errors_list "password"/>
     <div class="standard_form">
         <p>
             <label for="existingPassword">Existing Password:</label> <input type="password" id="existingPassword" name="existingPassword" value="" required="required" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"/> <span class="error_message"></span>

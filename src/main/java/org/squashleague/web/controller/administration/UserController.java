@@ -66,7 +66,7 @@ public class UserController {
             uiModel.addAttribute("user", user);
             return "page/administration/user/update";
         }
-        userDAO.update(user);
+        userDAO.update(user); // todo need to prevent normal users from hacking their role
         return "redirect:/account";
     }
 

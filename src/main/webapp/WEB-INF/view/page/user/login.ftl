@@ -18,12 +18,12 @@
     <input type="hidden" name="redirect_to" value="/">
 
     <#if SPRING_SECURITY_LAST_EXCEPTION??>
-        <p class="errors_warnings">Login Failed:&nbsp;&nbsp;&nbsp;${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+        <p class="errors_warnings">${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
     </#if>
 
     <div class="standard_form">
         <p>
-            <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="" autocorrect="off" autocapitalize="off" autocomplete="off" required="required">
+            <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="${email!""}" autocorrect="off" autocapitalize="off" autocomplete="off" required="required">
         </p>
 
         <p>

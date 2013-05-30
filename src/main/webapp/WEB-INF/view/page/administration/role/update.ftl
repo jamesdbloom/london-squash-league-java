@@ -20,7 +20,7 @@
 </style>
 <form action="/role/update" method="POST">
 
-    <@errors.print_errors "role"/>
+    <@errors.print_binding_errors "role"/>
     <div class="standard_form">
 
         <p>

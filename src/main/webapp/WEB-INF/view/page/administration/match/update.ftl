@@ -28,7 +28,7 @@
 </style>
 <form action="/match/update" method="POST">
 
-    <@errors.print_errors "match"/>
+    <@errors.print_binding_errors "match"/>
     <div class="standard_form">
 
         <p>

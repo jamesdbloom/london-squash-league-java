@@ -20,7 +20,7 @@
 </style>
 <form action="/club/update" method="POST">
 
-    <@errors.print_errors "club"/>
+    <@errors.print_binding_errors "club"/>
     <div class="standard_form">
 
         <p>

@@ -1,5 +1,6 @@
 package org.squashleague.domain;
 
+import com.google.common.base.Function;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
@@ -15,6 +16,14 @@ public abstract class ModelObject<T> {
 
     static {
         ReflectionToStringBuilder.setDefaultStyle(ToStringStyle.MULTI_LINE_STYLE);
+    }
+
+    public static final ToMap TO_MAP = new ToMap();
+
+    private static class ToMap implements Function<ModelObject, Long> {
+        public Long apply(ModelObject modelObject) {
+            return modelObject.getId();
+        }
     }
 
     protected transient Logger logger = LoggerFactory.getLogger(getClass());

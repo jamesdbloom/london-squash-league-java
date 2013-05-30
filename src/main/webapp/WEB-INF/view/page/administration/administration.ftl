@@ -12,7 +12,7 @@
 <h2 id="roles" class="table_title">Roles</h2>
 
 <form method="post" action="/role/save">
-    <@errors.print_errors "role"/>
+    <@errors.print_binding_errors "role"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -55,7 +55,7 @@
 <h2 id="users" class="table_title">Users</h2>
 
 <form method="post" action="/user/save">
-    <@errors.print_errors "user"/>
+    <@errors.print_binding_errors "user"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -106,7 +106,7 @@
 <h2 id="clubs" class="table_title">Clubs</h2>
 
 <form method="post" action="/club/save">
-    <@errors.print_errors "club"/>
+    <@errors.print_binding_errors "club"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -137,7 +137,7 @@
 <h2 id="leagues" class="table_title">Leagues</h2>
 
 <form method="post" action="/league/save">
-    <@errors.print_errors "league"/>
+    <@errors.print_binding_errors "league"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -176,7 +176,7 @@
 <h2 id="divisions" class="table_title">Divisions</h2>
 
 <form method="post" action="/division/save">
-    <@errors.print_errors "division"/>
+    <@errors.print_binding_errors "division"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -215,7 +215,7 @@
 <h2 id="rounds" class="table_title">Rounds</h2>
 
 <form method="post" action="/round/save">
-    <@errors.print_errors "round"/>
+    <@errors.print_binding_errors "round"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -260,7 +260,7 @@
 <h2 id="players" class="table_title">Players</h2>
 
 <form method="post" action="/player/save">
-    <@errors.print_errors "player"/>
+    <@errors.print_binding_errors "player"/>
     <table class="action_table">
         <tbody>
             <tr>
@@ -316,7 +316,7 @@
 <h2 id="matches" class="table_title">Matches</h2>
 
 <form method="post" action="/match/save">
-    <@errors.print_errors "match"/>
+    <@errors.print_binding_errors "match"/>
     <table class="action_table">
         <tbody>
             <tr>

@@ -24,7 +24,7 @@
 </style>
 <form action="/round/update" method="POST">
 
-    <@errors.print_errors "round"/>
+    <@errors.print_binding_errors "round"/>
     <div class="standard_form">
 
         <p>

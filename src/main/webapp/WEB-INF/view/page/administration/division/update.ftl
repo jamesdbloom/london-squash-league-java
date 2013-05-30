@@ -20,7 +20,7 @@
 </style>
 <form action="/division/update" method="POST">
 
-    <@errors.print_errors "division"/>
+    <@errors.print_binding_errors "division"/>
     <div class="standard_form">
 
         <p>

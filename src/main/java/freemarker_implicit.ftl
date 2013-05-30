@@ -40,6 +40,7 @@
 
 <!-- account -->
 [#-- @ftlvariable name="playerToMatches" type="java.util.Map<java.lang.Long, java.util.List<org.squashleague.domain.league.Match>>" --]
+[#-- @ftlvariable name="unregisteredLeagues" type="java.util.List<org.squashleague.domain.league.League>" --]
 
 <!-- league -->
 [#-- @ftlvariable name="showAllDivisions" type="java.lang.Boolean" --]

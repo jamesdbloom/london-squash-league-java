@@ -41,8 +41,8 @@
         <security:intercept-url pattern="/contact_us" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/account" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/account/updatePassword" access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/account/unregister/*" access="isAuthenticated()" requires-channel="https"/>
-        <security:intercept-url pattern="/account/register/*" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/account/unregister/**" access="isAuthenticated()" requires-channel="https"/>
+        <security:intercept-url pattern="/account/register/**" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/user/update/**" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/match/update/**" access="isAuthenticated()" requires-channel="https"/>
         <security:intercept-url pattern="/score/**" access="isAuthenticated()" requires-channel="https"/>

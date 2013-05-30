@@ -28,7 +28,7 @@
 </style>
 <form action="/player/update" method="POST">
 
-    <@errors.print_errors "player"/>
+    <@errors.print_binding_errors "player"/>
     <div class="standard_form">
 
         <p>

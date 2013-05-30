@@ -36,6 +36,23 @@ public class PlayerDAO extends AbstractJpaDAO<Player> {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id")
+    public List<Player> findAllByUser(User user) {
+        try {
+            return entityManager.createQuery("from Player as player where player.user.id = " + user.getId(), Player.class).getResultList();
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #player.user.id")
+    public void save(Player player) {
+        entityManager.persist(player);
+        entityManager.flush();
+    }
+
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #player.user.id")
     public void updateStatus(Player player, PlayerStatus status) {
         entityManager.createQuery("update Player as player set player.status = " + status.ordinal() + " where player.id = " + player.getId()).executeUpdate();

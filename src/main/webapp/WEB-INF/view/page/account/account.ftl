@@ -28,25 +28,46 @@
 </table>
 <div class="standalone_link"><a href="/account/updatePassword" title="Update Password">Update Password</a></div>
 <div class="standalone_link"><a href="/user/update/${user.id}" title="Update User">Update User</a></div><h2 class="table_title" id="divisions">Leagues</h2>
-<table class="action_table">
-    <tbody>
-        <tr>
-            <th>Club</th>
-            <th>League</th>
-            <th class="hide_on_very_small_screen">Status</th>
-            <th>Division</th>
-            <th class="button_column last"></th>
-        </tr>
-        <#list user.players as player>
+<form method="post" action="/account/register">
+    <@errors.print_errors_list "player"/>
+    <table class="action_table">
+        <tbody>
             <tr>
-                <td>${player.league.club.name}</td>
-                <td>${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</td>
-                <td class="hide_on_very_small_screen">${player.status}</td>
-                <td>${player.currentDivision.name}</td>
-                <td class="button_column last"><#if player.status == 'ACTIVE'><a class="button" href="/account/unregister/${player.id}">Unregister</a><#else><a class="button" href="/account/register/${player.id}">Register</a></#if></td>
+                <th>Club</th>
+                <th><label for="league">League</label></th>
+                <th class="hide_on_very_small_screen">Status</th>
+                <th>Division</th>
+                <th class="button_column last"></th>
             </tr>
-        </#list>
-</table><h2 class="table_title">Rounds</h2>
+            <#list user.players as player>
+                <tr>
+                    <td>${player.league.club.name}</td>
+                    <td>${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</td>
+                    <td class="hide_on_very_small_screen">${player.status}</td>
+                    <td>${player.currentDivision.name}</td>
+                    <td class="button_column last"><#if player.status == 'ACTIVE'><a class="button" href="/account/unregister?player=${player.id}">Unregister</a><#else><a class="button" href="/account/register?player=${player.id}">Register</a></#if></td>
+                </tr>
+            </#list>
+            <#if (unregisteredLeagues?size > 0)>
+                <tr>
+                    <td class="last" colspan="4">
+                        <#if (unregisteredLeagues?size > 1)>
+                            <select id="league" name="league" required="required">
+                                <option value="">${environment.getProperty("message.general.please_select")}</option>
+                                <#list unregisteredLeagues as league>
+                                    <option value="${league.id}">${league.name}</option>
+                                </#list>
+                            </select>
+                        <#else>
+                            <input name="league" type="hidden" value="${league.id}">
+                            <input id="league" type="text" value="${league.name}" readonly="readonly">
+                        </#if>
+                    </td>
+                    <td class="button_column last"><input type="submit" name="register" value="Register"></td>
+                </tr>
+            </#if>
+    </table>
+</form><h2 class="table_title">Rounds</h2>
 <table>
     <tbody>
         <tr>
@@ -101,8 +122,7 @@
 
 <#macro showContactDetails user>
 ${user.name}<br>
-    <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a></#if><br>
-<a href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span class="display_on_small_screen">email</span></a>
+    <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a></#if><br><a href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span class="display_on_small_screen">email</span></a>
 </#macro>
 
 <@page_html/>

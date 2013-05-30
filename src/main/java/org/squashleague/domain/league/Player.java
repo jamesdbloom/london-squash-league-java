@@ -28,7 +28,6 @@ public class Player extends ModelObject<Player> {
     private User user;
     @NotNull(message = "{validation.player.status}")
     private PlayerStatus status;
-    @NotNull(message = "{validation.player.currentDivision}")
     @ManyToOne
     private Division currentDivision;
     @NotNull(message = "{validation.player.league}")
@@ -83,6 +82,13 @@ public class Player extends ModelObject<Player> {
 
     public void setLeague(League league) {
         this.league = league;
+    }
+
+    public Player withLeague(League league) {
+        if (this.league == null) {
+            setLeague(league);
+        }
+        return this;
     }
 
     public List<Match> getMatches() {

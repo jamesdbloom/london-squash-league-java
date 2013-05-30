@@ -289,7 +289,7 @@ public class PlayerPageIntegrationTest {
                 .andReturn();
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
-        playerUpdatePage.hasErrors("player", 4);
+        playerUpdatePage.hasErrors("player", 3);
         playerUpdatePage.hasPlayerFields(player.getId(), player.getVersion(), null, null, null, null);
     }
 

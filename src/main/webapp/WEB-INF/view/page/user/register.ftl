@@ -30,7 +30,7 @@
 
     <p class="message">Please enter your details and you will be emailed a link to update your password.</p>
 
-    <@errors.print_errors "user"/>
+    <@errors.print_binding_errors "user"/>
     <div class="standard_form">
         <p>
             <label for="name">Name:</label> <@spring.formInput path="user.name" attributes='required="required" pattern=".{3,50}" maxlength="50" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
