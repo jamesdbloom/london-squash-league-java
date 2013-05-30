@@ -1,0 +1,21 @@
+// squash league db & user setup
+
+CREATE DATABASE db143442_squash;
+CREATE USER 'db143442'@'localhost' IDENTIFIED BY 'mypass';
+SET PASSWORD FOR 'db143442'@'localhost' = PASSWORD('g1t20php12'); 
+GRANT ALL ON db143442_squash.* TO 'db143442'@'localhost';
+
+mysql -u db143442 -p -h localhost -D db143442_squash
+mysql -u db143442 -p -h localhost -D db143442_squash < ~/git/london_squash_league_java/database/db143442_squash_2013_05_05_06_41.sql
+
+// db143442_squash
+// *5F407B9826AE4EA75AD7FFAAEB69A96608210A18
+
+jdbc driver: com.mysql.jdbc.Driver
+url: jdbc:mysql://localhost
+user: db143442
+password: g1t20php12
+
+
+/usr/local/mysql-5.5.27-osx10.6-x86_64/bin/mysqldump -u db143442 -p -h localhost db143442_squash > backup.sql
+mysql -u db143442 -p -h localhost -D db143442_squash < backup.sql
