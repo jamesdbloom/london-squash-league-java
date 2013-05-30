@@ -23,6 +23,25 @@ mysql -u db143442 -p -h localhost -D db143442_squash < backup.sql
 
 
 
+<!-- A "Connector" represents an endpoint by which requests are received
+     and responses are returned. Documentation at :
+     Java HTTP Connector: /docs/config/http.html (blocking & non-blocking)
+     Java AJP  Connector: /docs/config/ajp.html
+     APR (HTTP/AJP) Connector: /docs/apr.html
+     Define a non-SSL HTTP/1.1 Connector on port 8080
+-->
+<Connector port="8080" protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           redirectPort="8443" />
+
+<!-- A "Connector" using the shared thread pool-->
+<!--
+<Connector executor="tomcatThreadPool"
+           port="8080" protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           redirectPort="8443" />
+-->
+
 <!-- Define a SSL HTTP/1.1 Connector on port 8443
      This connector uses the JSSE configuration, when using APR, the
      connector should be using the OpenSSL style configuration
