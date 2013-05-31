@@ -221,7 +221,7 @@ public class User extends ModelObject<User> {
                 .append(mobile, ((User) other).mobile)
                 .append(mobilePrivacy, ((User) other).mobilePrivacy)
                 .append(password, ((User) other).password)
-                .append(roles.toArray(), ((User) other).roles.toArray())
+                .append((roles != null ? roles.toArray() : null), (((User) other).roles != null ? ((User) other).roles.toArray() : null))
                 .isEquals();
     }
 

@@ -1,11 +1,11 @@
-<#ftl strip_whitespace=true strict_syntax=true strip_text=true />
+<#--<#ftl strip_whitespace=true strict_syntax=true strip_text=true />-->
 <#setting url_escaping_charset="UTF-8" />
 <#import "/WEB-INF/view/macro/spring_extension.ftl" as spring />
 <#import "/WEB-INF/view/furniture/errors.ftl" as errors />
 <#import "/WEB-INF/view/furniture/navigation.ftl" as navigation />
 
 <#macro page_html>
-    <@compress single_line=true>
+    <#--<@compress single_line=true>-->
         <#escape x as x?html>
             <#if isAjax?? && isAjax>
                 <@page_body/>
@@ -23,7 +23,7 @@
             </html>
             </#if>
         </#escape>
-    </@compress>
+    <#--</@compress>-->
 </#macro>
 
 <#macro page_head>

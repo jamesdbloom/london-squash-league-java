@@ -6,13 +6,17 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
+import org.squashleague.service.http.RequestParser;
+import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -27,6 +31,10 @@ public class UserController {
     private RoleDAO roleDAO;
     @Resource
     private Environment environment;
+    @Resource
+    private SpringSecurityUserContext securityUserContext;
+    @Resource
+    private RequestParser requestParser;
 
     private void setupModel(Model uiModel) {
         uiModel.addAttribute("mobilePrivacyOptions", MobilePrivacy.enumToFormOptionMap());
@@ -58,16 +66,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@Valid User user, BindingResult bindingResult, Model uiModel) {
-        // todo do I need to handle users who change their email to an email that already exists, how will that fail, is that acceptable??
+    public String update(@Valid User user, BindingResult bindingResult, Model uiModel, @RequestHeader("Referer") String referer) {
         if (bindingResult.hasErrors()) {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
             return "page/administration/user/update";
         }
-        userDAO.update(user); // todo need to prevent normal users from hacking their role
-        return "redirect:/account";
+        if (!securityUserContext.getCurrentUser().hasRole(Role.ROLE_ADMIN)) {
+            user.setRoles(null);
+        }
+        userDAO.update(user);
+        return "redirect:" + requestParser.parseRelativeURI(referer, "/account");
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)

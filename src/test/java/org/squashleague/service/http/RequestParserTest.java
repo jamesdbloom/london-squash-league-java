@@ -120,4 +120,69 @@ public class RequestParserTest {
         //then
         assertEquals("", requestParser.getIpAddress(mockHttpServletRequest));
     }
+
+    @Test
+    public void shouldHandleFullURL() {
+        assertEquals("/foo/bar", requestParser.parseRelativeURI("http://www.google.com/foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleEmptyPathWithSlash() {
+        assertEquals("/", requestParser.parseRelativeURI("http://www.google.com", "default"));
+    }
+
+    @Test
+    public void shouldHandleEmptyPath() {
+        assertEquals("/", requestParser.parseRelativeURI("http://www.google.com", "default"));
+    }
+
+    @Test
+    public void shouldHandleFullURLWithPort() {
+        assertEquals("/foo/bar", requestParser.parseRelativeURI("http://www.google.com:8080/foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleFullURLWithHTTPS() {
+        assertEquals("/foo/bar", requestParser.parseRelativeURI("https://www.google.com/foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleFullURLWithCapitals() {
+        assertEquals("/foo/bar", requestParser.parseRelativeURI("http://www.GOOGLE.com/foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleFullURLWithCoUk() {
+        assertEquals("/foo/bar", requestParser.parseRelativeURI("http://www.google.co.uk/foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleFullURLWithDoubleSlash() {
+        assertEquals("/foo/bar", requestParser.parseRelativeURI("//www.GOOGLE.co.uk/foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleRelativePathWithMiddleSlash() {
+        assertEquals("foo/bar", requestParser.parseRelativeURI("foo/bar", "default"));
+    }
+
+    @Test
+    public void shouldHandleRelativePath() {
+        assertEquals("foo", requestParser.parseRelativeURI("foo", "default"));
+    }
+
+    @Test
+    public void shouldHandleRelativePathWithPrecedingSlash() {
+        assertEquals("/foo", requestParser.parseRelativeURI("/foo", "default"));
+    }
+
+    @Test
+    public void shouldHandleRelativePathWithTrailingSlash() {
+        assertEquals("foo/", requestParser.parseRelativeURI("foo/", "default"));
+    }
+
+    @Test
+    public void shouldHandleInvalidURL() {
+        assertEquals("default", requestParser.parseRelativeURI("ftp://www.GOOGLE.co.uk/foo/bar", "default"));
+    }
 }

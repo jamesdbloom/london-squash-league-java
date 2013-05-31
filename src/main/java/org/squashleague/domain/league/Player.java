@@ -13,10 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Cacheable
@@ -92,13 +89,13 @@ public class Player extends ModelObject<Player> {
     }
 
     public List<Match> getMatches() {
-        return new ArrayList<>(matches);
+        List<Match> matches = new ArrayList<>(this.matches);
+        Collections.sort(matches);
+        return matches;
     }
 
-    public Player withMatches(List<Match> matches) {
-        for (Match match : matches) {
-            this.matches.add(match);
-        }
+    public Player addMatch(Match match) {
+        matches.add(match);
         return this;
     }
 

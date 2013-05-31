@@ -16,10 +16,14 @@ import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
+import org.squashleague.service.http.RequestParser;
+import org.squashleague.service.security.SpringSecurityUserContext;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -36,6 +40,10 @@ public class UserControllerTest {
     private RoleDAO roleDAO;
     @Mock
     private Environment environment;
+    @Mock
+    private SpringSecurityUserContext securityUserContext;
+    @Mock
+    private RequestParser requestParser;
     @InjectMocks
     private UserController userController = new UserController();
 
@@ -109,14 +117,33 @@ public class UserControllerTest {
     public void shouldUpdateUserAndRedirectWhenNoBindingErrors() throws Exception {
         // given
         Model uiModel = mock(Model.class);
-        User user = (User) new User().withId(5l);
+        User user = (User) new User().withRoles(Role.ROLE_ADMIN).withId(5l);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
+        when(requestParser.parseRelativeURI("/foo/bar", "/account")).thenReturn("/foo/bar");
 
         // when
-        String page = userController.update(user, mock(BindingResult.class), uiModel);
+        String page = userController.update(user, mock(BindingResult.class), uiModel, "/foo/bar");
 
         // then
         verify(userDAO).update(user);
-        assertEquals("redirect:/account", page);
+        assertEquals("redirect:/foo/bar", page);
+    }
+
+    @Test
+    public void shouldUpdateUserAndRemoveRolesIfNotAdmin() throws Exception {
+        // given
+        Model uiModel = mock(Model.class);
+        User user = (User) new User().withRoles(Role.ROLE_USER).withId(5l);
+        when(securityUserContext.getCurrentUser()).thenReturn(user);
+        when(requestParser.parseRelativeURI("/foo/bar", "/account")).thenReturn("/foo/bar");
+
+        // when
+        String page = userController.update(user, mock(BindingResult.class), uiModel, "/foo/bar");
+
+        // then
+        verify(userDAO).update(user);
+        assertNull(user.getRoles());
+        assertEquals("redirect:/foo/bar", page);
     }
 
     @Test
@@ -137,7 +164,7 @@ public class UserControllerTest {
         when(roleDAO.findAll()).thenReturn(roles);
 
         // when
-        String page = userController.update(user, bindingResult, uiModel);
+        String page = userController.update(user, bindingResult, uiModel, "/account");
 
         // then
         verify(uiModel).addAttribute("bindingResult", bindingResult);

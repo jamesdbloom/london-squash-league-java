@@ -1,34 +1,25 @@
 package org.squashleague.web.controller.account;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Maps;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.domain.ModelObject;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
+import org.squashleague.service.http.RequestParser;
 import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 
@@ -49,37 +40,22 @@ public class AccountController {
     private LeagueDAO leagueDAO;
     @Resource
     private SpringSecurityUserContext securityUserContext;
+    @Resource
+    private RequestParser requestParser;
 
-    @Transactional
+    // @Transactional
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     public String getAccountPage(Model uiModel) {
 
-        final User user = securityUserContext.getCurrentUser();
-        List<Player> players = playerDAO.findAllByUser(user);
-        Map<Long, Player> playerById = Maps.uniqueIndex(players, ModelObject.TO_MAP);
-        List<Match> matches = matchDAO.findAllByUser(user);
+        Long userId = securityUserContext.getCurrentUser().getId();
+        List<Match> matches = matchDAO.findAllByUserId(userId);
         for (Match match : matches) {
-            if (playerById.containsKey(match.getPlayerOne().getId())) {
-                playerById.get(match.getPlayerOne().getId()).getMatches().add(match);
-            }
-            if (playerById.containsKey(match.getPlayerOne().getId())) {
-                playerById.get(match.getPlayerOne().getId()).getMatches().add(match);
-            }
+            match.getPlayerOne().addMatch(match);
+            match.getPlayerTwo().addMatch(match);
         }
-        user.setPlayers(players);
-        Collection<League> unregisteredLeagues = Collections2.filter(leagueDAO.findAll(), new Predicate<League>() {
-            public boolean apply(League league) {
-                for (Player player : user.getPlayers()) {
-                    if (player.getLeague().getId().equals(league.getId())) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        });
         uiModel.addAttribute("environment", environment);
-        uiModel.addAttribute("unregisteredLeagues", unregisteredLeagues);
-        uiModel.addAttribute("user", user);
+        uiModel.addAttribute("unregisteredLeagues", leagueDAO.findAllUnregisteredLeagues(userId));
+        uiModel.addAttribute("user", (matches.get(0).getPlayerOne().getUser().getId().equals(userId) ? matches.get(0).getPlayerOne().getUser() : matches.get(0).getPlayerTwo().getUser()));
         return "page/account/account";
     }
 
@@ -106,7 +82,7 @@ public class AccountController {
     @Transactional
     @RequestMapping(value = "/account/register", params = "league", method = {RequestMethod.GET, RequestMethod.POST})
     public String registerLeague(Long league, RedirectAttributes redirectAttributes) {
-        if(league == null) {
+        if (league == null) {
             redirectAttributes.addFlashAttribute("validationErrors", Arrays.asList(environment.getProperty("validation.player.league")));
             return "redirect:/account";
         }
@@ -120,7 +96,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/score/{id}", method = RequestMethod.GET)
-    public String retrievePasswordForm(@PathVariable("id") Long id, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
+    public String matchScoreForm(@PathVariable("id") Long id, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
         Match match = matchDAO.findById(id);
         if (match == null) {
             return "redirect:/errors/403";
@@ -132,7 +108,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/score", method = RequestMethod.POST)
-    public String sendUpdatePasswordEmail(Long id, String score, RedirectAttributes redirectAttributes) throws MalformedURLException, UnsupportedEncodingException {
+    public String updateMatchScore(Long id, String score, RedirectAttributes redirectAttributes, @RequestHeader("Referer") String referer) throws MalformedURLException, UnsupportedEncodingException {
         Match match = matchDAO.findById(id);
         if (match == null) {
             return "redirect:/errors/403";
@@ -142,6 +118,6 @@ public class AccountController {
             return "redirect:/score/" + match.getId();
         }
         matchDAO.update(match.withScore(score));
-        return "redirect:/account";
+        return "redirect:" + requestParser.parseRelativeURI(referer, "/account");
     }
 }
