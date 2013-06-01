@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
+import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
@@ -47,15 +48,17 @@ public class AccountController {
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     public String getAccountPage(Model uiModel) {
 
-        Long userId = securityUserContext.getCurrentUser().getId();
-        List<Match> matches = matchDAO.findAllByUserId(userId);
+        User user = securityUserContext.getCurrentUser();
+        List<Match> matches = matchDAO.findAllByUser(user);
+        List<Player> players = playerDAO.findAllActiveByUser(user);
         for (Match match : matches) {
             match.getPlayerOne().addMatch(match);
             match.getPlayerTwo().addMatch(match);
         }
+        user.setPlayers(players);
         uiModel.addAttribute("environment", environment);
-        uiModel.addAttribute("unregisteredLeagues", leagueDAO.findAllUnregisteredLeagues(userId));
-        uiModel.addAttribute("user", (matches.get(0).getPlayerOne().getUser().getId().equals(userId) ? matches.get(0).getPlayerOne().getUser() : matches.get(0).getPlayerTwo().getUser()));
+        uiModel.addAttribute("unregisteredLeagues", leagueDAO.findAllUnregisteredLeagues(user));
+        uiModel.addAttribute("user", user);
         return "page/account/account";
     }
 

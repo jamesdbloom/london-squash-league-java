@@ -39,12 +39,12 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #userId or principal.id")
-    public List<Match> findAllByUserId(Long userId) {
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id or principal.id")
+    public List<Match> findAllByUser(User user) {
         try {
             return entityManager.createQuery("from Match as match where " +
                     "(match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal() + ") and " +
-                    "(match.playerOne.user.id = " + userId + " or match.playerTwo.user.id = " + userId + ")", Match.class).getResultList();
+                    "(match.playerOne.user.id = " + user.getId() + " or match.playerTwo.user.id = " + user.getId() + ")", Match.class).getResultList();
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }

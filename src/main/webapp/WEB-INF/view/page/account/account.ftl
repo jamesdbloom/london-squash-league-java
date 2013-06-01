@@ -12,87 +12,94 @@
 <h2 class="table_title">Your Details</h2>
 <table class="">
     <tbody>
-        <tr>
-            <th class="name">Name</th>
-            <th class="email">Email</th>
-            <th class="mobile row_end_before_hidden_small_screen">Mobile</th>
-            <th class="mobile_privacy hide_on_small_screen">Mobile Privacy</th>
-        </tr>
-        <tr class="">
-            <td class="name">${user.name}</td>
-            <td class="email">${user.email}</td>
-            <td class="mobile row_end_before_hidden_small_screen">${user.mobile!""}</td>
-            <td class="mobile_privacy hide_on_small_screen">${user.mobilePrivacy!""}</td>
-        </tr>
+    <tr>
+        <th class="name">Name</th>
+        <th class="email">Email</th>
+        <th class="mobile row_end_before_hidden_small_screen">Mobile</th>
+        <th class="mobile_privacy hide_on_small_screen">Mobile Privacy</th>
+    </tr>
+    <tr class="">
+        <td class="name">${user.name}</td>
+        <td class="email">${user.email}</td>
+        <td class="mobile row_end_before_hidden_small_screen">${user.mobile!""}</td>
+        <td class="mobile_privacy hide_on_small_screen">${user.mobilePrivacy!""}</td>
+    </tr>
     </tbody>
 </table>
 <div class="standalone_link"><a href="/account/updatePassword" title="Update Password">Update Password</a></div>
-<div class="standalone_link"><a href="/user/update/${user.id}" title="Update User">Update User</a></div><h2 class="table_title" id="divisions">Leagues</h2>
+<div class="standalone_link"><a href="/user/update/${user.id}" title="Update User">Update User</a></div><h2
+        class="table_title" id="divisions">Leagues</h2>
 <form method="post" action="/account/register">
     <@errors.print_errors_list "player"/>
     <table class="action_table">
         <tbody>
-            <tr>
-                <th>Club</th>
-                <th><label for="league">League</label></th>
-                <th class="hide_on_very_small_screen">Status</th>
-                <th>Division</th>
-                <th class="button_column last"></th>
-            </tr>
+        <tr>
+            <th>Club</th>
+            <th><label for="league">League</label></th>
+            <th class="hide_on_very_small_screen">Status</th>
+            <th>Division</th>
+            <th class="button_column last"></th>
+        </tr>
             <#list user.players as player>
-                <tr>
-                    <td>${player.league.club.name}</td>
-                    <td>${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</td>
-                    <td class="hide_on_very_small_screen">${player.status}</td>
-                    <td>${player.currentDivision.name}</td>
-                    <td class="button_column last"><#if player.status == 'ACTIVE'><a class="button" href="/account/unregister?player=${player.id}">Unregister</a><#else><a class="button" href="/account/register?player=${player.id}">Register</a></#if></td>
-                </tr>
+            <tr>
+                <td>${player.league.club.name}</td>
+                <td>${player.league.club.name} &ndash; ${player.league.name}</td>
+                <td class="hide_on_very_small_screen">${player.status}</td>
+                <td><#if player.currentDivision?? >${player.currentDivision.name}</#if></td>
+                <td class="button_column last"><#if player.status == 'ACTIVE'><a class="button"
+                                                                                 href="/account/unregister?player=${player.id}">Unregister</a><#else>
+                    <a class="button" href="/account/register?player=${player.id}">Register</a></#if></td>
+            </tr>
             </#list>
             <#if (unregisteredLeagues?size > 0)>
-                <tr>
-                    <td class="last" colspan="4">
-                        <#if (unregisteredLeagues?size > 1)>
-                            <select id="league" name="league" required="required">
-                                <option value="">${environment.getProperty("message.general.please_select")}</option>
-                                <#list unregisteredLeagues as league>
-                                    <option value="${league.id}">${league.name}</option>
-                                </#list>
-                            </select>
-                        <#else>
-                            <input name="league" type="hidden" value="${league.id}">
-                            <input id="league" type="text" value="${league.name}" readonly="readonly">
-                        </#if>
-                    </td>
-                    <td class="button_column last"><input type="submit" name="register" value="Register"></td>
-                </tr>
+            <tr>
+                <td class="last" colspan="4">
+                    <#if (unregisteredLeagues?size > 1)>
+                        <select id="league" name="league" required="required">
+                            <option value="">${environment.getProperty("message.general.please_select")}</option>
+                            <#list unregisteredLeagues as league>
+                                <option value="${league.id}">${league.name}</option>
+                            </#list>
+                        </select>
+                    <#else>
+                        <input name="league" type="hidden" value="${league.id}">
+                        <input id="league" type="text" value="${league.name}" readonly="readonly">
+                    </#if>
+                </td>
+                <td class="button_column last"><input <#if (user.players?size = 0) >class="submit primary"</#if> type="submit" name="register" value="Register"></td>
+            </tr>
             </#if>
     </table>
-</form><h2 class="table_title">Rounds</h2>
-<table>
-    <tbody>
+</form>
+    <#if (user.players?size = 0) >
+    <p class="errors_messages">You are not registered with any leagues, please select a league from the drop-down and click the register button.</p>
+    <#else>
+    <h2 class="table_title">Rounds</h2>
+    <table>
+        <tbody>
         <tr>
             <th>Division</th>
             <th class="hide_on_small_screen">Status</th>
             <th>Start</th>
             <th>End</th>
         </tr>
-        <#list user.players as player>
-            <#list player.currentDivision.rounds as round>
+            <#list user.players as player>
+                <#list player.currentDivision.rounds as round>
                 <tr>
                     <td>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
                     <td class="hide_on_small_screen">${round.status}</td>
                     <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
                     <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
                 </tr>
+                </#list>
             </#list>
-        </#list>
-    </tbody>
-</table><h2 class="table_title" id="matches">Your Matches</h2>
-    <#list user.players as player>
-        <#if (player.matches?size > 0)>
-        <h2 class="table_subtitle">${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</h2>
-        <table>
-            <tbody>
+        </tbody>
+    </table><h2 class="table_title" id="matches">Your Matches</h2>
+        <#list user.players as player>
+            <#if (player.matches?size > 0)>
+            <h2 class="table_subtitle">${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</h2>
+            <table>
+                <tbody>
                 <tr>
                     <th class="hide_on_very_small_screen">Division</th>
                     <th>Round</th>
@@ -101,28 +108,34 @@
                     <th class="hide_on_medium_screen">Score Entered</th>
                     <th>Score</th>
                 </tr>
-                <#list player.matches as match>
+                    <#list player.matches as match>
                     <tr>
                         <td class="hide_on_very_small_screen">${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
                         <td>${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
                         <td><@showContactDetails match.playerOne.user/></td>
                         <td><@showContactDetails match.playerTwo.user/></td>
                         <td class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
-                        <td style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
+                        <td style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a
+                                href="/score/${match.id}">enter</a></#if></td>
                     </tr>
-                </#list>
-            </tbody>
-        </table>
-        <div class="standalone_link">
-            <a href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
-        </div>
-        </#if>
-    </#list>
+                    </#list>
+                </tbody>
+            </table>
+            <div class="standalone_link">
+                <a href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>"
+                   target="_blank">email
+                    all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
+            </div>
+            </#if>
+        </#list>
+    </#if>
 </#macro>
 
 <#macro showContactDetails user>
 ${user.name}<br>
-    <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a></#if><br><a href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span class="display_on_small_screen">email</span></a>
+    <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a></#if><br><a
+        href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span
+        class="display_on_small_screen">email</span></a>
 </#macro>
 
 <@page_html/>
