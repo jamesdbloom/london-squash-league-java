@@ -44,7 +44,7 @@ public class RoundTest {
         Round round = new Round();
 
         round.withStartDate(DATE_TIME.minusDays(1));
-        round.withEndDate(DATE_TIME.plusMillis(10));
+        round.withEndDate(DATE_TIME.plusMillis(100));
 
         assertEquals(RoundStatus.INPLAY, round.getStatus());
     }
