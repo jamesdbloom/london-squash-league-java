@@ -80,6 +80,14 @@ table {
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'ComicSCFRegular';
+    src: url('/resources/font_face/comicscf_regular_macroman/comic_scf-webfont.eot');
+    src: url('/resources/font_face/comicscf_regular_macroman/comic_scf-webfont.eot') format('embedded-opentype'), url('/resources/font_face/comicscf_regular_macroman/comic_scf-webfont.woff') format('woff'), url('/resources/font_face/comicscf_regular_macroman/comic_scf-webfont.ttf') format('truetype'), url('/resources/font_face/comicscf_regular_macroman/comic_scf-webfont.svg#ComicSCFRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     color: #000;
     background-color: #dcdcdc;
@@ -236,6 +244,15 @@ h2 {
     display: block;
     width: 100%;
     height: 100%
+}
+
+/* homepage */
+
+.homepage_message {
+    margin: 1em 15% 1em 15%;
+    line-height: 1.25em;
+    font-size: 2em;
+    font-family: 'ComicSCFRegular', Helvetica, arial, freesans, clean, sans-serif;
 }
 
 /* link list page */
@@ -441,7 +458,6 @@ input[type=submit].primary:hover,
     cursor: default;
 }
 
-
 input[type=submit]:disabled,
 .button:disabled,
 input[type=submit].disabled,
@@ -464,15 +480,10 @@ input[type="checkbox"] {
 /* login, register, retrieve password, reset password, delete sessions */
 
 .standard_form {
-    width: 80%;
-    margin-top: 2em;
-    overflow: hidden;
-}
-
-.standard_form {
-    width: 95%;
+    width: 85%;
     margin-top: 2em;
     margin-bottom: 2.75em;
+    overflow: hidden;
 }
 
 .standard_form label {
@@ -905,6 +916,11 @@ table.large_screen {
         /*min-width: 395px;*/
     }
 
+    .homepage_message {
+        margin: 1em 0;
+        font-size: 1em;
+    }
+
     #footer p {
         font: 1.125em 'EarwigFactoryRegular', sans-serif;
     }
@@ -978,12 +994,6 @@ table.large_screen {
         border-radius: 0 6px 6px 0;
     }
 
-    .standard_form {
-        width: 90%;
-        margin-top: 2em;
-        margin-bottom: 2.75em;
-    }
-
     .standard_form label {
         width: 40%;
     }
@@ -1052,6 +1062,11 @@ table.large_screen {
         width: 100%;
     }
 
+    .homepage_message {
+        margin: 1em 0;
+        font-size: 1.3em;
+    }
+
     #footer p {
         font: 1.5em 'EarwigFactoryRegular', sans-serif;
     }
@@ -1098,6 +1113,11 @@ table.large_screen {
         width: 100%;
     }
 
+    .homepage_message {
+        margin: 1em 5%;
+        font-size: 1.5em;
+    }
+
     ol.link_list,
     ol.link_list {
         margin-left: 15%;
@@ -1107,10 +1127,6 @@ table.large_screen {
 
 /* Desktops and laptops ----------- */
 @media only screen and (min-width : 1224px) and (max-width : 1823px) {
-    .standard_form {
-        width: 90%;
-    }
-
     #container {
         width: 80%;
         margin: 0 auto;

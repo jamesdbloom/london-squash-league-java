@@ -18,7 +18,7 @@ import java.util.Properties;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
         }
 )
-@PropertySource({"classpath:mail.properties"})
+@PropertySource({"classpath:application.properties"})
 public class ServiceConfiguration {
 
     @Resource
@@ -34,7 +34,7 @@ public class ServiceConfiguration {
             setPassword(environment.getProperty("email.password"));
             setJavaMailProperties(new Properties() {{ // https://javamail.java.net/nonav/docs/api/com/sun/mail/smtp/package-summary.html
                 setProperty("mail.smtp.auth", "true");
-                setProperty("mail.smtp.starttls.enable", "false");
+                setProperty("mail.smtp.starttls.enable", environment.getProperty("email.starttls"));
                 setProperty("mail.smtp.quitwait", "false");
             }});
         }};

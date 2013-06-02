@@ -54,7 +54,7 @@ public class UpdatePasswordController {
         User user = userDAO.findByEmail(email);
         if (user != null) {
             userDAO.updateOneTimeToken(user.withOneTimeToken(uuidService.generateUUID()));
-            emailService.sendRegistrationMessage(user, request);
+            emailService.sendUpdatePasswordMessage(user, request);
         }
         redirectAttributes.addFlashAttribute("message", "Email has been sent");
         redirectAttributes.addFlashAttribute("title", "Message Sent");
@@ -108,7 +108,7 @@ public class UpdatePasswordController {
         }
         userDAO.updatePassword(user.withPassword(passwordEncoder.encode(password)));
         securityUserContext.setCurrentUser(user);
-        return "redirect:/";
+        return "redirect:/account";
     }
 
     @RequestMapping(value = "/account/updatePassword", method = RequestMethod.GET)
@@ -119,7 +119,7 @@ public class UpdatePasswordController {
     }
 
     @RequestMapping(value = "/account/updatePassword", method = RequestMethod.POST)
-    public String authenticatedUpdatePassword(String email, String existingPassword, String newPassword, String passwordConfirm, Model uiModel) throws UnsupportedEncodingException {
+    public String authenticatedUpdatePassword(String existingPassword, String newPassword, String passwordConfirm, Model uiModel) throws UnsupportedEncodingException {
         User user = securityUserContext.getCurrentUser();
         boolean incorrectCredentials = !credentialValidation.checkCredentials(existingPassword, user);
         boolean passwordFormatError = !PASSWORD_MATCHER.matcher(String.valueOf(newPassword)).matches();

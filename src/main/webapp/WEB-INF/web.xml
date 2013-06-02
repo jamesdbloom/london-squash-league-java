@@ -25,6 +25,15 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
+    <filter>
+        <filter-name>exceptionLoggingFilter</filter-name>
+        <filter-class>org.squashleague.web.filter.ExceptionLoggingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>exceptionLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- add bundling model to servlet context so JS and CSS links can be pragmatically written into freemarker -->
     <listener>
         <listener-class>ro.isdc.wro.http.WroServletContextListener</listener-class>

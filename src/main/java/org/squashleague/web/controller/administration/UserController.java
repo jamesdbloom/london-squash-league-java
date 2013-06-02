@@ -2,6 +2,7 @@ package org.squashleague.web.controller.administration;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -66,18 +67,28 @@ public class UserController {
         return "page/administration/user/update";
     }
 
+    @Transactional
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid User user, BindingResult bindingResult, String referer, Model uiModel) {
-        if (bindingResult.hasErrors()) {
+        User currentUser = securityUserContext.getCurrentUser();
+        boolean userAlreadyExists = user.getEmail() != null && !currentUser.getEmail().equals(user.getEmail()) && (userDAO.findByEmail(user.getEmail()) != null);
+        if (bindingResult.hasErrors() || userAlreadyExists) {
             setupModel(uiModel);
+            if (userAlreadyExists) {
+                bindingResult.addError(new ObjectError("user", environment.getProperty("validation.user.alreadyExists")));
+            }
             uiModel.addAttribute("bindingResult", bindingResult);
             uiModel.addAttribute("user", user);
+            uiModel.addAttribute("referer", requestParser.parseRelativeURI(referer, "/account"));
             return "page/administration/user/update";
         }
-        if (!securityUserContext.getCurrentUser().hasRole(Role.ROLE_ADMIN)) {
+        if (!currentUser.hasRole(Role.ROLE_ADMIN)) {
             user.setRoles(null);
         }
         userDAO.update(user);
+        if (user.getId().equals(currentUser.getId())) {
+            securityUserContext.setCurrentUser(userDAO.findById(user.getId()));
+        }
         return "redirect:" + requestParser.parseRelativeURI(referer, "/account");
     }
 

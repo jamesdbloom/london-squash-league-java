@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author jamesdbloom
  */
 @Configuration
-@PropertySource({"classpath:web.properties", "classpath:ValidationMessages.properties"})
+@PropertySource({"classpath:application.properties", "classpath:ValidationMessages.properties"})
 @ImportResource(value = {"classpath:/config/security-context.xml", "classpath:/config/dao-context.xml"})
 @Import(ServiceConfiguration.class)
 public class RootConfiguration {

@@ -132,7 +132,7 @@ public class EmailServiceTest {
 
         assertEquals("<html><head><title>" + subject + "</title></head><body>\n" +
                 "<h1>" + subject + "</h1>\n" +
-                "<p>A new has just been registered for " + email + "</p>\n" +
+                "<p>A new user has just been registered for " + email + "</p>\n" +
                 "<p>To validate this email address please click on the following link <a href=https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + ">https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + "</a></p>\n" +
                 "</body></html>", mimeMessage.getContent().toString());
     }

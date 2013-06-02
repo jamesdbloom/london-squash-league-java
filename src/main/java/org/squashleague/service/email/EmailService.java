@@ -56,19 +56,33 @@ public class EmailService {
     }
 
     public void sendRegistrationMessage(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
-        URL link = new URL(
-                "https",
-                request.getLocalName(),
-                request.getLocalPort(),
-                "/updatePassword?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&oneTimeToken=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
-        );
+        URL link = createUrl(user, request);
         String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "New Registration";
         String formattedMessage = "<html><head><title>" + subject + "</title></head><body>\n" +
                 "<h1>" + subject + "</h1>\n" +
-                "<p>A new has just been registered for " + user.getEmail() + "</p>\n" +
+                "<p>A new user has just been registered for " + user.getEmail() + "</p>\n" +
                 "<p>To validate this email address please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
                 "</body></html>";
         sendMessage(environment.getProperty("email.contact.address"), new String[]{user.getEmail()}, subject, formattedMessage);
+    }
+
+    public void sendUpdatePasswordMessage(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
+        URL link = createUrl(user, request);
+        String subject = LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "Update Password";
+        String formattedMessage = "<html><head><title>" + subject + "</title></head><body>\n" +
+                "<h1>" + subject + "</h1>\n" +
+                "<p>To update your password please click on the following link <a href=" + link + ">" + link + "</a></p>\n" +
+                "</body></html>";
+        sendMessage(environment.getProperty("email.contact.address"), new String[]{user.getEmail()}, subject, formattedMessage);
+    }
+
+    private URL createUrl(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
+        return new URL(
+                    "https",
+                    request.getLocalName(),
+                    request.getLocalPort(),
+                    "/updatePassword?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&oneTimeToken=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
+            );
     }
 
     public class SendMessageTask implements Runnable {

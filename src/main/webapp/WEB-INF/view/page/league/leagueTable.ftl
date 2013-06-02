@@ -68,12 +68,13 @@
         </#list>
     <#else>
         <div class="errors_messages"  style="text-align: left; margin: 5em auto;">
-            <p style="margin: 0.25em;">You are not currently in any rounds for one of the following reasons:</p>
+            <p style="margin: 0.25em 0;">You are not currently in any rounds for one of the following reasons:</p>
             <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
-                <li style="margin-left: 2em;">you are not an active player in any leagues</li>
-                <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but a new round has not started yet</li>
+                <li style="margin-left: 2em;">you are not an active player in any leagues,</li>
+                <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but a new round has not started yet.</li>
             </ul>
-            <p style="margin: 0.25em;">For more details use the <a href="/account">account</a> page to check which leagues you are registered for</p>
+            <p style="margin: 0.75em 0;">For more details use the <a href="/account">account</a> page to check which leagues you are registered for.</p>
+            <p style="margin: 0.25em 0;">To view all rounds for the leagues you are a player in (including those you do not have a match in) use the <a href="/leagueTable?showAllDivisions=true">View Leagues</a> button above.</p>
         </div>
     </#if>
     <#if print?? && print><script>window.print();</script></#if>

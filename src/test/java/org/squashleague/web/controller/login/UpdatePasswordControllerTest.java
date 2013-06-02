@@ -129,7 +129,7 @@ public class UpdatePasswordControllerTest {
         verify(user, times(3)).withPassword(user.getPassword());
         verify(userDAO).updatePassword(user);
         verify(securityUserContext).setCurrentUser(user);
-        assertEquals("redirect:/", page);
+        assertEquals("redirect:/account", page);
 
     }
 

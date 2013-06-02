@@ -59,7 +59,8 @@
             <@content_section/>
         </div>
     </div>
-    <div id="footer"><p><a href="http://blog.jamesdbloom.com/">&copy; 2012 James D Bloom</a></p></div>
+    <div id="footer"><p><a href="http://blog.jamesdbloom.com/">&copy; 2013 James D Bloom</a></p></div>
+    <a style="display: none;" href="https://plus.google.com/110954472544793839756?rel=author">Google</a>
 </div>
 </#macro>
 

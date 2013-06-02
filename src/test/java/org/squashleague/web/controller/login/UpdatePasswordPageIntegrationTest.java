@@ -91,7 +91,7 @@ public class UpdatePasswordPageIntegrationTest {
                 .param("passwordConfirm", user.getPassword())
         )
                 // then
-                .andExpect(redirectedUrl("/"));
+                .andExpect(redirectedUrl("/account"));
 
         verify(userDAO).updatePassword(any(User.class));
         verify(securityUserContext).setCurrentUser(any(User.class));

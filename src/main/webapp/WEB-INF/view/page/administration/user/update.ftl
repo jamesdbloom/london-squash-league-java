@@ -37,9 +37,7 @@
     <div class="standard_form">
         <input id="referer" name="referer" type="hidden" value="${referer!""}">
 
-        <p>
-            <label class="id" for="id">Id:</label><input id="id" name="id" type="text" value="${user.id!""}" readonly="readonly">
-        </p>
+        <input id="id" name="id" type="hidden" value="${user.id!""}">
         <input id="version" name="version" type="hidden" value="${user.version!""}">
 
         <p>
@@ -63,9 +61,9 @@
             <span class="error_message"></span>
         </p>
 
-        <p class="select">
-            <label class="roles" for="roles">Roles:</label>
-            <@security.authorize access='hasRole("ROLE_ADMIN")'>
+        <@security.authorize access='hasRole("ROLE_ADMIN")'>
+            <p class="select">
+                <label class="roles" for="roles">Roles:</label>
                 <#if (roles?size > 0)>
                     <select id="roles" name="roles" <#if (roles?size > 1)>multiple="multiple"</#if> required="required" title="${environment.getProperty("validation.user.roles")}">
                         <#if (roles?size <= 1)>
@@ -76,11 +74,11 @@
                         </#list>
                     </select> <span class="error_message"></span>
                 </#if>
-            </@security.authorize>
-            <@security.authorize access='!hasRole("ROLE_ADMIN")'>
-                <input id="roles" value="<#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list>" readonly="readonly">
-            </@security.authorize>
-        </p>
+            </p>
+        </@security.authorize>
+        <@security.authorize access='!hasRole("ROLE_ADMIN")'>
+            <input id="roles" value="<#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list>" type="hidden">
+        </@security.authorize>
 
         <p class="submit">
             <input class="submit primary" type="submit" formnovalidate name="save" value="Save">

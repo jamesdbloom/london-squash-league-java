@@ -27,7 +27,7 @@
     </tbody>
 </table>
 <div class="standalone_link"><a href="/account/updatePassword" title="Update Password">Update Password</a></div>
-<div class="standalone_link"><a href="/user/update/${user.id}" title="Update User">Update User</a></div><h2 class="table_title" id="divisions">Leagues</h2>
+<div class="standalone_link"><a href="/user/update/${user.id}" title="Update User">Update User</a></div><h2 class="table_title" id="leagues">Leagues</h2>
 <form method="post" action="/account/register">
     <@errors.print_errors_list "player"/>
     <table class="action_table">
@@ -72,8 +72,8 @@
     <div class="errors_messages" style="text-align: left;">
         <p>You are not currently in any rounds for one of the following reasons:</p>
         <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
-            <li style="margin-left: 2em;">you are not an active player in any of your leagues</li>
-            <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but a new round has not started yet</li>
+            <li style="margin-left: 2em;">you are not an active player in any of your leagues,</li>
+            <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but a new round has not started yet.</li>
         </ul>
     </div>
     <#else>
