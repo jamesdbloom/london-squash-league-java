@@ -37,7 +37,7 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     @ManyToOne
     private Division division;
     @Transient
-    private transient Set<Match> matches = new LinkedHashSet<>();
+    private transient Map<Long, Match> matches = new HashMap<>();
     @Transient
     private transient Map<Long, Map<Long, Match>> matchGrid = new HashMap<>();
     @Transient
@@ -102,7 +102,7 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     public Round addMatch(Match match) {
         Player playerOne = match.getPlayerOne();
         Player playerTwo = match.getPlayerTwo();
-        matches.add(match);
+        matches.put(match.getId(), match);
         players.put(playerOne.getId(), playerOne);
         players.put(playerTwo.getId(), playerTwo);
         if (!matchGrid.containsKey(playerOne.getId())) {
@@ -112,8 +112,8 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
         return this;
     }
 
-    public Set<Match> getMatches() {
-        return matches;
+    public Collection<Match> getMatches() {
+        return matches.values();
     }
 
     public Match getMatch(Long playerOneId, Long playerTwoId) {

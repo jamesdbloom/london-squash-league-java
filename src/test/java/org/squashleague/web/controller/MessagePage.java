@@ -21,8 +21,14 @@ public class MessagePage {
         html = Jsoup.parse(response.getResponse().getContentAsString());
     }
 
-    public void hasConfirmationMessage(String message) {
-        Element messageElement = html.select(".message").first();
+    public void hasMessage(String message) {
+        Element messageElement = html.select("#message.message").first();
+        assertNotNull(messageElement);
+        assertEquals(messageElement.text(), message);
+    }
+
+    public void hasErrorMessage(String message) {
+        Element messageElement = html.select("#message.error_message").first();
         assertNotNull(messageElement);
         assertEquals(messageElement.text(), message);
     }

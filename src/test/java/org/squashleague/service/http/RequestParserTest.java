@@ -185,4 +185,10 @@ public class RequestParserTest {
     public void shouldHandleInvalidURL() {
         assertEquals("default", requestParser.parseRelativeURI("ftp://www.GOOGLE.co.uk/foo/bar", "default"));
     }
+
+    @Test
+    public void shouldHandleLocalhostURL() {
+        assertEquals("/leagueTable", requestParser.parseRelativeURI("https://localhost:8443/leagueTable", "default"));
+    }
+
 }

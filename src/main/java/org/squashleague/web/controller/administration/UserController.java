@@ -59,14 +59,15 @@ public class UserController {
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") Long id, Model uiModel) {
+    public String updateForm(@PathVariable("id") Long id, @RequestHeader("Referer") String referer, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("user", userDAO.findById(id));
+        uiModel.addAttribute("referer", requestParser.parseRelativeURI(referer, "/account"));
         return "page/administration/user/update";
     }
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public String update(@Valid User user, BindingResult bindingResult, Model uiModel, @RequestHeader("Referer") String referer) {
+    public String update(@Valid User user, BindingResult bindingResult, String referer, Model uiModel) {
         if (bindingResult.hasErrors()) {
             setupModel(uiModel);
             uiModel.addAttribute("bindingResult", bindingResult);

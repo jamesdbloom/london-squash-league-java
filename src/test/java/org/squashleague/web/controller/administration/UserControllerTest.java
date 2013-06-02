@@ -19,7 +19,6 @@ import org.squashleague.domain.account.User;
 import org.squashleague.service.http.RequestParser;
 import org.squashleague.service.security.SpringSecurityUserContext;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +101,7 @@ public class UserControllerTest {
         when(roleDAO.findAll()).thenReturn(roles);
 
         // when
-        String page = userController.updateForm(id, uiModel);
+        String page = userController.updateForm(id, "/account", uiModel);
 
         // then
         verify(uiModel).addAttribute("user", user);
@@ -122,7 +121,7 @@ public class UserControllerTest {
         when(requestParser.parseRelativeURI("/foo/bar", "/account")).thenReturn("/foo/bar");
 
         // when
-        String page = userController.update(user, mock(BindingResult.class), uiModel, "/foo/bar");
+        String page = userController.update(user, mock(BindingResult.class), "/foo/bar", uiModel);
 
         // then
         verify(userDAO).update(user);
@@ -138,7 +137,7 @@ public class UserControllerTest {
         when(requestParser.parseRelativeURI("/foo/bar", "/account")).thenReturn("/foo/bar");
 
         // when
-        String page = userController.update(user, mock(BindingResult.class), uiModel, "/foo/bar");
+        String page = userController.update(user, mock(BindingResult.class), "/foo/bar", uiModel);
 
         // then
         verify(userDAO).update(user);
@@ -164,7 +163,7 @@ public class UserControllerTest {
         when(roleDAO.findAll()).thenReturn(roles);
 
         // when
-        String page = userController.update(user, bindingResult, uiModel, "/account");
+        String page = userController.update(user, bindingResult, "/account", uiModel);
 
         // then
         verify(uiModel).addAttribute("bindingResult", bindingResult);

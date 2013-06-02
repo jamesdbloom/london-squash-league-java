@@ -23,7 +23,6 @@ public class LeagueDAO extends AbstractJpaDAO<League> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id or principal.id")
     public List<League> findAllUnregisteredLeagues(User user) {
         return entityManager.createQuery("from League league where league.id NOT IN (select player.league.id from Player player where player.user.id = " + user.getId() + ")", League.class).getResultList();
     }

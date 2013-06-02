@@ -22,15 +22,4 @@ public class DivisionDAO extends AbstractJpaDAO<Division> {
         super(Division.class);
     }
 
-    @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id")
-    public List<Division> findAllForUser(User user) {
-        return entityManager.createQuery(
-                "from Division division " +
-                        "where division.id IN (" +
-                        "    select currentDivision.id from Player player " +
-                        "    where player.user.id = " + user.getId() +
-                        ")", Division.class).getResultList();
-    }
-
 }

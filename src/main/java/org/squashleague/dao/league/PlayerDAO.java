@@ -26,7 +26,6 @@ public class PlayerDAO extends AbstractJpaDAO<Player> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id")
     public List<Player> findAllActiveByUser(User user) {
         try {
             return entityManager.createQuery("from Player as player where player.status = " + PlayerStatus.ACTIVE.ordinal() + " and player.user.id = " + user.getId(), Player.class).getResultList();
@@ -36,7 +35,6 @@ public class PlayerDAO extends AbstractJpaDAO<Player> {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #user.id")
     public List<Player> findAllByUser(User user) {
         try {
             return entityManager.createQuery("from Player as player where player.user.id = " + user.getId(), Player.class).getResultList();

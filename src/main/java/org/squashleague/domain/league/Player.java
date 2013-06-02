@@ -31,7 +31,7 @@ public class Player extends ModelObject<Player> {
     @ManyToOne
     private League league;
     @Transient
-    private transient Set<Match> matches = new LinkedHashSet<>();
+    private transient Map<Long, Match> matches = new HashMap<>();
 
     public User getUser() {
         return user;
@@ -88,14 +88,12 @@ public class Player extends ModelObject<Player> {
         return this;
     }
 
-    public List<Match> getMatches() {
-        List<Match> matches = new ArrayList<>(this.matches);
-        Collections.sort(matches);
-        return matches;
+    public Collection<Match> getMatches() {
+        return matches.values();
     }
 
     public Player addMatch(Match match) {
-        matches.add(match);
+        matches.put(match.getId(), match);
         return this;
     }
 
@@ -103,7 +101,7 @@ public class Player extends ModelObject<Player> {
         List<String> emails = new ArrayList<>();
         String myEmail = user.getEmail();
         if (matches != null && !matches.isEmpty()) {
-            for (Match match : matches) {
+            for (Match match : matches.values()) {
                 String playerOneEmail = match.getPlayerOne().user.getEmail();
                 if (!playerOneEmail.equals(myEmail) && !emails.contains(playerOneEmail)) {
                     emails.add(playerOneEmail);

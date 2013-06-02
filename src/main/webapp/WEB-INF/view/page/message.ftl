@@ -9,7 +9,7 @@
 </#macro>
 
 <#macro content_section>
-<p <#if error?? && error>class="error_message"<#else>class="message"</#if>>${message!""}</p>
+<p id="message" <#if error?? && error>class="error_message"<#else>class="message"</#if>>${message!""}</p>
 </#macro>
 
 <@page_html/>

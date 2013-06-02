@@ -273,7 +273,7 @@
             <#list players as player>
                 <tr>
                     <td class="key">${player.id}</td>
-                    <td class="division">${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name}</td>
+                    <td class="division">${player.league.club.name} &ndash; ${player.league.name} <#if player.currentDivision??>&ndash; ${player.currentDivision.name}</#if></td>
                     <td class="name">${player.user.name}</td>
                     <td class="status hide_on_small_screen">${player.status}</td>
                     <td class="button_column last"><a class="button" href="/player/delete/${player.id}">Delete</a><a class="button" href="/player/update/${player.id}">Modify</a></td>

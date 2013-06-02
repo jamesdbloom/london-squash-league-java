@@ -9,12 +9,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.Round;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -42,7 +44,7 @@ public class User extends ModelObject<User> {
     private MobilePrivacy mobilePrivacy;
     // login
     @NotNull(message = "{validation.user.roles}")
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinColumn
     private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);
     private String password;
@@ -51,6 +53,9 @@ public class User extends ModelObject<User> {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Player> players;
+    // view collections
+    @Transient
+    private transient Collection<Round> rounds;
 
 
     public boolean showMobileToOpponent() {
@@ -181,6 +186,14 @@ public class User extends ModelObject<User> {
         return this;
     }
 
+    public Collection<Round> getRounds() {
+        return rounds;
+    }
+
+    public void setRounds(Collection<Round> rounds) {
+        this.rounds = rounds;
+    }
+
     public User merge(User user) {
         if (user.name != null) {
             this.name = user.name;
@@ -221,7 +234,6 @@ public class User extends ModelObject<User> {
                 .append(mobile, ((User) other).mobile)
                 .append(mobilePrivacy, ((User) other).mobilePrivacy)
                 .append(password, ((User) other).password)
-                .append((roles != null ? roles.toArray() : null), (((User) other).roles != null ? ((User) other).roles.toArray() : null))
                 .isEquals();
     }
 

@@ -35,6 +35,7 @@
 
     <@errors.print_binding_errors "user"/>
     <div class="standard_form">
+        <input id="referer" name="referer" type="hidden" value="${referer!""}">
 
         <p>
             <label class="id" for="id">Id:</label><input id="id" name="id" type="text" value="${user.id!""}" readonly="readonly">

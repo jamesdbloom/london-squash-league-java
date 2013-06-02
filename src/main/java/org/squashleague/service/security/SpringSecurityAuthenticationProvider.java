@@ -8,6 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.User;
 
@@ -27,6 +28,7 @@ public class SpringSecurityAuthenticationProvider implements AuthenticationProvi
     private CredentialValidation credentialValidation;
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
         User user = userDAO.findByEmail(token.getName());

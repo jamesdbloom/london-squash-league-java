@@ -1,6 +1,7 @@
 package org.squashleague.web.controller.account;
 
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -9,18 +10,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
+import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.Match;
-import org.squashleague.domain.league.Player;
-import org.squashleague.domain.league.PlayerStatus;
+import org.squashleague.domain.league.*;
 import org.squashleague.service.http.RequestParser;
 import org.squashleague.service.security.SpringSecurityUserContext;
+import org.squashleague.web.tasks.CommandHolder;
+import org.squashleague.web.tasks.account.LoadPlayerRounds;
+import org.squashleague.web.tasks.account.LoadUnregisteredLeagues;
+import org.squashleague.web.tasks.account.LoadUserAccountData;
+import org.squashleague.web.tasks.league.LoadAllMatches;
+import org.squashleague.web.tasks.league.LoadFullyPopulatedUser;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 
@@ -40,25 +47,20 @@ public class AccountController {
     @Resource
     private LeagueDAO leagueDAO;
     @Resource
+    private RoundDAO roundDAO;
+    @Resource
     private SpringSecurityUserContext securityUserContext;
     @Resource
     private RequestParser requestParser;
+    @Resource
+    private ThreadPoolTaskExecutor taskExecutor;
 
-    // @Transactional
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     public String getAccountPage(Model uiModel) {
-
-        User user = securityUserContext.getCurrentUser();
-        List<Match> matches = matchDAO.findAllByUser(user);
-        List<Player> players = playerDAO.findAllActiveByUser(user);
-        for (Match match : matches) {
-            match.getPlayerOne().addMatch(match);
-            match.getPlayerTwo().addMatch(match);
-        }
-        user.setPlayers(players);
+        uiModel.addAttribute("user", CommandHolder.newInstance(taskExecutor.submit(new LoadUserAccountData(matchDAO, playerDAO, securityUserContext.getCurrentUser())), User.class));
+        uiModel.addAttribute("rounds", CommandHolder.newListInstance(taskExecutor.submit(new LoadPlayerRounds(roundDAO, securityUserContext.getCurrentUser())), Round.class));
+        uiModel.addAttribute("unregisteredLeagues", CommandHolder.newListInstance(taskExecutor.submit(new LoadUnregisteredLeagues(leagueDAO, securityUserContext.getCurrentUser())), League.class));
         uiModel.addAttribute("environment", environment);
-        uiModel.addAttribute("unregisteredLeagues", leagueDAO.findAllUnregisteredLeagues(user));
-        uiModel.addAttribute("user", user);
         return "page/account/account";
     }
 
@@ -99,7 +101,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/score/{id}", method = RequestMethod.GET)
-    public String matchScoreForm(@PathVariable("id") Long id, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
+    public String matchScoreForm(@PathVariable("id") Long id, @RequestHeader("Referer") String referer, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
         Match match = matchDAO.findById(id);
         if (match == null) {
             return "redirect:/errors/403";
@@ -107,11 +109,12 @@ public class AccountController {
         uiModel.addAttribute("match", match);
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("scorePattern", Match.SCORE_PATTERN);
+        uiModel.addAttribute("referer", requestParser.parseRelativeURI(referer, "/account"));
         return "page/account/score";
     }
 
     @RequestMapping(value = "/score", method = RequestMethod.POST)
-    public String updateMatchScore(Long id, String score, RedirectAttributes redirectAttributes, @RequestHeader("Referer") String referer) throws MalformedURLException, UnsupportedEncodingException {
+    public String updateMatchScore(Long id, String score, String referer, RedirectAttributes redirectAttributes) throws MalformedURLException, UnsupportedEncodingException {
         Match match = matchDAO.findById(id);
         if (match == null) {
             return "redirect:/errors/403";

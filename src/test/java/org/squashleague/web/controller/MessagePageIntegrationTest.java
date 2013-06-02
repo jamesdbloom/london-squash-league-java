@@ -46,7 +46,7 @@ public class MessagePageIntegrationTest {
     }
 
     @Test
-    public void shouldDisplayMessagePage() throws Exception {
+    public void shouldDisplayMessage() throws Exception {
         String message = "test message";
         String title = "test title";
 
@@ -59,7 +59,26 @@ public class MessagePageIntegrationTest {
                 .andReturn();
 
         MessagePage confirmationPage = new MessagePage(response);
-        confirmationPage.hasConfirmationMessage(message);
+        confirmationPage.hasMessage(message);
+        confirmationPage.hasTitle(title);
+    }
+
+    @Test
+    public void shouldDisplayErrorMessage() throws Exception {
+        String message = "test message";
+        String title = "test title";
+
+        MvcResult response = mockMvc.perform(get("/message").accept(MediaType.TEXT_HTML)
+                .flashAttr("message", message)
+                .flashAttr("title", title)
+                .flashAttr("error", true)
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        MessagePage confirmationPage = new MessagePage(response);
+        confirmationPage.hasErrorMessage(message);
         confirmationPage.hasTitle(title);
     }
 }

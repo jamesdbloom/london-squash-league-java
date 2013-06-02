@@ -45,3 +45,6 @@
 <!-- league -->
 [#-- @ftlvariable name="showAllDivisions" type="java.lang.Boolean" --]
 [#-- @ftlvariable name="print" type="java.lang.Boolean" --]
+
+<!-- flow -->
+[#-- @ftlvariable name="referer" type="java.lang.String" --]

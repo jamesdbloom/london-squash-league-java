@@ -15,6 +15,7 @@
 
     <@errors.print_errors_list "score"/>
     <div class="standard_form">
+        <input id="referer" name="referer" type="hidden" value="${referer!""}">
         <input id="id" name="id" type="hidden" value="${match.id}">
 
         <p>

@@ -70,17 +70,6 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
         return this;
     }
 
-    public List<Round> getCurrentRounds() {
-        List<Round> rounds = new ArrayList<>();
-        for (Round round : this.rounds) {
-            if (round.getStatus().equals(RoundStatus.INPLAY)) {
-                rounds.add(round);
-            }
-        }
-        return rounds;
-    }
-
-
     @Override
     public int compareTo(Division other) {
         return (league.compareTo(other.league) == 0 ? name.compareTo(other.name) : league.compareTo(other.league));

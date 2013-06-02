@@ -1,11 +1,11 @@
-<#--<#ftl strip_whitespace=true strict_syntax=true strip_text=true />-->
+<#ftl strip_whitespace=true strict_syntax=true strip_text=true />
 <#setting url_escaping_charset="UTF-8" />
 <#import "/WEB-INF/view/macro/spring_extension.ftl" as spring />
 <#import "/WEB-INF/view/furniture/errors.ftl" as errors />
 <#import "/WEB-INF/view/furniture/navigation.ftl" as navigation />
 
 <#macro page_html>
-    <#--<@compress single_line=true>-->
+    <@compress single_line=true>
         <#escape x as x?html>
             <#if isAjax?? && isAjax>
                 <@page_body/>
@@ -15,7 +15,6 @@
                 <head>
                     <@page_head/>
                 </head>
-                <#flush>
                 <body onunload="">
                     <@page_body/>
                     <@page_js/>
@@ -23,7 +22,7 @@
             </html>
             </#if>
         </#escape>
-    <#--</@compress>-->
+    </@compress>
 </#macro>
 
 <#macro page_head>
@@ -54,6 +53,9 @@
     <@navigation.navigation/>
     <div id="main_content">
         <div class="section">
+            <@show_loading_message/>
+            <#flush/>
+            <@hide_loading_message/>
             <@content_section/>
         </div>
     </div>
@@ -71,6 +73,18 @@
 
 <#macro content_section>
 <!-- page content in here -->
+</#macro>
+
+<#macro show_loading_message>
+<p id="loading" class="message">Loading...</p>
+</#macro>
+
+<#macro hide_loading_message>
+<style>
+    #loading {
+        display: none;
+    }
+</style>
 </#macro>
 
 <#macro page_js>
@@ -91,8 +105,7 @@
     };
 </script>
     <@page_js_inline/>
-<!-- google analytics start -->
-<!-- <script type="text/javascript">
+<!-- google analytics start --><!-- <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-32687194-3']);
     _gaq.push(['_trackPageview']);
@@ -104,8 +117,7 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
     })();
-</script>-->
-<!-- google analytics end -->
+</script>--><!-- google analytics end -->
 </#macro>
 
 <#macro page_js_inline>

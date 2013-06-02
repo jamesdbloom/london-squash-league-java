@@ -43,7 +43,7 @@
     <logger name="org.hibernate.persister.entity.AbstractEntityPersister" level="DEBUG"/>
     -->
 
-    <logger name="org.squashleague" level="TRACE"/>
+    <logger name="org.squashleague" level="WARN"/>
     <!--<logger name="org.hibernate" level="TRACE"/>-->
 
     <root level="WARN">
