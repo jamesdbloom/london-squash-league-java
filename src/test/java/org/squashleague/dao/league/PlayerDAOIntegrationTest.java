@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -18,6 +19,8 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import javax.persistence.PersistenceException;
+import java.util.List;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -99,6 +102,148 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         userDAO.delete(userOne);
         userDAO.delete(userTwo);
         roleDAO.delete(role);
+    }
+
+    @Test
+    public void shouldFindAllByUser() {
+        // given
+        League leagueOne = new League()
+                .withName("league name")
+                .withClub(club);
+        League leagueTwo = new League()
+                .withName("league name")
+                .withClub(club);
+        Division divisionOne = new Division()
+                .withName("division name")
+                .withLeague(leagueOne);
+        Division divisionTwo = new Division()
+                .withName("division name")
+                .withLeague(leagueTwo);
+        leagueDAO.save(leagueOne);
+        leagueDAO.save(leagueTwo);
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
+        Player expectedPlayerOne = new Player()
+                .withCurrentDivision(this.division)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        Player expectedPlayerTwo = new Player()
+                .withCurrentDivision(divisionOne)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        Player expectedPlayerThree = new Player()
+                .withCurrentDivision(divisionTwo)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        playerDAO.save(expectedPlayerOne);
+        playerDAO.save(expectedPlayerTwo);
+        playerDAO.save(expectedPlayerThree);
+
+        // when
+        List<Player> players = playerDAO.findAllByUser(userOne);
+
+        // then
+        Player[] actualPlayers = {expectedPlayerOne, expectedPlayerTwo, expectedPlayerThree};
+        try {
+            assertArrayEquals(actualPlayers, players.toArray());
+        } finally {
+            playerDAO.delete(expectedPlayerOne);
+            playerDAO.delete(expectedPlayerTwo);
+            playerDAO.delete(expectedPlayerThree);
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
+            leagueDAO.delete(leagueOne);
+            leagueDAO.delete(leagueTwo);
+        }
+    }
+
+    @Test
+    public void shouldFindAllActiveByUser() {
+        // given
+        League leagueOne = new League()
+                .withName("league name")
+                .withClub(club);
+        League leagueTwo = new League()
+                .withName("league name")
+                .withClub(club);
+        Division divisionOne = new Division()
+                .withName("division name")
+                .withLeague(leagueOne);
+        Division divisionTwo = new Division()
+                .withName("division name")
+                .withLeague(leagueTwo);
+        leagueDAO.save(leagueOne);
+        leagueDAO.save(leagueTwo);
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
+        Player expectedPlayerOne = new Player()
+                .withCurrentDivision(this.division)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        Player expectedPlayerTwo = new Player()
+                .withCurrentDivision(divisionOne)
+                .withStatus(PlayerStatus.INACTIVE)
+                .withUser(userOne);
+        Player expectedPlayerThree = new Player()
+                .withCurrentDivision(divisionTwo)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        playerDAO.save(expectedPlayerOne);
+        playerDAO.save(expectedPlayerTwo);
+        playerDAO.save(expectedPlayerThree);
+
+        // when
+        List<Player> players = playerDAO.findAllActiveByUser(userOne);
+
+        // then
+        Player[] actualPlayers = {expectedPlayerOne, expectedPlayerThree};
+        try {
+            assertArrayEquals(actualPlayers, players.toArray());
+        } finally {
+            playerDAO.delete(expectedPlayerOne);
+            playerDAO.delete(expectedPlayerTwo);
+            playerDAO.delete(expectedPlayerThree);
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
+            leagueDAO.delete(leagueOne);
+            leagueDAO.delete(leagueTwo);
+        }
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void shouldNotLetDuplicateDivisionPlayerBeSaved() throws Exception {
+        Player player = new Player()
+                .withCurrentDivision(division)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+
+        try {
+            playerDAO.save(player);
+            playerDAO.save(new Player()
+                    .withCurrentDivision(division)
+                    .withStatus(PlayerStatus.INACTIVE)
+                    .withUser(userOne));
+        } finally {
+            playerDAO.delete(player);
+        }
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void shouldNotLetDuplicateLeaguePlayerBeSaved() throws Exception {
+        Player player = new Player()
+                .withLeague(league)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+
+        try {
+            playerDAO.save(player);
+            playerDAO.save(new Player()
+                    .withLeague(league)
+                    .withStatus(PlayerStatus.INACTIVE)
+                    .withUser(userOne));
+        } finally {
+            playerDAO.delete(player);
+        }
     }
 
     @Test
@@ -254,7 +399,7 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         assertNull(playerDAO.findById(null));
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenSavingNull() {
         playerDAO.save(null);
     }
@@ -264,12 +409,12 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         playerDAO.update(null);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenDeletingNull() {
         playerDAO.delete((Player) null);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenDeletingInvalidId() {
         playerDAO.delete(1l);
     }

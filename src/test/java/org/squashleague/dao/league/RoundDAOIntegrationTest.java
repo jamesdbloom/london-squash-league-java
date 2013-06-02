@@ -9,13 +9,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.league.Club;
-import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.League;
-import org.squashleague.domain.league.Round;
+import org.squashleague.dao.account.RoleDAO;
+import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -40,6 +43,12 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
     @Resource
     private DivisionDAO divisionDAO;
     private Division division;
+    @Resource
+    private RoleDAO roleDAO;
+    @Resource
+    private UserDAO userDAO;
+    @Resource
+    private PlayerDAO playerDAO;
 
     @Before
     public void setupDatabase() {
@@ -62,6 +71,94 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         divisionDAO.delete(division);
         leagueDAO.delete(league);
         clubDAO.delete(club);
+    }
+
+    @Test
+    public void shouldFindAllForUser() {
+        // given
+        Role role = new Role()
+                .withName("role name")
+                .withDescription("role description");
+        roleDAO.save(role);
+        User user = new User()
+                .withEmail("one@email.com")
+                .withName("playerOne name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(role);
+        userDAO.save(user);
+        League leagueOne = new League()
+                .withName("league name")
+                .withClub(club);
+        League leagueTwo = new League()
+                .withName("league name")
+                .withClub(club);
+        League leagueThree = new League()
+                .withName("league name")
+                .withClub(club);
+        Division divisionOne = new Division()
+                .withName("division name")
+                .withLeague(leagueOne);
+        Division divisionTwo = new Division()
+                .withName("division name")
+                .withLeague(leagueTwo);
+        leagueDAO.save(leagueOne);
+        leagueDAO.save(leagueTwo);
+        leagueDAO.save(leagueThree);
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
+        Round roundOne = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withDivision(divisionOne);
+        Round roundTwo = new Round()
+                .withStartDate(new DateTime().plusDays(3))
+                .withEndDate(new DateTime().plusDays(4))
+                .withDivision(divisionOne);
+        Round roundThree = new Round()
+                .withStartDate(new DateTime().plusDays(5))
+                .withEndDate(new DateTime().plusDays(6))
+                .withDivision(divisionTwo);
+        Round roundFour = new Round()
+                .withStartDate(new DateTime().plusDays(7))
+                .withEndDate(new DateTime().plusDays(8))
+                .withDivision(divisionTwo);
+        roundDAO.save(roundOne);
+        roundDAO.save(roundTwo);
+        roundDAO.save(roundThree);
+        roundDAO.save(roundFour);
+        Player playerOne = new Player()
+                .withCurrentDivision(divisionOne)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(user);
+        Player playerTwo = new Player()
+                .withCurrentDivision(divisionTwo)
+                .withStatus(PlayerStatus.INACTIVE)
+                .withUser(user);
+        playerDAO.save(playerOne);
+        playerDAO.save(playerTwo);
+
+        // when
+        List<Round> leagues = roundDAO.findAllForUser(user);
+
+        // then
+        Round[] actualLeagues = {roundOne, roundTwo};
+        try {
+            assertArrayEquals(actualLeagues, leagues.toArray());
+        } finally {
+            playerDAO.delete(playerOne);
+            playerDAO.delete(playerTwo);
+            roundDAO.delete(roundOne);
+            roundDAO.delete(roundTwo);
+            roundDAO.delete(roundThree);
+            roundDAO.delete(roundFour);
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
+            leagueDAO.delete(leagueOne);
+            leagueDAO.delete(leagueTwo);
+            leagueDAO.delete(leagueThree);
+            userDAO.delete(user);
+            roleDAO.delete(role);
+        }
     }
 
     @Test

@@ -19,6 +19,8 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -40,6 +42,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
     private UserDAO userDAO;
     private User userOne;
     private User userTwo;
+    private User userThree;
     @Resource
     private ClubDAO clubDAO;
     private Club club;
@@ -56,6 +59,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
     private PlayerDAO playerDAO;
     private Player playerOne;
     private Player playerTwo;
+    private Player playerThree;
 
     @Before
     public void setupDatabase() {
@@ -73,8 +77,14 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("playerTwo name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
                 .withRoles(role);
+        userThree = new User()
+                .withEmail("three@email.com")
+                .withName("playerThree name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(role);
         userDAO.save(userOne);
         userDAO.save(userTwo);
+        userDAO.save(userThree);
         club = new Club()
                 .withName("club name")
                 .withAddress("address");
@@ -100,21 +110,71 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withCurrentDivision(division)
                 .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userTwo);
+        playerThree = new Player()
+                .withCurrentDivision(division)
+                .withStatus(PlayerStatus.INACTIVE)
+                .withUser(userThree);
         playerDAO.save(playerOne);
         playerDAO.save(playerTwo);
+        playerDAO.save(playerThree);
     }
 
     @After
     public void teardownDatabase() {
         playerDAO.delete(playerOne);
         playerDAO.delete(playerTwo);
+        playerDAO.delete(playerThree);
         roundDAO.delete(round);
         divisionDAO.delete(division);
         leagueDAO.delete(league);
         clubDAO.delete(club);
         userDAO.delete(userOne);
         userDAO.delete(userTwo);
+        userDAO.delete(userThree);
         roleDAO.delete(role);
+    }
+
+    @Test
+    public void shouldFindAllByUser() {
+        // given
+        Match matchOne = new Match()
+                .withPlayerOne(playerThree)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
+        Match matchTwo = new Match()
+                .withPlayerOne(playerTwo)
+                .withPlayerTwo(playerOne)
+                .withRound(round);
+        Match matchThree = new Match()
+                .withPlayerOne(playerTwo)
+                .withPlayerTwo(playerThree)
+                .withRound(round);
+        Match matchFour = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
+        Match matchFive = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerOne)
+                .withRound(round);
+        matchDAO.save(matchOne);
+        matchDAO.save(matchTwo);
+        matchDAO.save(matchThree);
+        matchDAO.save(matchFour);
+        matchDAO.save(matchFive);
+
+        // when
+        Object[] actualMatches = matchDAO.findAllByUser(userTwo).toArray();
+        try {
+            // then
+            assertArrayEquals(new Match[]{matchTwo, matchFour}, actualMatches);
+        } finally {
+            matchDAO.delete(matchOne);
+            matchDAO.delete(matchTwo);
+            matchDAO.delete(matchThree);
+            matchDAO.delete(matchFour);
+            matchDAO.delete(matchFive);
+        }
     }
 
     @Test
@@ -210,25 +270,36 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveList() throws Exception {
         // given
         Match matchOne = new Match()
-                .withPlayerOne(playerOne)
+                .withPlayerOne(playerThree)
                 .withPlayerTwo(playerTwo)
                 .withRound(round);
         Match matchTwo = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerOne)
                 .withRound(round);
-
-        // when
+        Match matchThree = new Match()
+                .withPlayerOne(playerTwo)
+                .withPlayerTwo(playerThree)
+                .withRound(round);
+        Match matchFour = new Match()
+                .withPlayerOne(playerOne)
+                .withPlayerTwo(playerTwo)
+                .withRound(round);
         matchDAO.save(matchOne);
         matchDAO.save(matchTwo);
+        matchDAO.save(matchThree);
+        matchDAO.save(matchFour);
 
-        // then
+        // when
         Object[] actualMatches = matchDAO.findAll().toArray();
         try {
-            assertArrayEquals(new Match[]{matchOne, matchTwo}, actualMatches);
+            // then
+            assertArrayEquals(new Match[]{matchTwo, matchFour}, actualMatches);
         } finally {
             matchDAO.delete(matchOne);
             matchDAO.delete(matchTwo);
+            matchDAO.delete(matchThree);
+            matchDAO.delete(matchFour);
         }
     }
 

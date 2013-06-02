@@ -8,16 +8,17 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.account.User;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames={"user_id", "league_id"}),
+    @UniqueConstraint(columnNames={"user_id", "currentDivision_id"})
+})
 public class Player extends ModelObject<Player> {
 
     @NotNull(message = "{validation.player.user}")

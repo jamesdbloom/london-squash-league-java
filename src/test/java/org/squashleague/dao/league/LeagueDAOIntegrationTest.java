@@ -8,12 +8,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.league.Club;
-import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.League;
+import org.squashleague.dao.account.RoleDAO;
+import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -34,6 +38,12 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     private Club club;
     @Resource
     private DivisionDAO divisionDAO;
+    @Resource
+    private RoleDAO roleDAO;
+    @Resource
+    private UserDAO userDAO;
+    @Resource
+    private PlayerDAO playerDAO;
 
     @Before
     public void setupDatabase() {
@@ -46,6 +56,67 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     @After
     public void teardownDatabase() {
         clubDAO.delete(club);
+    }
+
+    @Test
+    public void shouldFindAllUnregisteredLeagues() {
+        // given
+        roleDAO.save(Role.ROLE_USER);
+        User user = new User()
+                .withEmail("one@email.com")
+                .withName("playerOne name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(Role.ROLE_USER);
+        userDAO.save(user);
+        League leagueOne = new League()
+                .withName("league name")
+                .withClub(club);
+        League leagueTwo = new League()
+                .withName("league name")
+                .withClub(club);
+        League leagueThree = new League()
+                .withName("league name")
+                .withClub(club);
+        Division divisionOne = new Division()
+                .withName("division name")
+                .withLeague(leagueOne);
+        Division divisionTwo = new Division()
+                .withName("division name")
+                .withLeague(leagueTwo);
+        leagueDAO.save(leagueOne);
+        leagueDAO.save(leagueTwo);
+        leagueDAO.save(leagueThree);
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
+        Player expectedPlayerOne = new Player()
+                .withCurrentDivision(divisionOne)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(user);
+        Player expectedPlayerTwo = new Player()
+                .withLeague(leagueTwo)
+                .withStatus(PlayerStatus.INACTIVE)
+                .withUser(user);
+        playerDAO.save(expectedPlayerOne);
+        playerDAO.save(expectedPlayerTwo);
+
+        // when
+        List<League> leagues = leagueDAO.findAllUnregisteredLeagues(user);
+
+        // then
+        League[] actualLeagues = {leagueThree};
+        try {
+            assertArrayEquals(actualLeagues, leagues.toArray());
+        } finally {
+            playerDAO.delete(expectedPlayerOne);
+            playerDAO.delete(expectedPlayerTwo);
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
+            leagueDAO.delete(leagueOne);
+            leagueDAO.delete(leagueTwo);
+            leagueDAO.delete(leagueThree);
+            userDAO.delete(user);
+            roleDAO.delete(Role.ROLE_USER);
+        }
     }
 
     @Test

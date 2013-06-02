@@ -39,7 +39,8 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     private Club club;
     @Resource
     private LeagueDAO leagueDAO;
-    private League league;
+    private League leagueOne;
+    private League leagueTwo;
     @Resource
     private DivisionDAO divisionDAO;
     private Division divisionOne;
@@ -57,17 +58,21 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("club name")
                 .withAddress("address");
         clubDAO.save(club);
-        league = new League()
+        leagueOne = new League()
                 .withName("league name")
                 .withClub(club);
-        leagueDAO.save(league);
+        leagueTwo = new League()
+                .withName("league name")
+                .withClub(club);
+        leagueDAO.save(leagueOne);
+        leagueDAO.save(leagueTwo);
         divisionOne = new Division()
                 .withName("division one name")
-                .withLeague(league);
+                .withLeague(leagueOne);
         divisionDAO.save(divisionOne);
         divisionTwo = new Division()
                 .withName("division two name")
-                .withLeague(league);
+                .withLeague(leagueTwo);
         divisionDAO.save(divisionTwo);
     }
 
@@ -75,9 +80,55 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     public void teardownDatabase() {
         divisionDAO.delete(divisionOne);
         divisionDAO.delete(divisionTwo);
-        leagueDAO.delete(league);
+        leagueDAO.delete(leagueOne);
+        leagueDAO.delete(leagueTwo);
         clubDAO.delete(club);
         roleDAO.delete(role);
+    }
+
+    @Test
+    public void shouldUpdatePassword() throws Exception {
+        // given
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(role);
+        userDAO.save(expectedUser);
+
+        // when
+        userDAO.updatePassword(expectedUser.withPassword("new_password"));
+
+        // then
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals("new_password", actualUser.getPassword());
+            assertEquals("", actualUser.getOneTimeToken());
+        } finally {
+            userDAO.delete(expectedUser);
+        }
+    }
+
+    @Test
+    public void shouldOneTimeToken() throws Exception {
+        // given
+        User expectedUser = new User()
+                .withEmail("user@email.com")
+                .withName("user name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(role);
+        userDAO.save(expectedUser);
+
+        // when
+        userDAO.updateOneTimeToken(expectedUser.withOneTimeToken("new_token"));
+
+        // then
+        User actualUser = userDAO.findById(expectedUser.getId());
+        try {
+            assertEquals("new_token", actualUser.getOneTimeToken());
+        } finally {
+            userDAO.delete(expectedUser);
+        }
     }
 
     @Test
