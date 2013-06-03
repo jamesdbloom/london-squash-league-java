@@ -13,18 +13,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.league.DivisionDAO;
-import org.squashleague.dao.league.RoundDAO;
-import org.squashleague.domain.league.Division;
+import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.league.Round;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,7 +34,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = RootConfiguration.class,
+                initializers = HSQLApplicationContextInitializer.class
         ),
         @ContextConfiguration(
                 name = "dispatcher",
@@ -46,44 +43,40 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
-public class RoundPageIntegrationTest {
+public class RoundPageIntegrationTest extends MockDAOTest {
 
     private final static String OBJECT_NAME = "round";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private RoundDAO roundDAO;
-    @Resource
-    private DivisionDAO divisionDAO;
-    private Division division;
 
     @Before
     public void setupFixture() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
-        division = (Division) new Division()
-                .withName("division one")
-                .withId(1l);
-        when(divisionDAO.findById(division.getId())).thenReturn(division);
-        when(divisionDAO.findAll()).thenReturn(Arrays.asList(division, (Division) new Division().withName("division two").withId(2l)));
     }
 
     @Test
     public void shouldSaveRoundWithNoErrors() throws Exception {
+        // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("startDate", new DateTime().plusDays(1).toString("yyyy-MM-dd"))
                 .param("endDate", new DateTime().plusDays(2).toString("yyyy-MM-dd"))
                 .param("division", division.getId().toString())
         )
+                // then
                 .andExpect(redirectedUrl("/administration"));
+
+        roundDAO.delete(round.getId() + 1);
     }
 
     @Test
     public void shouldSaveRoundWithErrors() throws Exception {
+        // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
         )
+                // then
                 .andExpect(redirectedUrl("/administration#" + OBJECT_NAME + "s"))
                 .andExpect(flash().attributeExists("bindingResult"))
                 .andExpect(flash().attributeExists(OBJECT_NAME));
@@ -91,45 +84,31 @@ public class RoundPageIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        Long id = 1l;
-        Round round = (Round) new Round()
-                .withStartDate(new DateTime().plusDays(1))
-                .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division)
-                .withId(id);
-        round.setVersion(5);
-        when(roundDAO.findById(id)).thenReturn(round);
-
-
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
+        // when
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + round.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
-        RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
-        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+        // then
+        new RoundUpdatePage(response).hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
     }
 
     @Test
     public void shouldUpdateRoundNoErrors() throws Exception {
+        // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("startDate", new DateTime().plusDays(1).toString("yyyy-MM-dd"))
                 .param("endDate", new DateTime().plusDays(2).toString("yyyy-MM-dd"))
                 .param("division", division.getId().toString())
         )
+                // then
                 .andExpect(redirectedUrl("/administration"));
     }
 
     @Test
     public void shouldGetPageWithDivisionError() throws Exception {
-        // given
-        Round round = (Round) new Round()
-                .withStartDate(new DateTime().plusDays(1))
-                .withEndDate(new DateTime().plusDays(2))
-                .withId(2l);
-        round.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -138,7 +117,6 @@ public class RoundPageIntegrationTest {
                 .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
                 .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
         )
-
                 // then
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -239,7 +217,6 @@ public class RoundPageIntegrationTest {
         RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
     }
 
-
     @Test
     public void shouldGetPageWithPastDatesError() throws Exception {
         // given
@@ -301,16 +278,20 @@ public class RoundPageIntegrationTest {
     @Test
     public void shouldDeleteRound() throws Exception {
         // given
-        Long id = 5l;
+        Round round = new Round()
+                .withDivision(division)
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(10));
+        roundDAO.save(round);
 
         // when
-        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + round.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(roundDAO).delete(id);
+        assertNull(roundDAO.findById(round.getId()));
     }
 
 }

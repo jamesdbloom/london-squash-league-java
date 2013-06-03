@@ -33,6 +33,7 @@ public class CredentialValidationTest {
 
         // then
         assertTrue(credentialValidation.credentialsMatch(user.getPassword(), user));
+        assertTrue(credentialValidation.checkCredentials(user.getPassword(), user));
     }
 
     @Test
@@ -42,6 +43,7 @@ public class CredentialValidationTest {
 
         // then
         assertFalse(credentialValidation.credentialsMatch(user.getPassword(), user));
+        assertFalse(credentialValidation.checkCredentials(user.getPassword(), user));
     }
 
     @Test
@@ -51,6 +53,7 @@ public class CredentialValidationTest {
 
         // then
         assertFalse(credentialValidation.credentialsMatch(null, user));
+        assertFalse(credentialValidation.checkCredentials(null, user));
     }
 
     @Test
@@ -62,5 +65,6 @@ public class CredentialValidationTest {
 
         // then
         assertFalse(credentialValidation.credentialsMatch(password, null));
+        assertFalse(credentialValidation.checkCredentials(password, null));
     }
 }

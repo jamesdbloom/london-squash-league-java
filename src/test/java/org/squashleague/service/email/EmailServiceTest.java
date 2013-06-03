@@ -136,4 +136,39 @@ public class EmailServiceTest {
                 "<p>To validate this email address please click on the following link <a href=https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + ">https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + "</a></p>\n" +
                 "</body></html>", mimeMessage.getContent().toString());
     }
+
+    @Test
+    public void shouldSendUpdatePasswordEmail() throws Exception {
+        // given
+        String token = "token";
+        String email = "to@email.com";
+        User user = new User()
+                .withEmail(email)
+                .withOneTimeToken(token);
+
+        String hostName = "hostName";
+        int port = 666;
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getLocalName()).thenReturn(hostName);
+        when(request.getLocalPort()).thenReturn(port);
+
+        String leagueEmail = "info@squash-league.com";
+        when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
+
+        // when
+        emailService.sendUpdatePasswordMessage(user, request);
+        runnableArgumentCaptor.getValue().run();
+        preparatorArgumentCaptor.getValue().prepare(mimeMessage);
+
+        // then
+        String subject = EmailService.LONDON_SQUASH_LEAGUE_SUBJECT_PREFIX + "Update Password";
+        assertEquals(leagueEmail, mimeMessage.getFrom()[0].toString());
+        assertEquals(email, mimeMessage.getAllRecipients()[0].toString());
+        assertEquals(subject, mimeMessage.getSubject());
+
+        assertEquals("<html><head><title>" + subject + "</title></head><body>\n" +
+                "<h1>" + subject + "</h1>\n" +
+                "<p>To update your password please click on the following link <a href=https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + ">https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + "</a></p>\n" +
+                "</body></html>", mimeMessage.getContent().toString());
+    }
 }

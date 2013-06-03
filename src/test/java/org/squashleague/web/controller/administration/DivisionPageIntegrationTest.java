@@ -12,18 +12,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.league.DivisionDAO;
-import org.squashleague.dao.league.LeagueDAO;
+import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.League;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,7 +34,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = RootConfiguration.class,
+                initializers = HSQLApplicationContextInitializer.class
         ),
         @ContextConfiguration(
                 name = "dispatcher",
@@ -45,26 +43,16 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
-public class DivisionPageIntegrationTest {
+public class DivisionPageIntegrationTest extends MockDAOTest {
 
     private final static String OBJECT_NAME = "division";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private DivisionDAO divisionDAO;
-    @Resource
-    private LeagueDAO leagueDAO;
-    private League league;
 
     @Before
     public void setupFixture() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
-        league = (League) new League()
-                .withName("league one")
-                .withId(1l);
-        when(leagueDAO.findById(league.getId())).thenReturn(league);
-        when(leagueDAO.findAll()).thenReturn(Arrays.asList(league, (League) new League().withName("league two").withId(2l)));
     }
 
     @Test
@@ -72,9 +60,11 @@ public class DivisionPageIntegrationTest {
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
-                .param("league", league.getId().toString())
+                .param("league", leagueOne.getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
+
+        divisionDAO.delete(division.getId() + 1);
     }
 
     @Test
@@ -89,16 +79,7 @@ public class DivisionPageIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        Long id = 1l;
-        Division division = (Division) new Division()
-                .withName("test name")
-                .withLeague(league)
-                .withId(id);
-        division.setVersion(5);
-        when(divisionDAO.findById(id)).thenReturn(division);
-
-
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + division.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
@@ -112,19 +93,13 @@ public class DivisionPageIntegrationTest {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
-                .param("league", league.getId().toString())
+                .param("league", leagueOne.getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
     }
 
     @Test
     public void shouldGetPageWithLeagueError() throws Exception {
-        // given
-        Division division = (Division) new Division()
-                .withName("test name")
-                .withId(2l);
-        division.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -145,19 +120,12 @@ public class DivisionPageIntegrationTest {
 
     @Test
     public void shouldGetPageWithNameError() throws Exception {
-        // given
-        Division division = (Division) new Division()
-                .withName("")
-                .withLeague(league)
-                .withId(2l);
-        division.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", division.getId().toString())
                 .param("version", division.getVersion().toString())
-                .param("name", division.getName())
+                .param("name", "four")
                 .param("league", division.getLeague().getId().toString())
         )
 
@@ -168,23 +136,17 @@ public class DivisionPageIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 1);
-        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), division.getName(), division.getLeague().getId());
+        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), "four", division.getLeague().getId());
     }
 
     @Test
     public void shouldGetPageWithAllErrors() throws Exception {
-        // given
-        Division division = (Division) new Division()
-                .withName("test")
-                .withId(2l);
-        division.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", division.getId().toString())
                 .param("version", division.getVersion().toString())
-                .param("name", division.getName())
+                .param("name", "four")
         )
 
                 // then
@@ -194,22 +156,25 @@ public class DivisionPageIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 2);
-        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), division.getName(), null);
+        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), "four", null);
     }
 
     @Test
     public void shouldDeleteDivision() throws Exception {
         // given
-        Long id = 5l;
+        Division division = new Division()
+                .withName("to delete")
+                .withLeague(leagueOne);
+        divisionDAO.save(division);
 
         // when
-        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + division.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(divisionDAO).delete(id);
+        assertNull(divisionDAO.findById(division.getId()));
     }
 
 }

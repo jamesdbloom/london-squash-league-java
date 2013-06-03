@@ -12,20 +12,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.account.UserDAO;
-import org.squashleague.dao.league.DivisionDAO;
-import org.squashleague.dao.league.LeagueDAO;
-import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.*;
+import org.squashleague.dao.league.HSQLApplicationContextInitializer;
+import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.PlayerStatus;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,7 +34,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = RootConfiguration.class,
+                initializers = HSQLApplicationContextInitializer.class
         ),
         @ContextConfiguration(
                 name = "dispatcher",
@@ -47,94 +43,29 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
-public class PlayerPageIntegrationTest {
+public class PlayerPageIntegrationTest extends MockDAOTest {
 
     private final static String OBJECT_NAME = "player";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private PlayerDAO playerDAO;
-    @Resource
-    private DivisionDAO divisionDAO;
-    @Resource
-    private LeagueDAO leagueDAO;
-    @Resource
-    private UserDAO userDAO;
-    private Division currentDivision;
-    private User user;
 
     @Before
     public void setupFixture() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
-        currentDivision = (Division) new Division()
-                .withName("division one")
-                .withLeague(
-                        (League) new League()
-                                .withName("league name")
-                                .withClub(
-                                        new Club()
-                                                .withName("club name")
-                                )
-                                .withId(1l)
-                )
-                .withId(1l);
-        when(divisionDAO.findById(currentDivision.getId())).thenReturn(currentDivision);
-        when(divisionDAO.findAll()).thenReturn(
-                Arrays.asList(
-                        currentDivision,
-                        (Division) new Division()
-                                .withName("division two")
-                                .withLeague(
-                                        new League()
-                                                .withName("league name")
-                                                .withClub(
-                                                        new Club()
-                                                                .withName("club name")
-                                                )
-                                )
-                                .withId(1l)
-                )
-        );
-
-        when(leagueDAO.findById(currentDivision.getLeague().getId())).thenReturn(currentDivision.getLeague());
-        when(leagueDAO.findAll()).thenReturn(
-                Arrays.asList(
-                        currentDivision.getLeague(),
-                        (League) new League()
-                                .withName("league name")
-                                .withClub(
-                                        new Club()
-                                                .withName("club name")
-                                )
-                                .withId(1l)
-                )
-        );
-
-        user = (User) new User()
-                .withName("user one")
-                .withId(1l);
-        when(userDAO.findById(user.getId())).thenReturn(user);
-        when(userDAO.findAll()).thenReturn(
-                Arrays.asList(
-                        user,
-                        (User) new User()
-                                .withName("user two")
-                                .withId(3l)
-                )
-        );
     }
 
     @Test
     public void shouldSavePlayerWithNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("user", user.getId().toString())
-                .param("currentDivision", currentDivision.getId().toString())
-                .param("league", currentDivision.getLeague().getId().toString())
+                .param("user", userOne.getId().toString())
+                .param("league", leagueTwo.getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
+
+        playerDAO.delete(playerThree.getId() + 1);
     }
 
     @Test
@@ -149,30 +80,22 @@ public class PlayerPageIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        Long id = 1l;
-        Player player = (Player) new Player()
-                .withUser(user)
-                .withCurrentDivision(currentDivision)
-                .withId(id);
-        player.setVersion(5);
-        when(playerDAO.findById(id)).thenReturn(player);
-
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + playerOne.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
-        playerUpdatePage.hasPlayerFields(player.getId(), player.getVersion(), player.getUser().getId(), player.getCurrentDivision().getId(), player.getLeague().getId(), player.getStatus());
+        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), playerOne.getUser().getId(), playerOne.getCurrentDivision().getId(), playerOne.getLeague().getId(), playerOne.getStatus());
     }
 
     @Test
     public void shouldUpdatePlayerNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("user", user.getId().toString())
-                .param("currentDivision", currentDivision.getId().toString())
-                .param("league", currentDivision.getLeague().getId().toString())
+                .param("user", userOne.getId().toString())
+                .param("currentDivision", division.getId().toString())
+                .param("league", division.getLeague().getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
@@ -180,19 +103,12 @@ public class PlayerPageIntegrationTest {
 
     @Test
     public void shouldGetPageWithDivisionAndLeagueError() throws Exception {
-        // given
-        Player player = (Player) new Player()
-                .withUser(user)
-                .withStatus(PlayerStatus.ACTIVE)
-                .withId(2l);
-        player.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", player.getId().toString())
-                .param("version", player.getVersion().toString())
-                .param("user", player.getUser().getId().toString())
+                .param("id", playerOne.getId().toString())
+                .param("version", playerOne.getVersion().toString())
+                .param("user", playerOne.getUser().getId().toString())
                 .param("currentDivision", "")
                 .param("league", "")
                 .param("status", PlayerStatus.ACTIVE.name())
@@ -205,27 +121,19 @@ public class PlayerPageIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 2);
-        playerUpdatePage.hasPlayerFields(player.getId(), player.getVersion(), player.getUser().getId(), null, null, player.getStatus());
+        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), playerOne.getUser().getId(), null, null, playerOne.getStatus());
     }
 
     @Test
     public void shouldGetPageWithUserError() throws Exception {
-        // given
-        Player player = (Player) new Player()
-                .withUser(null)
-                .withCurrentDivision(currentDivision)
-                .withStatus(PlayerStatus.ACTIVE)
-                .withId(2l);
-        player.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", player.getId().toString())
-                .param("version", player.getVersion().toString())
+                .param("id", playerOne.getId().toString())
+                .param("version", playerOne.getVersion().toString())
                 .param("user", "")
-                .param("currentDivision", currentDivision.getId().toString())
-                .param("league", currentDivision.getLeague().getId().toString())
+                .param("currentDivision", division.getId().toString())
+                .param("league", division.getLeague().getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
 
@@ -236,27 +144,19 @@ public class PlayerPageIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 1);
-        playerUpdatePage.hasPlayerFields(player.getId(), player.getVersion(), null, player.getCurrentDivision().getId(), player.getLeague().getId(), player.getStatus());
+        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), null, playerOne.getCurrentDivision().getId(), playerOne.getLeague().getId(), playerOne.getStatus());
     }
 
     @Test
     public void shouldGetPageWithStatusError() throws Exception {
-        // given
-        Player player = (Player) new Player()
-                .withUser(user)
-                .withCurrentDivision(currentDivision)
-                .withStatus(null)
-                .withId(2l);
-        player.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", player.getId().toString())
-                .param("version", player.getVersion().toString())
-                .param("user", player.getUser().getId().toString())
-                .param("currentDivision", currentDivision.getId().toString())
-                .param("league", currentDivision.getLeague().getId().toString())
+                .param("id", playerOne.getId().toString())
+                .param("version", playerOne.getVersion().toString())
+                .param("user", playerOne.getUser().getId().toString())
+                .param("currentDivision", division.getId().toString())
+                .param("league", division.getLeague().getId().toString())
                 .param("status", "")
         )
 
@@ -267,21 +167,16 @@ public class PlayerPageIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 1);
-        playerUpdatePage.hasPlayerFields(player.getId(), player.getVersion(), player.getUser().getId(), player.getCurrentDivision().getId(), player.getLeague().getId(), player.getStatus());
+        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), playerOne.getUser().getId(), playerOne.getCurrentDivision().getId(), playerOne.getLeague().getId(), null);
     }
 
     @Test
     public void shouldGetPageWithAllErrors() throws Exception {
-        // given
-        Player player = (Player) new Player()
-                .withId(2l);
-        player.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", player.getId().toString())
-                .param("version", player.getVersion().toString())
+                .param("id", playerOne.getId().toString())
+                .param("version", playerOne.getVersion().toString())
         )
                 // then
                 .andExpect(status().isOk())
@@ -290,22 +185,26 @@ public class PlayerPageIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 3);
-        playerUpdatePage.hasPlayerFields(player.getId(), player.getVersion(), null, null, null, null);
+        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), null, null, null, null);
     }
 
     @Test
     public void shouldDeletePlayer() throws Exception {
         // given
-        Long id = 5l;
+        Player player = new Player()
+                .withUser(userOne)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withLeague(leagueTwo);
+        playerDAO.save(player);
 
         // when
-        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + player.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(playerDAO).delete(id);
+        assertNull(playerDAO.findById(player.getId()));
     }
 
 }

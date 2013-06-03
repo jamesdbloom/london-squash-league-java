@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author jamesdbloom
  */
-@Configuration
+//@Configuration
 public class MockDAOConfiguration {
 
     private static final List<Role> roles = new ArrayList<>();

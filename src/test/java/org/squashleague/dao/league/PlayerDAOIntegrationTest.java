@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -243,6 +242,27 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                     .withUser(userOne));
         } finally {
             playerDAO.delete(player);
+        }
+    }
+
+    @Test
+    public void shouldUpdatePassword() throws Exception {
+        // given
+        Player expectedPlayer = new Player()
+                .withLeague(league)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        playerDAO.save(expectedPlayer);
+
+        // when
+        playerDAO.updateStatus(expectedPlayer, PlayerStatus.INACTIVE);
+
+        // then
+        Player actualPlayer = playerDAO.findById(expectedPlayer.getId());
+        try {
+            assertEquals(PlayerStatus.INACTIVE, actualPlayer.getStatus());
+        } finally {
+            playerDAO.delete(expectedPlayer);
         }
     }
 

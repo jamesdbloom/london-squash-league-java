@@ -12,18 +12,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.league.ClubDAO;
-import org.squashleague.dao.league.LeagueDAO;
-import org.squashleague.domain.league.Club;
+import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.league.League;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,7 +34,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = RootConfiguration.class,
+                initializers = HSQLApplicationContextInitializer.class
         ),
         @ContextConfiguration(
                 name = "dispatcher",
@@ -45,43 +43,39 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
-public class LeaguePageIntegrationTest {
+public class LeaguePageIntegrationTest extends MockDAOTest {
 
     private final static String OBJECT_NAME = "league";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private LeagueDAO leagueDAO;
-    @Resource
-    private ClubDAO clubDAO;
-    private Club club;
 
     @Before
     public void setupFixture() {
         mockMvc = webAppContextSetup(webApplicationContext).build();
-        club = (Club) new Club()
-                .withName("club one")
-                .withId(1l);
-        when(clubDAO.findById(club.getId())).thenReturn(club);
-        when(clubDAO.findAll()).thenReturn(Arrays.asList(club, (Club) new Club().withName("club two").withId(2l)));
     }
 
     @Test
     public void shouldSaveLeagueWithNoErrors() throws Exception {
+        // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
                 .param("club", club.getId().toString())
         )
+                // then
                 .andExpect(redirectedUrl("/administration"));
+
+        leagueDAO.delete(leagueTwo.getId() + 1);
     }
 
     @Test
     public void shouldSaveLeagueWithErrors() throws Exception {
+        // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
         )
+                // then
                 .andExpect(redirectedUrl("/administration#" + OBJECT_NAME + "s"))
                 .andExpect(flash().attributeExists("bindingResult"))
                 .andExpect(flash().attributeExists(OBJECT_NAME));
@@ -89,22 +83,14 @@ public class LeaguePageIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        Long id = 1l;
-        League league = (League) new League()
-                .withName("test name")
-                .withClub(club)
-                .withId(id);
-        league.setVersion(5);
-        when(leagueDAO.findById(id)).thenReturn(league);
-
-
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id).accept(MediaType.TEXT_HTML))
+        // when
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + leagueOne.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
-        LeagueUpdatePage leagueUpdatePage = new LeagueUpdatePage(response);
-        leagueUpdatePage.hasLeagueFields(league.getId(), league.getVersion(), league.getName(), league.getClub().getId());
+        // then
+        new LeagueUpdatePage(response).hasLeagueFields(leagueOne.getId(), leagueOne.getVersion(), leagueOne.getName(), leagueOne.getClub().getId());
     }
 
     @Test
@@ -145,20 +131,13 @@ public class LeaguePageIntegrationTest {
 
     @Test
     public void shouldGetPageWithNameError() throws Exception {
-        // given
-        League league = (League) new League()
-                .withName("")
-                .withClub(club)
-                .withId(2l);
-        league.setVersion(5);
-
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", league.getId().toString())
-                .param("version", league.getVersion().toString())
-                .param("name", league.getName())
-                .param("club", league.getClub().getId().toString())
+                .param("id", leagueOne.getId().toString())
+                .param("version", leagueOne.getVersion().toString())
+                .param("name", "four")
+                .param("club", leagueOne.getClub().getId().toString())
         )
 
                 // then
@@ -168,7 +147,7 @@ public class LeaguePageIntegrationTest {
 
         LeagueUpdatePage leagueUpdatePage = new LeagueUpdatePage(response);
         leagueUpdatePage.hasErrors("league", 1);
-        leagueUpdatePage.hasLeagueFields(league.getId(), league.getVersion(), league.getName(), league.getClub().getId());
+        leagueUpdatePage.hasLeagueFields(leagueOne.getId(), leagueOne.getVersion(), "four", leagueOne.getClub().getId());
     }
 
     @Test
@@ -200,16 +179,19 @@ public class LeaguePageIntegrationTest {
     @Test
     public void shouldDeleteLeague() throws Exception {
         // given
-        Long id = 5l;
+        League league = new League()
+                .withName("to delete")
+                .withClub(club);
+        leagueDAO.save(league);
 
         // when
-        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + league.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(leagueDAO).delete(id);
+        assertNull(leagueDAO.findById(league.getId()));
     }
 
 }

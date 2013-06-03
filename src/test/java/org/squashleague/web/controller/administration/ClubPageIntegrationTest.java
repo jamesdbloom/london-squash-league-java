@@ -12,15 +12,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.league.ClubDAO;
+import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.league.Club;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,7 +33,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = RootConfiguration.class,
+                initializers = HSQLApplicationContextInitializer.class
         ),
         @ContextConfiguration(
                 name = "dispatcher",
@@ -42,16 +42,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
-public class ClubPageIntegrationTest {
+public class ClubPageIntegrationTest extends MockDAOTest {
 
     private final static String OBJECT_NAME = "club";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private ClubDAO clubDAO;
-
-    // TODO copy to all other domain clubs once update completed below
 
     @Before
     public void setupFixture() {
@@ -66,6 +62,8 @@ public class ClubPageIntegrationTest {
                 .param("address", "test address")
         )
                 .andExpect(redirectedUrl("/administration"));
+
+        clubDAO.delete(club.getId() + 1);
     }
 
     @Test
@@ -80,15 +78,7 @@ public class ClubPageIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        Long id = 1l;
-        Club club = (Club) new Club()
-                .withName("test name")
-                .withAddress("test address")
-                .withId(id);
-        club.setVersion(5);
-        when(clubDAO.findById(id)).thenReturn(club);
-
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id)
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + club.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 .andExpect(status().isOk())
@@ -195,17 +185,19 @@ public class ClubPageIntegrationTest {
 
     @Test
     public void shouldDeleteClub() throws Exception {
-        // given
-        Long id = 5l;
+        Club club = new Club()
+                .withName("to delete")
+                .withAddress("to delete");
+        clubDAO.save(club);
 
         // when
-        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + club.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(clubDAO).delete(id);
+        assertNull(clubDAO.findById(club.getId()));
     }
 
 }

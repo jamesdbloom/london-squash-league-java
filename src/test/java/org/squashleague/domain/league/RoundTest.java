@@ -3,6 +3,11 @@ package org.squashleague.domain.league;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class RoundTest {
@@ -44,7 +49,7 @@ public class RoundTest {
         Round round = new Round();
 
         round.withStartDate(DATE_TIME.minusDays(1));
-        round.withEndDate(DATE_TIME.plusMillis(100));
+        round.withEndDate(DATE_TIME.plusSeconds(1));
 
         assertEquals(RoundStatus.INPLAY, round.getStatus());
     }
@@ -77,6 +82,26 @@ public class RoundTest {
         round.withEndDate(DATE_TIME.plusDays(10));
 
         assertEquals(RoundStatus.NOT_STARTED, round.getStatus());
+    }
+
+    @Test
+    public void shouldSort() {
+        Club clubOne = new Club().withName("c_a");
+        League leagueOne = new League().withName("l_a").withClub(clubOne);
+        League leagueTwo = new League().withName("l_b").withClub(clubOne);
+        Division divisionOne = new Division().withName("d_a").withLeague(leagueOne);
+        Division divisionTwo = new Division().withName("d_b").withLeague(leagueOne);
+        Division divisionThree = new Division().withName("d_d").withLeague(leagueTwo);
+        Round roundOne = new Round().withStartDate(DATE_TIME.plusDays(1)).withEndDate(DATE_TIME).withDivision(divisionOne);
+        Round roundTwo = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME).withDivision(divisionOne);
+        Round roundThree = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME.plusDays(1)).withDivision(divisionOne);
+        Round roundFour = new Round().withStartDate(DATE_TIME.plusDays(4)).withEndDate(DATE_TIME.plusDays(4)).withDivision(divisionTwo);
+        Round roundFive = new Round().withStartDate(DATE_TIME).withEndDate(DATE_TIME).withDivision(divisionThree);
+
+        List<Round> rounds = Arrays.asList(roundFive, roundTwo, roundThree, roundFour, roundOne);
+        Collections.sort(rounds);
+
+        assertArrayEquals(new Round[]{roundOne, roundTwo, roundThree, roundFour, roundFive}, rounds.toArray());
     }
 
     @Test

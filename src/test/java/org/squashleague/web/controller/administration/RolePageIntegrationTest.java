@@ -13,12 +13,16 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.account.RoleDAO;
+import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.account.Role;
+import org.squashleague.domain.league.Match;
+import org.squashleague.service.security.SecurityMockingConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
 
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,7 +38,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextHierarchy({
         @ContextConfiguration(
                 name = "root",
-                classes = RootConfiguration.class
+                classes = RootConfiguration.class,
+                initializers = HSQLApplicationContextInitializer.class
         ),
         @ContextConfiguration(
                 name = "dispatcher",
@@ -42,14 +47,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
-public class RolePageIntegrationTest {
+public class RolePageIntegrationTest extends MockDAOTest {
 
     private final static String OBJECT_NAME = "role";
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private RoleDAO roleDAO;
 
     @Before
     public void setupFixture() {
@@ -78,15 +81,7 @@ public class RolePageIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        Long id = 1l;
-        Role role = (Role) new Role()
-                .withName("test name")
-                .withDescription("test description")
-                .withId(id);
-        role.setVersion(5);
-        when(roleDAO.findById(id)).thenReturn(role);
-
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + id)
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + role.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 .andExpect(status().isOk())
@@ -194,16 +189,19 @@ public class RolePageIntegrationTest {
     @Test
     public void shouldDeleteRole() throws Exception {
         // given
-        Long id = 5l;
+        Role role = new Role()
+                .withName("new role")
+                .withDescription("new description");
+        roleDAO.save(role);
 
         // when
-        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + id)
+        mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + role.getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        verify(roleDAO).delete(id);
+        assertNull(roleDAO.findById(role.getId()));
     }
 
 }
