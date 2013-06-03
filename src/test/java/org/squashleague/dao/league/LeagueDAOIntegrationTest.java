@@ -61,12 +61,15 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     @Test
     public void shouldFindAllUnregisteredLeagues() {
         // given
-        roleDAO.save(Role.ROLE_USER);
+        Role role = new Role()
+                .withName("new role")
+                .withDescription("role description");
+        roleDAO.save(role);
         User user = new User()
                 .withEmail("one@email.com")
                 .withName("playerOne name")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
-                .withRoles(Role.ROLE_USER);
+                .withRoles(role);
         userDAO.save(user);
         League leagueOne = new League()
                 .withName("league name")
@@ -115,7 +118,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
             leagueDAO.delete(leagueTwo);
             leagueDAO.delete(leagueThree);
             userDAO.delete(user);
-            roleDAO.delete(Role.ROLE_USER);
+            roleDAO.delete(role);
         }
     }
 

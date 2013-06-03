@@ -3,6 +3,7 @@ package org.squashleague.web.controller.login;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -83,6 +84,7 @@ public class UpdatePasswordController {
         return "page/user/updatePassword";
     }
 
+    @Transactional
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     public String updatePassword(String email, String password, String passwordConfirm, String oneTimeToken, Model uiModel, RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         User user = userDAO.findByEmail(email);

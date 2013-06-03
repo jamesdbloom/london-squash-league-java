@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.administration;
 
+import com.eaio.uuid.UUID;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -55,23 +56,32 @@ public class MockDAOTest extends AdministratorLoggedInTest {
     @Before
     public void setupData() {
         role = new Role()
-                .withName("role name")
+                .withName(Role.ROLE_ADMIN.getName())
                 .withDescription("role description");
         roleDAO.save(role);
         userOne = new User()
                 .withEmail("one@email.com")
                 .withName("playerOne name")
+                .withMobile("666 666 666")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withOneTimeToken(new UUID().toString())
+                .withPassword("abc123$%^")
                 .withRoles(role);
         userTwo = new User()
                 .withEmail("two@email.com")
                 .withName("playerTwo name")
+                .withMobile("666 666 666")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withOneTimeToken(new UUID().toString())
+                .withPassword("abc123$%^")
                 .withRoles(role);
         userThree = new User()
                 .withEmail("three@email.com")
                 .withName("playerThree name")
+                .withMobile("666 666 666")
                 .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withOneTimeToken(new UUID().toString())
+                .withPassword("abc123$%^")
                 .withRoles(role);
         userDAO.save(userOne);
         userDAO.save(userTwo);

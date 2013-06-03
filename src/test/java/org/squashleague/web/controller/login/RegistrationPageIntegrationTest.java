@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockFilterConfig;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -12,19 +14,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
-import org.squashleague.service.security.SecurityMockingConfiguration;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 import org.squashleague.web.controller.administration.MockDAOTest;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
         ),
         @ContextConfiguration(
                 name = "dispatcher",
-                classes = {WebMvcConfiguration.class},
+                classes = WebMvcConfiguration.class,
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
@@ -52,13 +52,14 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
     @Resource
     private WebApplicationContext webApplicationContext;
     private MockMvc mockMvc;
-    @Resource
-    private UserDAO userDAO;
 
     @Before
-    public void setupFixture() {
-        reset(userDAO);
-        mockMvc = webAppContextSetup(webApplicationContext).build();
+    public void setupFixture() throws ServletException {
+        OpenEntityManagerInViewFilter openSessionInViewFilter = new OpenEntityManagerInViewFilter();
+        openSessionInViewFilter.setPersistenceUnitName("persistenceUnit");
+        openSessionInViewFilter.init(new MockFilterConfig(webApplicationContext.getServletContext(), "openSessionInViewFilter"));
+
+        mockMvc = webAppContextSetup(webApplicationContext).addFilters(openSessionInViewFilter).build();
     }
 
     @Test
@@ -71,7 +72,7 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
     @Test
     public void shouldRegisterUser() throws Exception {
         // given
-        User user = new User()
+        User expectedUser = new User()
                 .withName("test name")
                 .withEmail("test@email.com")
                 .withMobile("123456789")
@@ -80,33 +81,36 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
         // when
         mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", user.getName())
-                .param("email", user.getEmail())
-                .param("mobile", user.getMobile())
-                .param("mobilePrivacy", user.getMobilePrivacy().name())
+                .param("name", expectedUser.getName())
+                .param("email", expectedUser.getEmail())
+                .param("mobile", expectedUser.getMobile())
+                .param("mobilePrivacy", expectedUser.getMobilePrivacy().name())
         )
 
                 // then
                 .andExpect(redirectedUrl("/login"));
-        verify(userDAO).register(any(User.class));
+
+        User actualUser = userDAO.findByEmail(expectedUser.getEmail());
+
+        try {
+            assertEquals(expectedUser.getEmail(), actualUser.getEmail());
+            assertEquals(expectedUser.getName(), actualUser.getName());
+            assertEquals(expectedUser.getMobile(), actualUser.getMobile());
+            assertEquals(expectedUser.getMobilePrivacy(), actualUser.getMobilePrivacy());
+        } finally {
+            userDAO.delete(actualUser.getId());
+        }
     }
 
     @Test
     public void shouldGetPageWithNameError() throws Exception {
-        // given
-        User user = new User()
-                .withName("ab")
-                .withEmail("test@email.com")
-                .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
-
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", user.getName())
-                .param("email", user.getEmail())
-                .param("mobile", user.getMobile())
-                .param("mobilePrivacy", user.getMobilePrivacy().name())
+                .param("name", userOne.getName())
+                .param("email", userOne.getEmail())
+                .param("mobile", userOne.getMobile())
+                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
         )
 
                 // then
@@ -116,25 +120,18 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
     }
 
     @Test
     public void shouldGetPageWithEmailError() throws Exception {
-        // given
-        User user = new User()
-                .withName("test name")
-                .withEmail("a@b")
-                .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
-
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", user.getName())
-                .param("email", user.getEmail())
-                .param("mobile", user.getMobile())
-                .param("mobilePrivacy", user.getMobilePrivacy().name())
+                .param("name", userOne.getName())
+                .param("email", userOne.getEmail())
+                .param("mobile", userOne.getMobile())
+                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
         )
 
                 // then
@@ -144,25 +141,18 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
     }
 
     @Test
     public void shouldGetPageWithMobileError() throws Exception {
-        // given
-        User user = new User()
-                .withName("test name")
-                .withEmail("test@email.com")
-                .withMobile("12345")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
-
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", user.getName())
-                .param("email", user.getEmail())
-                .param("mobile", user.getMobile())
-                .param("mobilePrivacy", user.getMobilePrivacy().name())
+                .param("name", userOne.getName())
+                .param("email", userOne.getEmail())
+                .param("mobile", userOne.getMobile())
+                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
         )
 
                 // then
@@ -172,9 +162,8 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
     }
-
 
     @Test
     public void shouldGetPageWithMobilePrivacyError() throws Exception {
@@ -192,7 +181,6 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
                 .param("mobile", user.getMobile())
                 .param("mobilePrivacy", "")
         )
-
                 // then
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -200,7 +188,7 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), null);
     }
 
     @Test
@@ -219,7 +207,6 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
                 .param("mobile", user.getMobile())
                 .param("mobilePrivacy", "")
         )
-
                 // then
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -227,34 +214,27 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 4);
-        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), null);
     }
 
     @Test
     public void shouldGetPageWithEmailAlreadyTakenError() throws Exception {
-        // given
-        User user = new User()
-                .withName("duplicate name")
-                .withEmail("duplicate@stupid.com")
-                .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL);
-        when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
-
+        // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", user.getName())
-                .param("email", user.getEmail())
-                .param("mobile", user.getMobile())
-                .param("mobilePrivacy", user.getMobilePrivacy().name())
+                .param("name", userOne.getName())
+                .param("email", userOne.getEmail())
+                .param("mobile", userOne.getMobile())
+                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
         )
+                // then
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
-        // then
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
     }
 
 }

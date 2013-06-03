@@ -2,7 +2,6 @@ package org.squashleague.web.controller.administration;
 
 import org.joda.time.DateTime;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.squashleague.dao.account.RoleDAO;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.dao.league.*;
@@ -46,7 +45,7 @@ public class MockDAOConfiguration {
                             .withEmail("user_" + i + "@email.com")
                             .withMobile("123456789")
                             .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                            .withRoles(Role.ROLE_USER)
+                            .withRoles(roles.get(i))
                             .withId((long) i)
             );
             clubs.add(

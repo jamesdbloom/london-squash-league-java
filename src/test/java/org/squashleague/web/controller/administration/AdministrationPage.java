@@ -39,7 +39,7 @@ public class AdministrationPage {
         assertEquals(description, addressInputElement.val());
     }
 
-    public void hasUserFields(String name, String email, String mobile, MobilePrivacy mobilePrivacy, String roleName) {
+    public void hasUserFields(String name, String email, String mobile, MobilePrivacy mobilePrivacy, String[] roleName) {
         Element nameInputElement = html.select("#create_user #name").first();
         assertNotNull(nameInputElement);
         assertEquals(name, nameInputElement.val());
@@ -50,7 +50,7 @@ public class AdministrationPage {
 
         Element mobileInputElement = html.select("#create_user #mobile").first();
         assertNotNull(mobileInputElement);
-        assertEquals(mobile, mobileInputElement.val());
+        assertEquals((mobile != null ? mobile : ""), mobileInputElement.val());
 
         Element mobilePrivacyInputElement = html.select("#create_user #mobilePrivacy [selected=selected]").first();
         assertNotNull(mobilePrivacyInputElement);
@@ -58,7 +58,7 @@ public class AdministrationPage {
 
         Element roleInputElement = html.select("#create_user #roles [selected=selected]").first();
         assertNotNull(roleInputElement);
-        assertEquals(roleName, roleInputElement.attr("value"));
+        assertEquals(roleName[0], roleInputElement.attr("value"));
     }
 
     public void hasClubFields(String name, String address) {
@@ -126,6 +126,6 @@ public class AdministrationPage {
 
         Element scoreInputElement = html.select("#create_match #score").first();
         assertNotNull(scoreInputElement);
-        assertEquals(score, scoreInputElement.val());
+        assertEquals((score != null ? score : ""), scoreInputElement.val());
     }
 }

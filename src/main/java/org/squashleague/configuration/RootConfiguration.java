@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 @PropertySource({"classpath:application.properties", "classpath:ValidationMessages.properties"})
 @ImportResource(value = {"classpath:/config/security-context.xml", "classpath:/config/dao-context.xml"})
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @Import(ServiceConfiguration.class)
 public class RootConfiguration {
     @Resource

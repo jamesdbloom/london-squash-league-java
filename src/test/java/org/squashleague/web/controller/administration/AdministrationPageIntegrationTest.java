@@ -5,12 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockFilterConfig;
+import org.springframework.orm.hibernate3.support.OpenSessionInViewFilter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,6 +31,8 @@ import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
 
 import javax.annotation.Resource;
+import javax.servlet.Filter;
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +56,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
         ),
         @ContextConfiguration(
                 name = "dispatcher",
-                classes = {WebMvcConfiguration.class},
+                classes = WebMvcConfiguration.class,
                 initializers = PropertyMockingApplicationContextInitializer.class
         )
 })
@@ -62,8 +69,12 @@ public class AdministrationPageIntegrationTest extends MockDAOTest {
     private MockMvc mockMvc;
 
     @Before
-    public void setupFixture() {
-        mockMvc = webAppContextSetup(webApplicationContext).build();
+    public void setupFixture() throws ServletException {
+        OpenEntityManagerInViewFilter openSessionInViewFilter = new OpenEntityManagerInViewFilter();
+        openSessionInViewFilter.setPersistenceUnitName("persistenceUnit");
+        openSessionInViewFilter.init(new MockFilterConfig(webApplicationContext.getServletContext(), "openSessionInViewFilter"));
+
+        mockMvc = webAppContextSetup(webApplicationContext).addFilters(openSessionInViewFilter).build();
     }
 
     @Test
@@ -75,70 +86,42 @@ public class AdministrationPageIntegrationTest extends MockDAOTest {
 
     @Test
     public void shouldGetPageWithRoleErrors() throws Exception {
-        Role role = new Role()
-                .withName("test name")
-                .withDescription("test description");
         getAdministrationPage("role", 2, role).hasRoleFields(role.getName(), role.getDescription());
     }
 
     @Test
     public void shouldGetPageWithUserErrors() throws Exception {
-        Role role = roleDAO.findAll().get(0);
-        User user = new User()
-                .withName("test name")
-                .withEmail("test@email.com")
-                .withMobile("123456789")
-                .withMobilePrivacy(MobilePrivacy.SHOW_ALL)
-                .withRoles(role);
-        getAdministrationPage("user", 2, user).hasUserFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy(), role.getName());
+        getAdministrationPage("user", 2, userOne).hasUserFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy(), userOne.getRoleNames());
     }
 
     @Test
     public void shouldGetPageWithClubErrors() throws Exception {
-        Club object = new Club().withName("test name").withAddress("test address");
-        getAdministrationPage("club", 2, object).hasClubFields("test name", "test address");
+        getAdministrationPage("club", 2, club).hasClubFields(club.getName(), club.getAddress());
     }
 
     @Test
     public void shouldGetPageWithLeagueErrors() throws Exception {
-        League league = new League()
-                .withName("test name");
-        getAdministrationPage("league", 2, league).hasLeagueFields(league.getName());
+        getAdministrationPage("league", 2, leagueOne).hasLeagueFields(leagueOne.getName());
     }
 
     @Test
     public void shouldGetPageWithDivisionErrors() throws Exception {
-        Division division = new Division()
-                .withName("test name");
         getAdministrationPage("division", 2, division).hasDivisionFields(division.getName());
     }
 
     @Test
     public void shouldGetPageWithRoundErrors() throws Exception {
-        Round round = new Round()
-                .withDivision((Division) new Division().withId(1l))
-                .withStartDate(new DateTime().plus(1))
-                .withEndDate(new DateTime().plus(2));
         getAdministrationPage("round", 2, round).hasRoundFields(round.getDivision().getId(), round.getStartDate(), round.getEndDate());
     }
 
     @Test
     public void shouldGetPageWithPlayerErrors() throws Exception {
-        Player player = new Player()
-                .withUser((User) new User().withId(1l))
-                .withCurrentDivision((Division) new Division().withId(2l))
-                .withStatus(PlayerStatus.ACTIVE);
-        getAdministrationPage("player", 2, player).hasPlayerFields(player.getUser().getId(), player.getCurrentDivision().getId(), player.getStatus());
+        getAdministrationPage("player", 2, playerOne).hasPlayerFields(playerOne.getUser().getId(), playerOne.getCurrentDivision().getId(), playerOne.getStatus());
     }
 
     @Test
     public void shouldGetPageWithMatchErrors() throws Exception {
-        Match match = new Match()
-                .withRound((Round) new Round().withId(2l))
-                .withPlayerOne((Player) new Player().withId(2l))
-                .withPlayerTwo((Player) new Player().withId(1l))
-                .withScore("4-5");
-        getAdministrationPage("match", 2, match).hasMatchFields(match.getRound().getId(), match.getPlayerOne().getId(), match.getPlayerTwo().getId(), match.getScore());
+        getAdministrationPage("match", 2, matchOne).hasMatchFields(matchOne.getRound().getId(), matchOne.getPlayerOne().getId(), matchOne.getPlayerTwo().getId(), matchOne.getScore());
     }
 
     private AdministrationPage getAdministrationPage(String objectName, int errorCount, Object object) throws Exception {

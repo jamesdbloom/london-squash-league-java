@@ -210,6 +210,9 @@ public class User extends ModelObject<User> {
         if (user.password != null) {
             this.password = user.password;
         }
+        if (user.oneTimeToken != null) {
+            this.oneTimeToken = user.oneTimeToken;
+        }
         if (user.roles != null) {
             this.roles = user.roles;
         }
@@ -221,7 +224,7 @@ public class User extends ModelObject<User> {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "logger", "players");
+        return ReflectionToStringBuilder.toStringExclude(this, "logger", "roles", "players");
     }
 
     @Override
@@ -234,11 +237,12 @@ public class User extends ModelObject<User> {
                 .append(mobile, ((User) other).mobile)
                 .append(mobilePrivacy, ((User) other).mobilePrivacy)
                 .append(password, ((User) other).password)
+                .append(oneTimeToken, ((User) other).oneTimeToken)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, "players");
+        return HashCodeBuilder.reflectionHashCode(this, "roles", "players");
     }
 }
