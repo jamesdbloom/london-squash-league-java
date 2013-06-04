@@ -10,19 +10,19 @@
 
 <#macro content_section>
 <h2 class="table_title">Your Details</h2>
-<table class="">
+<table>
     <tbody>
         <tr>
-            <th class="name">Name</th>
-            <th class="email">Email</th>
-            <th class="mobile row_end_before_hidden_small_screen">Mobile</th>
-            <th class="mobile_privacy hide_on_small_screen">Mobile Privacy</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th class="row_end_before_hidden_small_screen">Mobile</th>
+            <th class="hide_on_small_screen">Mobile Privacy</th>
         </tr>
-        <tr class="">
-            <td class="name">${user.name}</td>
-            <td class="email">${user.email}</td>
-            <td class="mobile row_end_before_hidden_small_screen">${user.mobile!""}</td>
-            <td class="mobile_privacy hide_on_small_screen">${user.mobilePrivacy!""}</td>
+        <tr>
+            <td id="user_name">${user.name}</td>
+            <td id="user_email">${user.email}</td>
+            <td id="user_mobile" class="row_end_before_hidden_small_screen">${user.mobile!""}</td>
+            <td id="user_mobilePrivacy" class="hide_on_small_screen">${user.mobilePrivacy!""}</td>
         </tr>
     </tbody>
 </table>
@@ -69,7 +69,7 @@
     <p class="errors_messages">You are not registered with any leagues, please select a league from the drop-down and click the register button.</p>
     <#elseif (rounds?size = 0) >
     <h2 class="table_title" style="margin-top: 1em;">Rounds</h2>
-    <div class="errors_messages" style="text-align: left;">
+    <div class="errors_messages">
         <p>You are not currently in any rounds for one of the following reasons:</p>
         <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
             <li style="margin-left: 2em;">you are not an active player in any of your leagues,</li>

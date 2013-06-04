@@ -32,7 +32,7 @@ public class ContactUsPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andReturn();
 
         ContactUsPage confirmationPage = new ContactUsPage(response);
-        confirmationPage.hasReadOnlyEmailField(LOGGED_IN_USER_EMAIL);
+        confirmationPage.hasReadOnlyEmailField(LOGGED_IN_USER.getEmail());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ContactUsPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andExpect(redirectedUrl("/message"));
 
 
-        verify(emailService).sendContactUsMessage(message, userAgentHeader, IP, LOGGED_IN_USER_EMAIL);
+        verify(emailService).sendContactUsMessage(message, userAgentHeader, IP, LOGGED_IN_USER.getEmail());
     }
 
     @Test

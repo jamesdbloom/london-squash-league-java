@@ -1,0 +1,71 @@
+package org.squashleague.web.controller.account;
+
+import org.joda.time.DateTime;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.squashleague.domain.league.Match;
+import org.squashleague.web.controller.WebAndDataIntegrationTest;
+
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+/**
+ * @author jamesdbloom
+ */
+public class ScorePageIntegrationTest extends WebAndDataIntegrationTest {
+
+    @Test
+    public void shouldGetPage() throws Exception {
+        MvcResult result = mockMvc.perform(get("/score/" + matchOne.getId()).accept(MediaType.TEXT_HTML))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn();
+
+        ScorePage scorePage = new ScorePage(result);
+        scorePage.hasMessage(matchOne);
+    }
+
+    @Test
+    public void shouldUpdateScore() throws Exception {
+        // when
+        String score = "3-2";
+        String referer = "/foo";
+        mockMvc.perform(post("/score")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("referer", referer)
+                .param("id", matchOne.getId().toString())
+                .param("score", score)
+        )
+                // then
+                .andExpect(redirectedUrl(referer));
+
+        Match actualMatch = matchDAO.findById(matchOne.getId());
+        assertEquals(score, actualMatch.getScore());
+        assertEquals(new DateTime().toString("dd MMM yyyy"), actualMatch.getScoreEntered().toString("dd MMM yyyy"));
+    }
+
+    @Test
+    @Ignore("can't test until it is possible to use spring security in the integration test")
+    public void shouldNotAllowScoreToBeUpdateByAnotherPlayer() throws Exception {
+        securityUserContext.setCurrentUser(userOne);
+
+        try {
+            // when
+            mockMvc.perform(post("/score")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("referer", "/foo")
+                    .param("id", matchThree.getId().toString())
+                    .param("score", "3-2")
+            )
+                    // then
+                    .andExpect(redirectedUrl("/error/403"));
+        } finally {
+            securityUserContext.setCurrentUser(LOGGED_IN_USER);
+        }
+
+    }
+}

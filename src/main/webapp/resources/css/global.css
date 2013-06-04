@@ -720,7 +720,6 @@ table + .table_subtitle {
     border-width: 1px;
     border-color: #206f92;
     width: 90%;
-    text-align: center;
 }
 
 .message strong {
