@@ -38,7 +38,7 @@
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
 <meta name="format-detection" content="telephone=no"/>
 <meta name="description" content="some silly description to have on this page"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
 </#macro>
 
 <#macro page_css>

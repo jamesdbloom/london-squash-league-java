@@ -12,10 +12,12 @@ import javax.annotation.Resource;
 public abstract class AdministratorLoggedInTest {
 
     @Resource
-    private SpringSecurityUserContext securityUserContext;
+    protected SpringSecurityUserContext securityUserContext;
+
+    protected static final String LOGGED_IN_USER_EMAIL = "user@email.com";
 
     @Before
     public void setupUser() {
-        securityUserContext.setCurrentUser(new User().withRoles(Role.ROLE_ADMIN));
+        securityUserContext.setCurrentUser(new User().withRoles(Role.ROLE_ADMIN).withEmail(LOGGED_IN_USER_EMAIL));
     }
 }

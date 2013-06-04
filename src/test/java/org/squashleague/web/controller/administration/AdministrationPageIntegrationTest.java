@@ -1,38 +1,12 @@
 package org.squashleague.web.controller.administration;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockFilterConfig;
-import org.springframework.orm.hibernate3.support.OpenSessionInViewFilter;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.context.WebApplicationContext;
-import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.dao.account.RoleDAO;
-import org.squashleague.dao.league.HSQLApplicationContextInitializer;
-import org.squashleague.domain.account.MobilePrivacy;
-import org.squashleague.domain.account.Role;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.*;
-import org.squashleague.service.security.SecurityMockingConfiguration;
-import org.squashleague.web.configuration.WebMvcConfiguration;
-import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
+import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
-import javax.annotation.Resource;
-import javax.servlet.Filter;
-import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,41 +15,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * @author jamesdbloom
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextHierarchy({
-        @ContextConfiguration(
-                name = "root",
-                classes = RootConfiguration.class,
-                initializers = HSQLApplicationContextInitializer.class
-        ),
-        @ContextConfiguration(
-                name = "dispatcher",
-                classes = WebMvcConfiguration.class,
-                initializers = PropertyMockingApplicationContextInitializer.class
-        )
-})
-public class AdministrationPageIntegrationTest extends MockDAOTest {
-
-    @Resource
-    private RoleDAO roleDAO;
-    @Resource
-    private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
-
-    @Before
-    public void setupFixture() throws ServletException {
-        OpenEntityManagerInViewFilter openSessionInViewFilter = new OpenEntityManagerInViewFilter();
-        openSessionInViewFilter.setPersistenceUnitName("persistenceUnit");
-        openSessionInViewFilter.init(new MockFilterConfig(webApplicationContext.getServletContext(), "openSessionInViewFilter"));
-
-        mockMvc = webAppContextSetup(webApplicationContext).addFilters(openSessionInViewFilter).build();
-    }
+public class AdministrationPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldGetPage() throws Exception {

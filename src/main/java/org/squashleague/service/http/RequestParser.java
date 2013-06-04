@@ -44,11 +44,13 @@ public class RequestParser {
     }
 
     public String parseRelativeURI(String referer, String defaultValue) {
-        Matcher matcher = URL_PATTERN.matcher(referer);
-        if (matcher.matches()) {
-            return matcher.group(7) + (matcher.group(7).isEmpty() ? "/" : "");
-        } else if (URI_PATH_PATTERN.matcher(referer).matches()) {
-            return referer;
+        if (referer != null) {
+            Matcher matcher = URL_PATTERN.matcher(referer);
+            if (matcher.matches()) {
+                return matcher.group(7) + (matcher.group(7).isEmpty() ? "/" : "");
+            } else if (URI_PATH_PATTERN.matcher(referer).matches()) {
+                return referer;
+            }
         }
         return defaultValue;
     }

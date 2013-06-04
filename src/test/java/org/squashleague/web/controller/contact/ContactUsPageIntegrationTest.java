@@ -1,23 +1,10 @@
 package org.squashleague.web.controller.contact;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.context.WebApplicationContext;
-import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.account.User;
-import org.squashleague.service.email.EmailMockingConfiguration;
 import org.squashleague.service.email.EmailService;
-import org.squashleague.service.security.SecurityMockingConfiguration;
-import org.squashleague.service.security.SpringSecurityUserContext;
-import org.squashleague.web.configuration.WebMvcConfiguration;
+import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -26,39 +13,16 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * @author jamesdbloom
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextHierarchy({
-        @ContextConfiguration(
-                name = "root",
-                classes = RootConfiguration.class),
-        @ContextConfiguration(
-                name = "dispatcher",
-                classes = {WebMvcConfiguration.class, SecurityMockingConfiguration.class, EmailMockingConfiguration.class})
-})
-public class ContactUsPageIntegrationTest {
+public class ContactUsPageIntegrationTest extends WebAndDataIntegrationTest {
 
-    @Resource
-    private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
-    @Resource
-    private SpringSecurityUserContext securityUserContext;
     @Resource
     private EmailService emailService;
 
     private static final String IP = "127.0.0.1";
-    private static final String EMAIL = "user@email.com";
-
-    @Before
-    public void setupFixture() {
-        mockMvc = webAppContextSetup(webApplicationContext).build();
-        when(securityUserContext.getCurrentUser()).thenReturn(new User().withEmail(EMAIL));
-    }
 
     @Test
     public void shouldDisplayContactUsForm() throws Exception {
@@ -68,7 +32,7 @@ public class ContactUsPageIntegrationTest {
                 .andReturn();
 
         ContactUsPage confirmationPage = new ContactUsPage(response);
-        confirmationPage.hasReadOnlyEmailField(EMAIL);
+        confirmationPage.hasReadOnlyEmailField(LOGGED_IN_USER_EMAIL);
     }
 
     @Test
@@ -83,7 +47,7 @@ public class ContactUsPageIntegrationTest {
                 .andExpect(redirectedUrl("/message"));
 
 
-        verify(emailService).sendContactUsMessage(message, userAgentHeader, IP, EMAIL);
+        verify(emailService).sendContactUsMessage(message, userAgentHeader, IP, LOGGED_IN_USER_EMAIL);
     }
 
     @Test

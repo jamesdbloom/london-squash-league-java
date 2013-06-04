@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") Long id, @RequestHeader("Referer") String referer, Model uiModel) {
+    public String updateForm(@PathVariable("id") Long id, @RequestHeader(value = "Referer", required = false) String referer, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("user", userDAO.findById(id));
         uiModel.addAttribute("referer", requestParser.parseRelativeURI(referer, "/account"));

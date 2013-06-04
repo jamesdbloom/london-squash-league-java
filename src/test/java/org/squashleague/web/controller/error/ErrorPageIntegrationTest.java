@@ -15,6 +15,7 @@ import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.PropertyMockingApplicationContextInitializer;
+import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import javax.annotation.Resource;
 
@@ -27,30 +28,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 /**
  * @author jamesdbloom
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextHierarchy({
-        @ContextConfiguration(
-                name = "root",
-                classes = RootConfiguration.class,
-                initializers = HSQLApplicationContextInitializer.class
-        ),
-        @ContextConfiguration(
-                name = "dispatcher",
-                classes = {WebMvcConfiguration.class},
-                initializers = PropertyMockingApplicationContextInitializer.class
-        )
-})
-public class ErrorPageIntegrationTest {
-
-    @Resource
-    private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
-
-    @Before
-    public void setupFixture() {
-        mockMvc = webAppContextSetup(webApplicationContext).build();
-    }
+public class ErrorPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldReturnErrorPageForGetRequest() throws Exception {

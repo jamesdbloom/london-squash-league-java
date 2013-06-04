@@ -191,4 +191,9 @@ public class RequestParserTest {
         assertEquals("/leagueTable", requestParser.parseRelativeURI("https://localhost:8443/leagueTable", "default"));
     }
 
+    @Test
+    public void shouldHandleNull() {
+        assertEquals("default", requestParser.parseRelativeURI(null, "default"));
+    }
+
 }

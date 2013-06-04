@@ -27,19 +27,20 @@
     <@security.authorize access='isAuthenticated()'>
     <p class="homepage_message">${user.name?capitalize} please select one of the following:</p>
     <ol class="link_list">
-        <@security.authorize ifAnyGranted="ROLE_ADMIN">
-            <li><a href="/print" title="Print League">Print League</a></li>
-        </@security.authorize>
-        <li><a href="/leagueTable" title="View League">View Your League</a></li>
-        <li><a href="/ranking" title="Player Ranking">Player Ranking</a></li>
-        <li><a href="/score" title="Enter Match Score">Enter Match Score</a></li>
+        <li><a href="/leagueTable" title="View League">View Your Leagues</a></li>
+        <li><a href="/ranking" title="Player Ranking">View Player Ranking</a></li>
+        <li><a href="/account#matches" title="Enter Match Score">Enter Match Score</a></li>
         <li><a href="/account#leagues" title="Join A New League">Join A New League</a></li>
         <li><a href="/account" title="Account">Account Settings</a></li>
-        <@security.authorize ifAnyGranted="ROLE_ADMIN">
-            <li><a href="/administration" title="Administration">Administration</a></li>
-        </@security.authorize>
         <li><a href="/contact_us" title="Contact Us">Contact Us</a></li>
         <li><a href="/logout" title="Logout">Logout</a></li>
+    </ol>
+    </@security.authorize>
+    <@security.authorize ifAnyGranted="ROLE_ADMIN">
+    <div style="width:100%; height: 3.5em;"></div><p class="homepage_message">Administration tasks:</p>
+    <ol class="link_list">
+        <li><a href="/print" title="Print League">Print League</a></li>
+        <li><a href="/administration" title="Administration">Administration</a></li>
     </ol>
     </@security.authorize>
 </#macro>

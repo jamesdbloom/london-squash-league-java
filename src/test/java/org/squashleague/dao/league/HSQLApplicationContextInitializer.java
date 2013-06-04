@@ -18,7 +18,7 @@ public class HSQLApplicationContextInitializer implements ApplicationContextInit
             withProperty("jdbc.username", "sa");
             withProperty("jdbc.password", "");
             withProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-            withProperty("hibernate.show_sql", "true");
+            withProperty("hibernate.show_sql", "false");
             withProperty("hibernate.hbm2ddl.auto", "create-drop");
             withProperty("jpa.generateDdl", "true");
         }};

@@ -101,7 +101,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/score/{id}", method = RequestMethod.GET)
-    public String matchScoreForm(@PathVariable("id") Long id, @RequestHeader("Referer") String referer, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
+    public String matchScoreForm(@PathVariable("id") Long id, @RequestHeader(value = "Referer", required = false) String referer, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
         Match match = matchDAO.findById(id);
         if (match == null) {
             return "redirect:/errors/403";
