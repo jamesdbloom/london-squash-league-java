@@ -24,12 +24,12 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("user", userOne.getId().toString())
-                .param("league", leagueTwo.getId().toString())
+                .param("league", leagueThree.getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        playerDAO.delete(playerThree.getId() + 1);
+        playerDAO.delete(playerFour.getId() + 1);
     }
 
     @Test
@@ -58,8 +58,8 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("user", userOne.getId().toString())
-                .param("currentDivision", division.getId().toString())
-                .param("league", division.getLeague().getId().toString())
+                .param("currentDivision", divisionOne.getId().toString())
+                .param("league", divisionOne.getLeague().getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
@@ -96,8 +96,8 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("id", playerOne.getId().toString())
                 .param("version", playerOne.getVersion().toString())
                 .param("user", "")
-                .param("currentDivision", division.getId().toString())
-                .param("league", division.getLeague().getId().toString())
+                .param("currentDivision", divisionOne.getId().toString())
+                .param("league", divisionOne.getLeague().getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
 
@@ -119,8 +119,8 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("id", playerOne.getId().toString())
                 .param("version", playerOne.getVersion().toString())
                 .param("user", playerOne.getUser().getId().toString())
-                .param("currentDivision", division.getId().toString())
-                .param("league", division.getLeague().getId().toString())
+                .param("currentDivision", divisionOne.getId().toString())
+                .param("league", divisionOne.getLeague().getId().toString())
                 .param("status", "")
         )
 
@@ -158,7 +158,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         Player player = new Player()
                 .withUser(userOne)
                 .withStatus(PlayerStatus.ACTIVE)
-                .withLeague(leagueTwo);
+                .withLeague(leagueThree);
         playerDAO.save(player);
 
         // when

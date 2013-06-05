@@ -18,7 +18,7 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 /**

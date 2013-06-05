@@ -50,12 +50,12 @@ public class AdministrationPageIntegrationTest extends WebAndDataIntegrationTest
 
     @Test
     public void shouldGetPageWithDivisionErrors() throws Exception {
-        getAdministrationPage("division", 2, division).hasDivisionFields(division.getName());
+        getAdministrationPage("division", 2, divisionOne).hasDivisionFields(divisionOne.getName());
     }
 
     @Test
     public void shouldGetPageWithRoundErrors() throws Exception {
-        getAdministrationPage("round", 2, round).hasRoundFields(round.getDivision().getId(), round.getStartDate(), round.getEndDate());
+        getAdministrationPage("round", 2, roundOne).hasRoundFields(roundOne.getDivision().getId(), roundOne.getStartDate(), roundOne.getEndDate());
     }
 
     @Test

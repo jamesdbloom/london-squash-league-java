@@ -19,15 +19,11 @@ import org.squashleague.web.tasks.CommandHolder;
 import org.squashleague.web.tasks.account.LoadPlayerRounds;
 import org.squashleague.web.tasks.account.LoadUnregisteredLeagues;
 import org.squashleague.web.tasks.account.LoadUserAccountData;
-import org.squashleague.web.tasks.league.LoadAllMatches;
-import org.squashleague.web.tasks.league.LoadFullyPopulatedUser;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 

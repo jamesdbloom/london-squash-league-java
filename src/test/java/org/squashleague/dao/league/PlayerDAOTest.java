@@ -13,7 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -34,7 +34,7 @@ public class PlayerDAOTest {
     public void shouldReturnEmptyListIfNoActivePlayers() throws Exception {
         // given
         User user = (User) new User().withId(1l);
-        TypedQuery<Player> query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Player> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Player.class))).thenReturn(query);
         when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
@@ -46,7 +46,7 @@ public class PlayerDAOTest {
     public void shouldReturnEmptyListIfNoPlayers() throws Exception {
         // given
         User user = (User) new User().withId(1l);
-        TypedQuery<Player> query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Player> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Player.class))).thenReturn(query);
         when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 

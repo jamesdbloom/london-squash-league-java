@@ -65,6 +65,7 @@ public class AddBundlingModelToViewModelInterceptorTest {
         checkViewModelContainsCorrectUnbundledResources(modelAndView);
     }
 
+    @SuppressWarnings("unchecked")
     private void checkViewModelContainsCorrectUnbundledResources(ModelAndView modelAndView) {
         assertEquals(Arrays.asList("group_one_js_uri_one", "group_one_js_uri_two"), ((Map<String, List<String>>) modelAndView.getModel().get(AddBundlingModelToViewModelInterceptor.JS_RESOURCES)).get("group_one"));
         assertEquals(Arrays.asList("group_two_js_uri_one", "group_two_js_uri_two"), ((Map<String, List<String>>) modelAndView.getModel().get(AddBundlingModelToViewModelInterceptor.JS_RESOURCES)).get("group_two"));
@@ -72,6 +73,7 @@ public class AddBundlingModelToViewModelInterceptorTest {
         assertEquals(Arrays.asList("group_two_css_uri_one", "group_two_css_uri_two"), ((Map<String, List<String>>) modelAndView.getModel().get(AddBundlingModelToViewModelInterceptor.CSS_RESOURCES)).get("group_two"));
     }
 
+    @SuppressWarnings("unchecked")
     private void checkViewModelContainsCorrectBundledResources(ModelAndView modelAndView, String extraQueryString) {
         assertEquals(Arrays.asList("/bundle/group_one.js" + extraQueryString), ((Map<String, List<String>>) modelAndView.getModel().get(AddBundlingModelToViewModelInterceptor.JS_RESOURCES)).get("group_one"));
         assertEquals(Arrays.asList("/bundle/group_two.js" + extraQueryString), ((Map<String, List<String>>) modelAndView.getModel().get(AddBundlingModelToViewModelInterceptor.JS_RESOURCES)).get("group_two"));

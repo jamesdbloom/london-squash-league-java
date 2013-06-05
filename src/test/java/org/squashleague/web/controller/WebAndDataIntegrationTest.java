@@ -1,7 +1,6 @@
 package org.squashleague.web.controller;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
@@ -14,7 +13,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.league.HSQLApplicationContextInitializer;
 import org.squashleague.service.email.EmailMockingConfiguration;
-import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.configuration.WebMvcConfiguration;
 import org.squashleague.web.controller.administration.MockDAOTest;
 

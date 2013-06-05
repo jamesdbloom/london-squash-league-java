@@ -928,6 +928,21 @@ table.large_screen {
         width: 60px !important;
     }
 
+    table.league th:not(:first-child) + th {
+        border-left: 1px dashed rgba(203, 227, 238, 0.67);
+    }
+
+    tbody tr:nth-of-type(1) th:last-child,
+    tbody tr:nth-of-type(1) th:first-child,
+    table.action_table tbody th:nth-last-of-type(2),
+    table.action_table tr td:nth-last-of-type(2),
+    table.action_table tbody th:last-of-type,
+    table.action_table tr td:last-of-type {
+        -moz-border-radius: 0;
+        -webkit-border-radius: 0;
+        border-radius: 0;
+    }
+
     .hide_on_very_small_screen,
     .hide_on_small_screen,
     .hide_on_medium_screen {

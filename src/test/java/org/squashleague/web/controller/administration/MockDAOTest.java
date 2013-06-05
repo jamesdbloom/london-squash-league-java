@@ -35,23 +35,28 @@ public class MockDAOTest extends AdministratorLoggedInTest {
     protected LeagueDAO leagueDAO;
     protected League leagueOne;
     protected League leagueTwo;
+    protected League leagueThree;
     @Resource
     protected DivisionDAO divisionDAO;
-    protected Division division;
+    protected Division divisionOne;
+    protected Division divisionTwo;
     @Resource
     protected RoundDAO roundDAO;
-    protected Round round;
+    protected Round roundOne;
+    protected Round roundTwo;
     @Resource
     protected PlayerDAO playerDAO;
     protected Player playerOne;
     protected Player playerTwo;
     protected Player playerThree;
+    protected Player playerFour;
     @Resource
     protected MatchDAO matchDAO;
     protected Match matchOne;
     protected Match matchTwo;
     protected Match matchThree;
     protected Match matchFour;
+    protected Match matchFive;
 
     @Before
     public void setupData() {
@@ -63,7 +68,7 @@ public class MockDAOTest extends AdministratorLoggedInTest {
                 .withEmail("one@email.com")
                 .withName("playerOne name")
                 .withMobile("666 666 666")
-                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withMobilePrivacy(MobilePrivacy.SHOW_OPPONENTS)
                 .withOneTimeToken(new UUID().toString())
                 .withPassword("abc123$%^")
                 .withRoles(role);
@@ -96,52 +101,76 @@ public class MockDAOTest extends AdministratorLoggedInTest {
         leagueTwo = new League()
                 .withName("league two")
                 .withClub(club);
+        leagueThree = new League()
+                .withName("league three")
+                .withClub(club);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
-        division = new Division()
-                .withName("division name")
+        leagueDAO.save(leagueThree);
+        divisionOne = new Division()
+                .withName("division one")
                 .withLeague(leagueOne);
-        divisionDAO.save(division);
-        round = new Round()
+        divisionTwo = new Division()
+                .withName("division two")
+                .withLeague(leagueTwo);
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
+        roundOne = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
-        roundDAO.save(round);
+                .withDivision(divisionOne);
+        roundTwo = new Round()
+                .withStartDate(new DateTime().plusDays(2))
+                .withEndDate(new DateTime().plusDays(3))
+                .withDivision(divisionTwo);
+        roundDAO.save(roundOne);
+        roundDAO.save(roundTwo);
         playerOne = new Player()
-                .withCurrentDivision(division)
+                .withCurrentDivision(divisionOne)
                 .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userOne);
         playerTwo = new Player()
-                .withCurrentDivision(division)
+                .withCurrentDivision(divisionOne)
                 .withStatus(PlayerStatus.ACTIVE)
                 .withUser(userTwo);
         playerThree = new Player()
-                .withCurrentDivision(division)
+                .withCurrentDivision(divisionOne)
                 .withStatus(PlayerStatus.INACTIVE)
                 .withUser(userThree);
+        playerFour = new Player()
+                .withCurrentDivision(divisionTwo)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
         playerDAO.save(playerOne);
         playerDAO.save(playerTwo);
         playerDAO.save(playerThree);
+        playerDAO.save(playerFour);
         matchOne = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withRound(roundOne)
+                .withScore("3-2");
         matchTwo = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerOne)
-                .withRound(round);
+                .withRound(roundOne);
         matchThree = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerThree)
-                .withRound(round);
+                .withRound(roundOne);
         matchFour = new Match()
                 .withPlayerOne(playerThree)
                 .withPlayerTwo(playerOne)
-                .withRound(round);
+                .withRound(roundTwo);
+        matchFive = new Match()
+                .withPlayerOne(playerFour)
+                .withPlayerTwo(playerOne)
+                .withRound(roundTwo);
         matchDAO.save(matchOne);
         matchDAO.save(matchTwo);
         matchDAO.save(matchThree);
         matchDAO.save(matchFour);
+        matchDAO.save(matchFive);
     }
 
     @After
@@ -150,13 +179,18 @@ public class MockDAOTest extends AdministratorLoggedInTest {
         matchDAO.delete(matchTwo);
         matchDAO.delete(matchThree);
         matchDAO.delete(matchFour);
+        matchDAO.delete(matchFive);
         playerDAO.delete(playerOne);
         playerDAO.delete(playerTwo);
         playerDAO.delete(playerThree);
-        roundDAO.delete(round);
-        divisionDAO.delete(division);
+        playerDAO.delete(playerFour);
+        roundDAO.delete(roundOne);
+        roundDAO.delete(roundTwo);
+        divisionDAO.delete(divisionOne);
+        divisionDAO.delete(divisionTwo);
         leagueDAO.delete(leagueOne);
         leagueDAO.delete(leagueTwo);
+        leagueDAO.delete(leagueThree);
         clubDAO.delete(club);
         userDAO.delete(userOne);
         userDAO.delete(userTwo);

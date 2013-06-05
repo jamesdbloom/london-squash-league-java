@@ -13,8 +13,8 @@ import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -34,7 +34,7 @@ public class RoleDAOTest {
     @Test
     public void shouldReturnNullIfNotObjectFound() throws Exception {
         // given
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
@@ -45,7 +45,7 @@ public class RoleDAOTest {
     @Test
     public void shouldReturnNullWhenEmptyListReturned() throws Exception {
         // given
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(new ArrayList<Role>());
 
@@ -57,7 +57,7 @@ public class RoleDAOTest {
     public void shouldReturnObjectWhenFound() throws Exception {
         // given
         Role role = new Role().withName("role name");
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(Arrays.asList(role));
 

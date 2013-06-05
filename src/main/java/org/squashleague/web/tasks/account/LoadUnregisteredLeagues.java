@@ -3,8 +3,6 @@ package org.squashleague.web.tasks.account;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.League;
-import org.squashleague.domain.league.Match;
-import org.squashleague.domain.league.Player;
 
 import java.util.List;
 import java.util.concurrent.Callable;

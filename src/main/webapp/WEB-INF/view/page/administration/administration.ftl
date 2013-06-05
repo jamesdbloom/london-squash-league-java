@@ -16,26 +16,26 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="name">Name</th>
+                <th>Id</th>
+                <th>Name</th>
                 <th class="description">Description</th>
                 <th class="club"><label for="club">Club</label></th>
                 <th class="button_column last"></th>
             </tr>
             <#list roles as role>
                 <tr>
-                    <td class="key">${role.id}</td>
-                    <td class="name">${role.name}</td>
-                    <td class="description">${role.description}</td>
-                    <td class="club"><#if role.club??>${role.club.name}</#if></td>
+                    <td>${role.id}</td>
+                    <td>${role.name}</td>
+                    <td>${role.description}</td>
+                    <td><#if role.club??>${role.club.name}</#if></td>
                     <td class="button_column last"><a class="button" href="/role/delete/${role.id}">Delete</a><a class="button" href="/role/update/${role.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_role">
-                <td class="key last"></td>
-                <td class="name last"><@spring.formInput  path="role.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.role.name")}" class="show_validation"'/></td>
-                <td class="description last"><@spring.formInput  path="role.description" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.role.description")}" class="show_validation"'/></td>
-                <td class="club last">
+                <td class="last"></td>
+                <td class="last"><@spring.formInput  path="role.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.role.name")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="role.description" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.role.description")}" class="show_validation"'/></td>
+                <td class="last">
                     <#if (clubs?size > 0)>
                         <select id="club" name="club">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -59,35 +59,35 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="name">User</th>
-                <th class="email">Email</th>
-                <th class="mobile">Mobile</th>
-                <th class="mobile">Mobile Private</th>
-                <th class="mobile"><label for="roles">Role</label></th>
+                <th>Id</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Mobile Private</th>
+                <th><label for="roles">Role</label></th>
                 <th class="button_column last"></th>
             </tr>
             <#list users as user>
                 <tr>
-                    <td class="key">${user.id}</td>
-                    <td class="name">${user.name}</td>
-                    <td class="email">${user.email}</td>
-                    <td class="mobile">${user.mobile!""}</td>
-                    <td class="mobilePrivacy">${user.mobilePrivacy!""}</td>
-                    <td class="roles"><#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list></td>
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.mobile!""}</td>
+                    <td>${user.mobilePrivacy!""}</td>
+                    <td><#list user.roles as role>${role.name}<#if role_has_next>, </#if></#list></td>
                     <td class="button_column last"><a class="button" href="/user/delete/${user.id}">Delete</a><a class="button" href="/user/update/${user.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_user">
-                <td class="key last"></td>
-                <td class="name last"><@spring.formInput  path="user.name" attributes='required="required" pattern=".{3,50}" maxlength="50" title="${environment.getProperty("validation.user.name")}" class="show_validation"'/></td>
-                <td class="email last"><@spring.formInput  path="user.email" fieldType="email" attributes='required="required" maxlength="25" title="${environment.getProperty("validation.user.email")}" class="show_validation"'/></td>
-                <td class="mobile last"><@spring.formInput  path="user.mobile" attributes='required="required" pattern="[\\d\\s]{6,15}" maxlength="25" title="${environment.getProperty("validation.user.mobile")}" class="show_validation"'/></td>
-                <td class="status hide_on_small_screen last">
+                <td class="last"></td>
+                <td class="last"><@spring.formInput  path="user.name" attributes='required="required" pattern=".{3,50}" maxlength="50" title="${environment.getProperty("validation.user.name")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="user.email" fieldType="email" attributes='required="required" maxlength="25" title="${environment.getProperty("validation.user.email")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="user.mobile" attributes='required="required" pattern="[\\d\\s]{6,15}" maxlength="25" title="${environment.getProperty("validation.user.mobile")}" class="show_validation"'/></td>
+                <td class="hide_on_small_screen last">
                     <@spring.bind "mobilePrivacyOptions" />
                     <@spring.formSingleSelectWithEmpty path="user.mobilePrivacy" options=mobilePrivacyOptions emptyValueMessage='${environment.getProperty("message.general.please_select")}' attributes='required="required" title="${environment.getProperty("validation.user.mobilePrivacy")}"' />
                 </td>
-                <td class="roles hide_on_small_screen last">
+                <td class="hide_on_small_screen last">
                     <#if (roles?size > 0)>
                         <select id="roles" name="roles" <#if (roles?size > 1)>multiple="multiple"</#if> required="required">
                             <#if (roles?size <= 1)><option value="">${environment.getProperty("message.general.please_select")}</option></#if>
@@ -110,23 +110,23 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="club">Name</th>
-                <th class="address">Address</th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address</th>
                 <th class="button_column last"></th>
             </tr>
             <#list clubs as club>
                 <tr>
-                    <td class="key">${club.id}</td>
-                    <td class="name">${club.name}</td>
-                    <td class="address">${club.address}</td>
+                    <td>${club.id}</td>
+                    <td>${club.name}</td>
+                    <td>${club.address}</td>
                     <td class="button_column last"><a class="button" href="/club/delete/${club.id}">Delete</a><a class="button" href="/club/update/${club.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_club">
-                <td class="key last"></td>
-                <td class="name last"><@spring.formInput  path="club.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.club.name")}" class="show_validation"'/></td>
-                <td class="address last"><@spring.formInput  path="club.address" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.club.address")}" class="show_validation"'/></td>
+                <td class="last"></td>
+                <td class="last"><@spring.formInput  path="club.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.club.name")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="club.address" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.club.address")}" class="show_validation"'/></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>
@@ -141,22 +141,22 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="club">Club</th>
-                <th class="name">League</th>
+                <th>Id</th>
+                <th>Club</th>
+                <th>League</th>
                 <th class="button_column last"></th>
             </tr>
             <#list leagues as league>
                 <tr>
-                    <td class="key">${league.id}</td>
-                    <td class="club">${league.club.name}</td>
-                    <td class="name">${league.name}</td>
+                    <td>${league.id}</td>
+                    <td>${league.club.name}</td>
+                    <td>${league.name}</td>
                     <td class="button_column last"><a class="button" href="/league/delete/${league.id}">Delete</a><a class="button" href="/league/update/${league.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_league">
-                <td class="key last"></td>
-                <td class="club last">
+                <td class="last"></td>
+                <td class="last">
                     <#if (clubs?size > 0)>
                         <select id="club" name="club" required="required" title="${environment.getProperty("validation.league.club")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -166,7 +166,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="name last"><@spring.formInput  path="league.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.league.name")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="league.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.league.name")}" class="show_validation"'/></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>
@@ -180,22 +180,22 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="league">League</th>
-                <th class="name"><label for="league">Division</label></th>
+                <th>Id</th>
+                <th>League</th>
+                <th><label for="league">Division</label></th>
                 <th class="button_column last"></th>
             </tr>
             <#list divisions as division>
                 <tr>
-                    <td class="key">${division.id}</td>
-                    <td class="division">${division.league.club.name} &ndash; ${division.league.name}</td>
-                    <td class="name">${division.name}</td>
+                    <td>${division.id}</td>
+                    <td>${division.league.club.name} &ndash; ${division.league.name}</td>
+                    <td>${division.name}</td>
                     <td class="button_column last"><a class="button" href="/division/delete/${division.id}">Delete</a><a class="button" href="/division/update/${division.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_division">
-                <td class="key last"></td>
-                <td class="league last">
+                <td class="last"></td>
+                <td class="last">
                     <#if (leagues?size > 0)>
                         <select id="league" name="league" required="required" title="${environment.getProperty("validation.division.league")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -205,7 +205,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="name last"><@spring.formInput  path="division.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.division.name")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="division.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.division.name")}" class="show_validation"'/></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>
@@ -219,26 +219,26 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="division"><label for="division">Division</label></th>
-                <th class="status hide_on_small_screen">Status</th>
-                <th class="date">Start</th>
-                <th class="date">End</th>
+                <th>Id</th>
+                <th><label for="division">Division</label></th>
+                <th class="hide_on_small_screen">Status</th>
+                <th>Start</th>
+                <th>End</th>
                 <th class="button_column last"></th>
             </tr>
             <#list rounds as round>
                 <tr>
-                    <td class="key">${round.id}</td>
-                    <td class="division">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
-                    <td class="status hide_on_small_screen">${round.status}</td>
-                    <td class="date">${round.startDate.toDate()?string("dd MMM yyyy")}</td>
-                    <td class="date">${round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td>${round.id}</td>
+                    <td>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
+                    <td class="hide_on_small_screen">${round.status}</td>
+                    <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
                     <td class="button_column last"><a class="button" href="/round/delete/${round.id}">Delete</a><a class="button" href="/round/update/${round.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_round">
-                <td class="key last"></td>
-                <td class="division last">
+                <td class="last"></td>
+                <td class="last">
                     <#if (divisions?size > 0)>
                         <select id="division" name="division" required="required" title="${environment.getProperty("validation.round.division")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -248,9 +248,9 @@
                         </select>
                     </#if>
                 </td>
-                <td class="status hide_on_small_screen last"></td>
-                <td class="date last"><@spring.formInput  path="round.startDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.startDate")}"'/></td>
-                <td class="date last"><@spring.formInput  path="round.endDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.endDate")}"'/></td>
+                <td class="hide_on_small_screen last"></td>
+                <td class="last"><@spring.formInput  path="round.startDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.startDate")}"'/></td>
+                <td class="last"><@spring.formInput  path="round.endDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.endDate")}"'/></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>
@@ -264,24 +264,24 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="division"><label for="currentDivision">Division</label></th>
-                <th class="name"><label for="user">User</label></th>
+                <th>Id</th>
+                <th><label for="currentDivision">Division</label></th>
+                <th><label for="user">User</label></th>
                 <th class="status">Status</th>
                 <th class="button_column last"></th>
             </tr>
             <#list players as player>
                 <tr>
-                    <td class="key">${player.id}</td>
-                    <td class="division">${player.league.club.name} &ndash; ${player.league.name} <#if player.currentDivision??>&ndash; ${player.currentDivision.name}</#if></td>
-                    <td class="name">${player.user.name}</td>
-                    <td class="status hide_on_small_screen">${player.status}</td>
+                    <td>${player.id}</td>
+                    <td>${player.league.club.name} &ndash; ${player.league.name} <#if player.currentDivision??>&ndash; ${player.currentDivision.name}</#if></td>
+                    <td>${player.user.name}</td>
+                    <td class="hide_on_small_screen">${player.status}</td>
                     <td class="button_column last"><a class="button" href="/player/delete/${player.id}">Delete</a><a class="button" href="/player/update/${player.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_player">
-                <td class="key last"></td>
-                <td class="division last">
+                <td class="last"></td>
+                <td class="last">
                     <#if (divisions?size > 0)>
                         <select id="currentDivision" name="currentDivision" required="required" title="${environment.getProperty("validation.player.currentDivision")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -291,7 +291,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="name last">
+                <td class="last">
                     <#if (users?size > 0)>
                         <select id="user" name="user" required="required" title="${environment.getProperty("validation.player.user")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -301,7 +301,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="status hide_on_small_screen last">
+                <td class="hide_on_small_screen last">
                     <@spring.bind "playerStatuses" />
                     <@spring.formSingleSelectWithEmpty path="player.status" options=playerStatuses emptyValueMessage='${environment.getProperty("message.general.please_select")}' attributes='required="required" title="${environment.getProperty("validation.player.status")}"'/>
                 </td>
@@ -320,28 +320,28 @@
     <table class="action_table">
         <tbody>
             <tr>
-                <th class="key">Id</th>
-                <th class="round"><label for="round">Round</label></th>
-                <th class="player"><label for="playerOne">Player One</label></th>
-                <th class="player"><label for="playerTwo">Player Two</label></th>
-                <th class="score">Score</th>
-                <th class="score_entered hide_on_medium_screen">Score Entered</th>
+                <th>Id</th>
+                <th><label for="round">Round</label></th>
+                <th><label for="playerOne">Player One</label></th>
+                <th><label for="playerTwo">Player Two</label></th>
+                <th>Score</th>
+                <th class="hide_on_medium_screen">Score Entered</th>
                 <th class="button_column last"></th>
             </tr>
             <#list matches as match>
                 <tr>
-                    <td class="key">${match.id}</td>
-                    <td class="round">${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name} &ndash; (${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")})</td>
-                    <td class="player">${match.playerOne.user.name}</td>
-                    <td class="player">${match.playerTwo.user.name}</td>
-                    <td class="score">${match.score!""}</td>
-                    <td class="score_entered"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
+                    <td>${match.id}</td>
+                    <td>${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name} &ndash; (${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")})</td>
+                    <td>${match.playerOne.user.name}</td>
+                    <td>${match.playerTwo.user.name}</td>
+                    <td>${match.score!""}</td>
+                    <td><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
                     <td class="button_column last"><a class="button" href="/match/delete/${match.id}">Delete</a><a class="button" href="/match/update/${match.id}">Modify</a></td>
                 </tr>
             </#list>
             <tr class="create_row" id="create_match">
-                <td class="key last"></td>
-                <td class="round last">
+                <td class="last"></td>
+                <td class="last">
                     <#if (rounds?size > 0)>
                         <select id="round" name="round" required="required" title="${environment.getProperty("validation.match.round")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -351,7 +351,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="player last">
+                <td class="last">
                     <#if (players?size > 0)>
                         <select id="playerOne" name="playerOne" required="required" title="${environment.getProperty("validation.match.playerOne")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -361,7 +361,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="player last">
+                <td class="last">
                     <#if (players?size > 0)>
                         <select id="playerTwo" name="playerTwo" required="required" title="${environment.getProperty("validation.match.playerTwo")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
@@ -371,8 +371,8 @@
                         </select>
                     </#if>
                 </td>
-                <td class="score last"><@spring.formInput  path="match.score" attributes='pattern="${scorePattern}" title="${environment.getProperty("validation.match.score")}" class="show_validation"'/></td>
-                <td class="score_entered last"></td>
+                <td class="last"><@spring.formInput  path="match.score" attributes='pattern="${scorePattern}" title="${environment.getProperty("validation.match.score")}" class="show_validation"'/></td>
+                <td class="last"></td>
                 <td class="button_column last"><input type="submit" name="save" value="save"></td>
             </tr>
         </tbody>

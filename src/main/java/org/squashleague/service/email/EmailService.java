@@ -78,11 +78,11 @@ public class EmailService {
 
     private URL createUrl(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
         return new URL(
-                    "https",
-                    request.getLocalName(),
-                    request.getLocalPort(),
-                    "/updatePassword?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&oneTimeToken=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
-            );
+                "https",
+                request.getLocalName(),
+                request.getLocalPort(),
+                "/updatePassword?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&oneTimeToken=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
+        );
     }
 
     public class SendMessageTask implements Runnable {

@@ -24,11 +24,11 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("playerOne", playerOne.getId().toString())
                 .param("playerTwo", playerTwo.getId().toString())
-                .param("round", round.getId().toString())
+                .param("round", roundOne.getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        matchDAO.delete(matchFour.getId() + 1);
+        matchDAO.delete(matchFive.getId() + 1);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("playerOne", playerOne.getId().toString())
                 .param("playerTwo", playerTwo.getId().toString())
-                .param("round", round.getId().toString())
+                .param("round", roundOne.getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
     }
@@ -175,7 +175,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         Match match = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withRound(roundOne);
         matchDAO.save(match);
 
         // when

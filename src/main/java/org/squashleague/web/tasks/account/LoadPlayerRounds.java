@@ -1,9 +1,7 @@
 package org.squashleague.web.tasks.account;
 
-import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Round;
 
 import java.util.List;

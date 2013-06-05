@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 

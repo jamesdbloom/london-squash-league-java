@@ -7,7 +7,6 @@ import org.squashleague.domain.account.Role;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

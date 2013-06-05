@@ -34,18 +34,18 @@
         <tbody>
             <tr>
                 <th>Club</th>
-                <th><label for="league">League</label></th>
-                <th class="hide_on_very_small_screen">Status</th>
+                <th><label for="unregisteredLeagues">League</label></th>
                 <th>Division</th>
+                <th class="hide_on_very_small_screen">Status</th>
                 <th class="button_column last"></th>
             </tr>
             <#list user.players as player>
                 <tr>
-                    <td>${player.league.club.name}</td>
-                    <td>${player.league.club.name} &ndash; ${player.league.name}</td>
-                    <td class="hide_on_very_small_screen">${player.status}</td>
-                    <td><#if player.currentDivision?? >${player.currentDivision.name}</#if></td>
-                    <td class="button_column last">
+                    <td id="player_${player_index}_club">${player.league.club.name}</td>
+                    <td id="player_${player_index}_league">${player.league.name}</td>
+                    <td id="player_${player_index}_currentDivision"><#if player.currentDivision?? >${player.currentDivision.name}</#if></td>
+                    <td id="player_${player_index}_status" class="hide_on_very_small_screen">${player.status}</td>
+                    <td id="player_${player_index}_register" class="button_column last">
                         <#if player.status == 'ACTIVE'><a class="button" href="/account/unregister?player=${player.id}">Unregister</a><#else><a class="button" href="/account/register?player=${player.id}">Register</a></#if>
                     </td>
                 </tr>
@@ -53,10 +53,10 @@
             <#if (unregisteredLeagues?size > 0)>
                 <tr>
                     <td class="last" colspan="4">
-                        <select id="league" name="league" required="required">
+                        <select id="unregisteredLeagues" name="league" required="required">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
                             <#list unregisteredLeagues as league>
-                                <option value="${league.id}">${league.name}</option>
+                                <option value="${league.id}">${league.club.name}  &ndash; ${league.name}</option>
                             </#list>
                         </select>
                     </td>
@@ -88,10 +88,10 @@
             </tr>
             <#list rounds as round>
                 <tr>
-                    <td>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
-                    <td class="hide_on_small_screen">${round.status}</td>
-                    <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
-                    <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td id="round_${round_index}_division">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
+                    <td id="round_${round_index}_status" class="hide_on_small_screen">${round.status}</td>
+                    <td id="round_${round_index}_startDate">${round.startDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td id="round_${round_index}_endDate">${round.endDate.toDate()?string("dd MMM yyyy")}</td>
                 </tr>
             </#list>
         </tbody>
@@ -111,18 +111,18 @@
                     </tr>
                     <#list player.matches as match>
                         <tr>
-                            <td class="hide_on_very_small_screen">${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
-                            <td>${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
-                            <td><@showContactDetails match.playerOne.user/></td>
-                            <td><@showContactDetails match.playerTwo.user/></td>
-                            <td class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
-                            <td style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
+                            <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
+                            <td id="match_${player_index}_${match_index}_date" >${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                            <td id="match_${player_index}_${match_index}_playerOne" ><@showContactDetails match.playerOne.user/></td>
+                            <td id="match_${player_index}_${match_index}_playerTwo" ><@showContactDetails match.playerTwo.user/></td>
+                            <td id="match_${player_index}_${match_index}_scoreEntered" class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
+                            <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
                         </tr>
                     </#list>
                 </tbody>
             </table>
             <div class="standalone_link">
-                <a href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
+                <a id="mailto_${player_index}" href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
             </div>
             </#if>
         </#list>

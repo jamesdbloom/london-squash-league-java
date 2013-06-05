@@ -22,7 +22,7 @@ import javax.validation.constraints.Pattern;
 @Cacheable
 @Table(name = "Matches")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Match extends ModelObject<Match> {
+public class Match extends ModelObject<Match> implements Comparable<Match> {
 
     public final static String SCORE_PATTERN = "[0-9]{1,2}-[0-9]{1,2}";
     @NotNull(message = "{validation.match.playerOne}")
@@ -119,6 +119,21 @@ public class Match extends ModelObject<Match> {
             this.scoreEntered = match.scoreEntered;
         }
         return this;
+    }
+
+    @Override
+    public int compareTo(Match other) {
+        int roundComparison = round.compareTo(other.round);
+        if (roundComparison == 0) {
+            int playerOneComparison = playerOne.getUser().getName().compareTo(other.playerOne.getUser().getName());
+            if (playerOneComparison == 0) {
+                return playerTwo.getUser().getName().compareTo(other.playerTwo.getUser().getName());
+            } else {
+                return playerOneComparison;
+            }
+        } else {
+            return roundComparison;
+        }
     }
 
     @Override

@@ -26,12 +26,12 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("startDate", new DateTime().plusDays(1).toString("yyyy-MM-dd"))
                 .param("endDate", new DateTime().plusDays(2).toString("yyyy-MM-dd"))
-                .param("division", division.getId().toString())
+                .param("division", divisionOne.getId().toString())
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        roundDAO.delete(round.getId() + 1);
+        roundDAO.delete(roundTwo.getId() + 1);
     }
 
     @Test
@@ -49,13 +49,13 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
         // when
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + round.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + roundOne.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         // then
-        new RoundUpdatePage(response).hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+        new RoundUpdatePage(response).hasRoundFields(roundOne.getId(), roundOne.getVersion(), roundOne.getStartDate(), roundOne.getEndDate(), roundOne.getDivision().getId());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("startDate", new DateTime().plusDays(1).toString("yyyy-MM-dd"))
                 .param("endDate", new DateTime().plusDays(2).toString("yyyy-MM-dd"))
-                .param("division", division.getId().toString())
+                .param("division", divisionOne.getId().toString())
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
@@ -76,10 +76,10 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", round.getId().toString())
-                .param("version", round.getVersion().toString())
-                .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
-                .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
+                .param("id", roundOne.getId().toString())
+                .param("version", roundOne.getVersion().toString())
+                .param("startDate", roundOne.getStartDate().toString("yyyy-MM-dd"))
+                .param("endDate", roundOne.getEndDate().toString("yyyy-MM-dd"))
         )
                 // then
                 .andExpect(status().isOk())
@@ -88,7 +88,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
 
         RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
         RoundUpdatePage.hasErrors("round", 1);
-        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), null);
+        RoundUpdatePage.hasRoundFields(roundOne.getId(), roundOne.getVersion(), roundOne.getStartDate(), roundOne.getEndDate(), null);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(null)
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division)
+                .withDivision(divisionOne)
                 .withId(2l);
         round.setVersion(5);
 
@@ -127,7 +127,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().plusDays(2))
                 .withEndDate(null)
-                .withDivision(division)
+                .withDivision(divisionOne)
                 .withId(2l);
         round.setVersion(5);
 
@@ -157,7 +157,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().plusDays(3))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division)
+                .withDivision(divisionOne)
                 .withId(2l);
         round.setVersion(5);
 
@@ -187,7 +187,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().minusDays(3))
                 .withEndDate(new DateTime().minusDays(2))
-                .withDivision(division)
+                .withDivision(divisionOne)
                 .withId(2l);
         round.setVersion(5);
 
@@ -243,7 +243,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
     public void shouldDeleteRound() throws Exception {
         // given
         Round round = new Round()
-                .withDivision(division)
+                .withDivision(divisionOne)
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(10));
         roundDAO.save(round);

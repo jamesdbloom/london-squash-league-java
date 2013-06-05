@@ -1,6 +1,5 @@
 package org.squashleague.web.controller.login;
 
-import com.eaio.uuid.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 import org.squashleague.configuration.RootConfiguration;
 import org.squashleague.dao.league.HSQLApplicationContextInitializer;
-import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.configuration.WebMvcConfiguration;
@@ -28,8 +26,6 @@ import javax.servlet.ServletException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

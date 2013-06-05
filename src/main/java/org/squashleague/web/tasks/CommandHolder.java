@@ -3,7 +3,6 @@ package org.squashleague.web.tasks;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -25,6 +24,7 @@ public class CommandHolder<T> implements MethodInterceptor {
         return proxy.invoke(delegate.get(), args);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T newInstance(Future<T> delegate, Class<? extends T> clazz) {
 
         CommandHolder<T> interceptor = new CommandHolder<>(delegate);
@@ -34,6 +34,7 @@ public class CommandHolder<T> implements MethodInterceptor {
         return (T) enhancer.create();
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> List<T> newListInstance(Future<List<T>> delegate, Class<T> clazz) {
 
         CommandHolder<List<T>> interceptor = new CommandHolder<>(delegate);

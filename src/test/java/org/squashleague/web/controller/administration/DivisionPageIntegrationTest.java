@@ -7,7 +7,6 @@ import org.squashleague.domain.league.Division;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,7 +27,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        divisionDAO.delete(division.getId() + 1);
+        divisionDAO.delete(divisionTwo.getId() + 1);
     }
 
     @Test
@@ -43,13 +42,13 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + division.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + divisionOne.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
-        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), division.getName(), division.getLeague().getId());
+        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), divisionOne.getName(), divisionOne.getLeague().getId());
     }
 
     @Test
@@ -67,9 +66,9 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", division.getId().toString())
-                .param("version", division.getVersion().toString())
-                .param("name", division.getName())
+                .param("id", divisionOne.getId().toString())
+                .param("version", divisionOne.getVersion().toString())
+                .param("name", divisionOne.getName())
         )
 
                 // then
@@ -79,7 +78,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 1);
-        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), division.getName(), null);
+        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), divisionOne.getName(), null);
     }
 
     @Test
@@ -87,10 +86,10 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", division.getId().toString())
-                .param("version", division.getVersion().toString())
+                .param("id", divisionOne.getId().toString())
+                .param("version", divisionOne.getVersion().toString())
                 .param("name", "four")
-                .param("league", division.getLeague().getId().toString())
+                .param("league", divisionOne.getLeague().getId().toString())
         )
 
                 // then
@@ -100,7 +99,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 1);
-        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), "four", division.getLeague().getId());
+        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), "four", divisionOne.getLeague().getId());
     }
 
     @Test
@@ -108,8 +107,8 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", division.getId().toString())
-                .param("version", division.getVersion().toString())
+                .param("id", divisionOne.getId().toString())
+                .param("version", divisionOne.getVersion().toString())
                 .param("name", "four")
         )
 
@@ -120,7 +119,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 2);
-        DivisionUpdatePage.hasDivisionFields(division.getId(), division.getVersion(), "four", null);
+        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), "four", null);
     }
 
     @Test

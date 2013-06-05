@@ -14,8 +14,8 @@ import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -34,7 +34,7 @@ public class UserDAOTest {
     @Test
     public void shouldReturnNullIfNotObjectFound() throws Exception {
         // given
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<User> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(User.class))).thenReturn(query);
         when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
@@ -45,7 +45,7 @@ public class UserDAOTest {
     @Test
     public void shouldReturnNullWhenEmptyListReturned() throws Exception {
         // given
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<User> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(User.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(new ArrayList<User>());
 
@@ -57,7 +57,7 @@ public class UserDAOTest {
     public void shouldReturnObjectWhenFound() throws Exception {
         // given
         User user = new User().withName("user name");
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<User> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(User.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(Arrays.asList(user));
 
@@ -71,7 +71,7 @@ public class UserDAOTest {
         Role newRole = new Role()
                 .withName("ROLE_NAME")
                 .withDescription("role description");
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
 
@@ -86,7 +86,7 @@ public class UserDAOTest {
         Role newRole = new Role()
                 .withName("ROLE_NAME")
                 .withDescription("role description");
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(new ArrayList<Role>());
 
@@ -101,7 +101,7 @@ public class UserDAOTest {
         Role newRole = new Role()
                 .withName("ROLE_NAME")
                 .withDescription("role description");
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(Arrays.asList(newRole));
 
@@ -116,7 +116,7 @@ public class UserDAOTest {
         Role newRole = new Role()
                 .withName("ROLE_NAME")
                 .withDescription("role description");
-        TypedQuery query = mock(TypedQuery.class);
+        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
         when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(Arrays.asList(newRole,
                 new Role()

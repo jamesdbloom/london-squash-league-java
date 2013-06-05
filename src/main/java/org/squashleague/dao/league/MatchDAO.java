@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.AbstractJpaDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
-import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
 
 import java.util.ArrayList;

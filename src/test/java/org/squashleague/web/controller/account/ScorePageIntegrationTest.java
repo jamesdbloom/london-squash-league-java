@@ -1,7 +1,6 @@
 package org.squashleague.web.controller.account;
 
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -46,26 +45,5 @@ public class ScorePageIntegrationTest extends WebAndDataIntegrationTest {
         Match actualMatch = matchDAO.findById(matchOne.getId());
         assertEquals(score, actualMatch.getScore());
         assertEquals(new DateTime().toString("dd MMM yyyy"), actualMatch.getScoreEntered().toString("dd MMM yyyy"));
-    }
-
-    @Test
-    @Ignore("can't test until it is possible to use spring security in the integration test")
-    public void shouldNotAllowScoreToBeUpdateByAnotherPlayer() throws Exception {
-        securityUserContext.setCurrentUser(userOne);
-
-        try {
-            // when
-            mockMvc.perform(post("/score")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .param("referer", "/foo")
-                    .param("id", matchThree.getId().toString())
-                    .param("score", "3-2")
-            )
-                    // then
-                    .andExpect(redirectedUrl("/error/403"));
-        } finally {
-            securityUserContext.setCurrentUser(LOGGED_IN_USER);
-        }
-
     }
 }

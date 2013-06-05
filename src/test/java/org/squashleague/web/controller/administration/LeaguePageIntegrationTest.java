@@ -7,7 +7,6 @@ import org.squashleague.domain.league.League;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -30,7 +29,7 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        leagueDAO.delete(leagueTwo.getId() + 1);
+        leagueDAO.delete(leagueThree.getId() + 1);
     }
 
     @Test

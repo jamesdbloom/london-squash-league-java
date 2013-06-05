@@ -16,8 +16,8 @@ import java.util.*;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames={"user_id", "league_id"}),
-    @UniqueConstraint(columnNames={"user_id", "currentDivision_id"})
+        @UniqueConstraint(columnNames = {"user_id", "league_id"}),
+        @UniqueConstraint(columnNames = {"user_id", "currentDivision_id"})
 })
 public class Player extends ModelObject<Player> {
 
@@ -90,7 +90,9 @@ public class Player extends ModelObject<Player> {
     }
 
     public Collection<Match> getMatches() {
-        return matches.values();
+        List<Match> matches = new ArrayList<>(this.matches.values());
+        Collections.sort(matches);
+        return matches;
     }
 
     public Player addMatch(Match match) {

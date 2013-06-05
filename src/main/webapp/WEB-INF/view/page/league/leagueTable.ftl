@@ -32,9 +32,9 @@
                     </tr>
                     <#list round.matches as match>
                         <tr>
-                            <td>${match.playerOne.user.name}</td>
-                            <td>${match.playerTwo.user.name}</td>
-                            <@matchCell match/>
+                            <td id="match_${round_index}_${match_index}_smallScreenPlayerOne">${match.playerOne.user.name}</td>
+                            <td id="match_${round_index}_${match_index}_smallScreenPlayerTwo">${match.playerTwo.user.name}</td>
+                            <@matchCell match true/>
                         </tr>
                     </#list>
                 </tbody>
@@ -44,18 +44,18 @@
                     <tr>
                         <th class="player"></th>
                         <#list round.players as playerColumn>
-                            <th>${playerColumn.user.name}</th>
+                            <th id="match_${round_index}_${playerColumn_index}_largeScreenPlayerOne">${playerColumn.user.name}</th>
                         </#list>
                     </tr>
                     <#list round.players as playerRow>
                         <tr>
-                            <td>${playerRow.user.name}</td>
+                            <td id="match_${round_index}_${playerRow_index}_largeScreenPlayerTwo">${playerRow.user.name}</td>
                             <#list round.players as playerColumn>
                                 <#if playerRow.id != playerColumn.id >
                                     <#if round.getMatch(playerRow.id, playerColumn.id)?? >
-                                        <@matchCell round.getMatch(playerRow.id, playerColumn.id)/>
+                                        <@matchCell round.getMatch(playerRow.id, playerColumn.id) false/>
                                     <#elseif round.getMatch(playerColumn.id, playerRow.id)?? >
-                                        <@matchCell round.getMatch(playerColumn.id, playerRow.id)/>
+                                        <@matchCell round.getMatch(playerColumn.id, playerRow.id) false/>
                                     </#if>
                                 <#else>
                                     <td style="white-space: nowrap">X</td>
@@ -80,8 +80,8 @@
     <#if print?? && print><script>window.print();</script></#if>
 </#macro>
 
-<#macro matchCell match>
-    <td style="white-space: nowrap;<#if match.isMyMatch(user) > color: #000000;</#if>"><#if match.score?? >${match.score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
+<#macro matchCell match smallScreen>
+    <td  id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;<#if match.isMyMatch(user) > color: #000000;</#if>"><#if match.score?? >${match.score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
 </#macro>
 
 
