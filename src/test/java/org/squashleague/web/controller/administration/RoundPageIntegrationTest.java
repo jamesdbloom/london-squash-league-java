@@ -8,6 +8,7 @@ import org.squashleague.domain.league.Round;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -21,6 +22,8 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveRoundWithNoErrors() throws Exception {
+        assertNull(roundDAO.findById(roundTwo.getId() + 1));
+
         // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -247,6 +250,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(10));
         roundDAO.save(round);
+        assertNotNull(roundDAO.findById(round.getId()));
 
         // when
         mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + round.getId())

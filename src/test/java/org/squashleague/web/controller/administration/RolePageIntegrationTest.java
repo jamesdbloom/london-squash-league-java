@@ -6,6 +6,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.account.Role;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,12 +21,16 @@ public class RolePageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveRoleWithNoErrors() throws Exception {
+        assertNull(roleDAO.findById(role.getId() + 1));
+
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
                 .param("description", "test description")
         )
                 .andExpect(redirectedUrl("/administration"));
+
+        roleDAO.delete(role.getId() + 1);
     }
 
     @Test
@@ -152,6 +157,7 @@ public class RolePageIntegrationTest extends WebAndDataIntegrationTest {
                 .withName("new role")
                 .withDescription("new description");
         roleDAO.save(role);
+        assertNotNull(roleDAO.findById(role.getId()));
 
         // when
         mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + role.getId())

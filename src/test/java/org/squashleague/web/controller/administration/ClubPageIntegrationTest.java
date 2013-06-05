@@ -6,6 +6,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.league.Club;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +21,8 @@ public class ClubPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveClubWithNoErrors() throws Exception {
+        assertNull(clubDAO.findById(club.getId() + 1));
+
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
@@ -153,6 +156,7 @@ public class ClubPageIntegrationTest extends WebAndDataIntegrationTest {
                 .withName("to delete")
                 .withAddress("to delete");
         clubDAO.save(club);
+        assertNotNull(clubDAO.findById(club.getId()));
 
         // when
         mockMvc.perform(get("/" + OBJECT_NAME + "/delete/" + club.getId())

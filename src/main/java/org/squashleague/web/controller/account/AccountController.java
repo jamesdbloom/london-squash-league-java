@@ -61,7 +61,7 @@ public class AccountController {
     }
 
     @Transactional
-    @RequestMapping(value = "/account/unregister", params = "player", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/account/unregister", params = "player", method = RequestMethod.GET)
     public String unregisterPlayer(@RequestParam("player") Long id) {
         Player player = playerDAO.findById(id);
         if (player != null) {
@@ -71,7 +71,7 @@ public class AccountController {
     }
 
     @Transactional
-    @RequestMapping(value = "/account/register", params = "player", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/account/register", params = "player", method = RequestMethod.GET)
     public String registerPlayer(@RequestParam("player") Long id) {
         Player player = playerDAO.findById(id);
         if (player != null) {
@@ -81,7 +81,7 @@ public class AccountController {
     }
 
     @Transactional
-    @RequestMapping(value = "/account/register", params = "league", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/account/register", params = "league", method = RequestMethod.POST)
     public String registerLeague(Long league, RedirectAttributes redirectAttributes) {
         if (league == null) {
             redirectAttributes.addFlashAttribute("validationErrors", Arrays.asList(environment.getProperty("validation.player.league")));
