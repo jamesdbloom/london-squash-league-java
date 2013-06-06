@@ -45,12 +45,11 @@
                         </select>
                     </#if>
                 </td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
 </form>
-
 
 <h2 id="users" class="table_title">Users</h2>
 
@@ -97,7 +96,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
@@ -127,7 +126,7 @@
                 <td class="last"></td>
                 <td class="last"><@spring.formInput  path="club.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.club.name")}" class="show_validation"'/></td>
                 <td class="last"><@spring.formInput  path="club.address" attributes='required="required" pattern=".{5,50}" maxlength="50" title="${environment.getProperty("validation.club.address")}" class="show_validation"'/></td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
@@ -167,7 +166,7 @@
                     </#if>
                 </td>
                 <td class="last"><@spring.formInput  path="league.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.league.name")}" class="show_validation"'/></td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
@@ -206,7 +205,7 @@
                     </#if>
                 </td>
                 <td class="last"><@spring.formInput  path="division.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.division.name")}" class="show_validation"'/></td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
@@ -251,7 +250,7 @@
                 <td class="hide_on_small_screen last"></td>
                 <td class="last"><@spring.formInput  path="round.startDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.startDate")}"'/></td>
                 <td class="last"><@spring.formInput  path="round.endDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.endDate")}"'/></td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
@@ -305,7 +304,7 @@
                     <@spring.bind "playerStatuses" />
                     <@spring.formSingleSelectWithEmpty path="player.status" options=playerStatuses emptyValueMessage='${environment.getProperty("message.general.please_select")}' attributes='required="required" title="${environment.getProperty("validation.player.status")}"'/>
                 </td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>
@@ -373,7 +372,7 @@
                 </td>
                 <td class="last"><@spring.formInput  path="match.score" attributes='pattern="${scorePattern}" title="${environment.getProperty("validation.match.score")}" class="show_validation"'/></td>
                 <td class="last"></td>
-                <td class="button_column last"><input type="submit" name="save" value="save"></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
     </table>

@@ -34,7 +34,7 @@ public class RoundController {
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public String create(@Valid Round round, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate());
+        boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate().minusDays(1));
         if (bindingResult.hasErrors() || startDateAfterEndDate) {
             if (startDateAfterEndDate) {
                 bindingResult.addError(new ObjectError("round", environment.getProperty("validation.round.startDateAfterEndDate")));
@@ -56,7 +56,7 @@ public class RoundController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid Round round, BindingResult bindingResult, Model uiModel) {
-        boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate());
+        boolean startDateAfterEndDate = round.getStartDate() != null && round.getEndDate() != null && round.getStartDate().isAfter(round.getEndDate().minusDays(1));
         if (bindingResult.hasErrors() || startDateAfterEndDate) {
             if (startDateAfterEndDate) {
                 bindingResult.addError(new ObjectError("round", environment.getProperty("validation.round.startDateAfterEndDate")));

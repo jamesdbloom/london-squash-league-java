@@ -33,21 +33,21 @@
         <input id="version" name="version" type="hidden" value="${round.version!""}">
 
         <p>
-            <label for="name">Start Date:</label><@spring.formInput path="round.startDate" fieldType="date" attributes='required="required" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
+            <label for="startDate">Start Date:</label><@spring.formInput path="round.startDate" fieldType="date" attributes='required="required" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
             <span class="error_message"></span>
         </p>
 
         <p>
-            <label for="name">End Date:</label><@spring.formInput path="round.endDate" fieldType="date" attributes='required="required" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
+            <label for="endDate">End Date:</label><@spring.formInput path="round.endDate" fieldType="date" attributes='required="required" class="show_validation" autocorrect="off" autocapitalize="off" autocomplete="off"' />
             <span class="error_message"></span>
         </p>
 
         <p>
-            <label for="name">Status:</label><input id="id" type="text" value="${round.status!""}" readonly="readonly">
+            <label for="status">Status:</label><input id="status" type="text" value="${round.status!""}" readonly="readonly">
         </p>
 
         <p class="select">
-            <label class="division" for="division">League:</label>
+            <label class="division" for="division">Division:</label>
             <#if (divisions?size > 0)>
                 <select id="division" name="division" required="required" title="${environment.getProperty("validation.round.division")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>

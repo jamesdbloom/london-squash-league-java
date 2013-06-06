@@ -32,17 +32,6 @@ public class RoleDAOTest {
     private RoleDAO roleDAO = new RoleDAO();
 
     @Test
-    public void shouldReturnNullIfNotObjectFound() throws Exception {
-        // given
-        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
-        when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
-
-        // then
-        assertNull(roleDAO.findByName("name"));
-    }
-
-    @Test
     public void shouldReturnNullWhenEmptyListReturned() throws Exception {
         // given
         @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);

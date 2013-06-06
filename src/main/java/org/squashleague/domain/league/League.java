@@ -26,7 +26,7 @@ public class League extends ModelObject<League> implements Comparable<League> {
     private Club club;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    private List<Division> divisions;
+    private List<Division> divisions = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -68,6 +68,10 @@ public class League extends ModelObject<League> implements Comparable<League> {
             this.divisions.add(division.withLeague(this));
         }
         return this;
+    }
+
+    public void addDivision(Division division) {
+        divisions.add(division);
     }
 
     @Override

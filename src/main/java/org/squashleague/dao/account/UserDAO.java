@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,27 +27,19 @@ public class UserDAO {
     protected EntityManager entityManager;
 
     public User findByEmail(String email) {
-        try {
-            List<User> resultList = entityManager.createQuery("from User as user where user.email = '" + email + "'", User.class).getResultList();
-            if (resultList.size() > 0) {
-                return resultList.get(0);
-            } else {
-                return null;
-            }
-        } catch (EmptyResultDataAccessException e) {
+        List<User> resultList = entityManager.createQuery("from User as user where user.email = '" + email + "'", User.class).getResultList();
+        if (resultList.size() > 0) {
+            return resultList.get(0);
+        } else {
             return null;
         }
     }
 
     @VisibleForTesting
     protected Role findOrCreateRole(Role role) {
-        try {
-            List<Role> resultList = entityManager.createQuery("from Role as role where role.name = '" + role.getName() + "'", Role.class).getResultList();
-            if (resultList.size() > 0) {
-                return resultList.get(0);
-            }
-        } catch (EmptyResultDataAccessException e) {
-            // no existing role found
+        List<Role> resultList = entityManager.createQuery("from Role as role where role.name = '" + role.getName() + "'", Role.class).getResultList();
+        if (resultList.size() > 0) {
+            return resultList.get(0);
         }
         entityManager.persist(role);
         return role;

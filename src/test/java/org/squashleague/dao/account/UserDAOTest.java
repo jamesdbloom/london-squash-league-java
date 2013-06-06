@@ -32,17 +32,6 @@ public class UserDAOTest {
     private UserDAO userDAO = new UserDAO();
 
     @Test
-    public void shouldReturnNullIfNotObjectFound() throws Exception {
-        // given
-        @SuppressWarnings("unchecked") TypedQuery<User> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(any(String.class), eq(User.class))).thenReturn(query);
-        when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
-
-        // then
-        assertNull(userDAO.findByEmail("email"));
-    }
-
-    @Test
     public void shouldReturnNullWhenEmptyListReturned() throws Exception {
         // given
         @SuppressWarnings("unchecked") TypedQuery<User> query = mock(TypedQuery.class);
@@ -63,21 +52,6 @@ public class UserDAOTest {
 
         // then
         assertEquals(user, userDAO.findByEmail("email"));
-    }
-
-    @Test
-    public void shouldReturnPersistRoleWhenItDoesNotExist() throws Exception {
-        // given
-        Role newRole = new Role()
-                .withName("ROLE_NAME")
-                .withDescription("role description");
-        @SuppressWarnings("unchecked") TypedQuery<Role> query = mock(TypedQuery.class);
-        when(entityManager.createQuery(any(String.class), eq(Role.class))).thenReturn(query);
-        when(query.getResultList()).thenThrow(new EmptyResultDataAccessException(0));
-
-        // then
-        assertEquals(newRole, userDAO.findOrCreateRole(newRole));
-        verify(entityManager).persist(newRole);
     }
 
     @Test

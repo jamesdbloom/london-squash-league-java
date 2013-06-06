@@ -2,25 +2,24 @@
 
 <#macro navigation>
 <ul class="tabs">
-    <li><a href="/" title="Home">Home</a></li>
+    <li><a href="/">Home</a></li>
     <@security.authorize access='isAnonymous()'>
-        <li><a href="/login" title="Login">Login</a></li>
-        <li><a href="/register" title="Register">Register</a></li>
-        <li><a href="/retrievePassword" title="Lost Password?">Lost Password?</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+        <li><a href="/retrievePassword">Lost Password?</a></li>
     </@security.authorize>
 
     <@security.authorize access='isAuthenticated()'>
         <@security.authorize access='hasAnyRole("ROLE_ADMIN")'>
-            <li class="hide_on_small_screen "><a href="/print" title="Print League">Print League</a></li>
+            <li class="hide_on_small_screen"><a href="/print">Print League</a></li>
+            <li class="hide_on_small_screen"><a href="/leagueRounds">Create Round</a></li>
+            <li class="hide_on_medium_screen"><a href="/administration">Administration</a></li>
         </@security.authorize>
-        <li><a href="/leagueTable" title="View League">View League</a></li>
-        <li class="hide_on_small_screen "><a href="/ranking" title="Player Ranking">Player Ranking</a></li>
-        <li><a href="/account" title="Account">Account</a></li>
-        <@security.authorize access='hasAnyRole("ROLE_ADMIN")'>
-            <li class="hide_on_medium_screen "><a href="/administration" title="Administration">Administration</a></li>
-        </@security.authorize>
-        <li class="hide_on_small_screen "><a href="/contact_us" title="Contact Us">Contact Us</a></li>
-        <li><a href="/logout" title="Logout">Logout</a></li>
+        <li><a href="/leagueTable">View League</a></li>
+        <li><a href="/ranking">Player Ranking</a></li>
+        <li><a href="/account">Account</a></li>
+        <li class="hide_on_small_screen"><a href="/contact_us">Contact Us</a></li>
+        <li class="hide_on_small_screen"><a href="/logout">Logout</a></li>
     </@security.authorize>
 </ul>
 </#macro>

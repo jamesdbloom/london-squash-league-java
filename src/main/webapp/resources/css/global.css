@@ -932,6 +932,8 @@ table.large_screen {
         border-left: 1px dashed rgba(203, 227, 238, 0.67);
     }
 
+    tbody tr:nth-of-type(odd) td:first-child,
+    tbody tr:nth-of-type(odd) td:last-child,
     tbody tr:nth-of-type(1) th:last-child,
     tbody tr:nth-of-type(1) th:first-child,
     table.action_table tbody th:nth-last-of-type(2),

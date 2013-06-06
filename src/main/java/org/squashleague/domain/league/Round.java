@@ -24,7 +24,6 @@ import java.util.*;
 public class Round extends ModelObject<Round> implements Comparable<Round> {
 
     @NotNull(message = "{validation.round.startDate}")
-    @Future(message = "{validation.round.startDate}")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime startDate;

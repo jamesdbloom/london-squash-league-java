@@ -2,16 +2,15 @@ package org.squashleague.dao.league;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.AbstractJpaDAO;
 import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,20 +26,16 @@ public class PlayerDAO extends AbstractJpaDAO<Player> {
 
     @Transactional
     public List<Player> findAllActiveByUser(User user) {
-        try {
-            return entityManager.createQuery("from Player as player where player.status = " + PlayerStatus.ACTIVE.ordinal() + " and player.user.id = " + user.getId(), Player.class).getResultList();
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return entityManager.createQuery("from Player as player where player.status = " + PlayerStatus.ACTIVE.ordinal() + " and player.user.id = " + user.getId(), Player.class).getResultList();
     }
 
     @Transactional
     public List<Player> findAllByUser(User user) {
-        try {
-            return entityManager.createQuery("from Player as player where player.user.id = " + user.getId(), Player.class).getResultList();
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return entityManager.createQuery("from Player as player where player.user.id = " + user.getId(), Player.class).getResultList();
+    }
+
+    public List<Player> findAllActiveByLeague(League league) {
+        return entityManager.createQuery("from Player as player where player.status = " + PlayerStatus.ACTIVE.ordinal() + " and player.league.id = " + league.getId(), Player.class).getResultList();
     }
 
     @Transactional

@@ -48,6 +48,7 @@
         <security:intercept-url pattern="/score/**" access="isAuthenticated()" requires-channel="https"/>
         <!-- ADMIN ONLY -->
         <security:intercept-url pattern="/print" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
+        <security:intercept-url pattern="/leagueRounds/**" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/administration" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <security:intercept-url pattern="/setupTestData" access="hasAnyRole('ROLE_ADMIN')" requires-channel="https"/>
         <!-- DOMAIN PAGES ONLY -->

@@ -48,3 +48,9 @@
 
 <!-- flow -->
 [#-- @ftlvariable name="referer" type="java.lang.String" --]
+
+<!-- rounds -->
+[#-- @ftlvariable name="leagueId" type="java.lang.Integer" --]
+[#-- @ftlvariable name="roundId" type="java.lang.Integer" --]
+[#-- @ftlvariable name="startDate" type="org.joda.time.DateTime" --]
+[#-- @ftlvariable name="endDate" type="org.joda.time.DateTime" --]
