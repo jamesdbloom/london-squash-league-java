@@ -19,13 +19,13 @@ public class ScorePageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldGetPage() throws Exception {
-        MvcResult result = mockMvc.perform(get("/score/" + matchOne.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult result = mockMvc.perform(get("/score/" + matches.get(0).getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         ScorePage scorePage = new ScorePage(result);
-        scorePage.hasMessage(matchOne);
+        scorePage.hasMessage(matches.get(0));
     }
 
     @Test
@@ -36,13 +36,13 @@ public class ScorePageIntegrationTest extends WebAndDataIntegrationTest {
         mockMvc.perform(post("/score")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("referer", referer)
-                .param("id", matchOne.getId().toString())
+                .param("id", matches.get(0).getId().toString())
                 .param("score", score)
         )
                 // then
                 .andExpect(redirectedUrl(referer));
 
-        Match actualMatch = matchDAO.findById(matchOne.getId());
+        Match actualMatch = matchDAO.findById(matches.get(0).getId());
         assertEquals(score, actualMatch.getScore());
         assertEquals(new DateTime().toString("dd MMM yyyy"), actualMatch.getScoreEntered().toString("dd MMM yyyy"));
     }

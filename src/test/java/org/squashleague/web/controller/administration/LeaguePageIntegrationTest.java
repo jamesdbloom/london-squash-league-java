@@ -21,18 +21,18 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveLeagueWithNoErrors() throws Exception {
-        assertNull(leagueDAO.findById(leagueThree.getId() + 1));
+        assertNull(leagueDAO.findById(leagues.get(leagues.size() - 1).getId() + 1));
 
         // when
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
-                .param("club", club.getId().toString())
+                .param("club", clubs.get(0).getId().toString())
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
 
-        leagueDAO.delete(leagueThree.getId() + 1);
+        leagueDAO.delete(leagues.get(leagues.size() - 1).getId() + 1);
     }
 
     @Test
@@ -50,13 +50,13 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
         // when
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + leagueOne.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + leagues.get(0).getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         // then
-        new LeagueUpdatePage(response).hasLeagueFields(leagueOne.getId(), leagueOne.getVersion(), leagueOne.getName(), leagueOne.getClub().getId());
+        new LeagueUpdatePage(response).hasLeagueFields(leagues.get(0).getId(), leagues.get(0).getVersion(), leagues.get(0).getName(), leagues.get(0).getClub().getId());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
-                .param("club", club.getId().toString())
+                .param("club", clubs.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
     }
@@ -100,10 +100,10 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", leagueOne.getId().toString())
-                .param("version", leagueOne.getVersion().toString())
+                .param("id", leagues.get(0).getId().toString())
+                .param("version", leagues.get(0).getVersion().toString())
                 .param("name", "four")
-                .param("club", leagueOne.getClub().getId().toString())
+                .param("club", leagues.get(0).getClub().getId().toString())
         )
 
                 // then
@@ -113,7 +113,7 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
 
         LeagueUpdatePage leagueUpdatePage = new LeagueUpdatePage(response);
         leagueUpdatePage.hasErrors("league", 1);
-        leagueUpdatePage.hasLeagueFields(leagueOne.getId(), leagueOne.getVersion(), "four", leagueOne.getClub().getId());
+        leagueUpdatePage.hasLeagueFields(leagues.get(0).getId(), leagues.get(0).getVersion(), "four", leagues.get(0).getClub().getId());
     }
 
     @Test
@@ -147,7 +147,7 @@ public class LeaguePageIntegrationTest extends WebAndDataIntegrationTest {
         // given
         League league = new League()
                 .withName("to delete")
-                .withClub(club);
+                .withClub(clubs.get(0));
         leagueDAO.save(league);
         assertNotNull(leagueDAO.findById(league.getId()));
 

@@ -22,17 +22,17 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSavePlayerWithNoErrors() throws Exception {
-        assertNull(playerDAO.findById(playerFour.getId() + 1));
+        assertNull(playerDAO.findById(players.get(players.size() - 1).getId() + 1));
 
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("user", userOne.getId().toString())
-                .param("league", leagueThree.getId().toString())
+                .param("user", users.get(0).getId().toString())
+                .param("league", leagues.get(leagues.size() - 1).getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        playerDAO.delete(playerFour.getId() + 1);
+        playerDAO.delete(players.get(players.size() - 1).getId() + 1);
     }
 
     @Test
@@ -47,22 +47,22 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + playerOne.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + players.get(0).getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
-        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), playerOne.getUser().getId(), playerOne.getCurrentDivision().getId(), playerOne.getLeague().getId(), playerOne.getStatus());
+        playerUpdatePage.hasPlayerFields(players.get(0).getId(), players.get(0).getVersion(), players.get(0).getUser().getId(), players.get(0).getCurrentDivision().getId(), players.get(0).getLeague().getId(), players.get(0).getStatus());
     }
 
     @Test
     public void shouldUpdatePlayerNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("user", userOne.getId().toString())
-                .param("currentDivision", divisionOne.getId().toString())
-                .param("league", divisionOne.getLeague().getId().toString())
+                .param("user", users.get(0).getId().toString())
+                .param("currentDivision", divisions.get(0).getId().toString())
+                .param("league", divisions.get(0).getLeague().getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
@@ -73,9 +73,9 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", playerOne.getId().toString())
-                .param("version", playerOne.getVersion().toString())
-                .param("user", playerOne.getUser().getId().toString())
+                .param("id", players.get(0).getId().toString())
+                .param("version", players.get(0).getVersion().toString())
+                .param("user", players.get(0).getUser().getId().toString())
                 .param("currentDivision", "")
                 .param("league", "")
                 .param("status", PlayerStatus.ACTIVE.name())
@@ -88,7 +88,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 2);
-        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), playerOne.getUser().getId(), null, null, playerOne.getStatus());
+        playerUpdatePage.hasPlayerFields(players.get(0).getId(), players.get(0).getVersion(), players.get(0).getUser().getId(), null, null, players.get(0).getStatus());
     }
 
     @Test
@@ -96,11 +96,11 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", playerOne.getId().toString())
-                .param("version", playerOne.getVersion().toString())
+                .param("id", players.get(0).getId().toString())
+                .param("version", players.get(0).getVersion().toString())
                 .param("user", "")
-                .param("currentDivision", divisionOne.getId().toString())
-                .param("league", divisionOne.getLeague().getId().toString())
+                .param("currentDivision", divisions.get(0).getId().toString())
+                .param("league", divisions.get(0).getLeague().getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
 
@@ -111,7 +111,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 1);
-        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), null, playerOne.getCurrentDivision().getId(), playerOne.getLeague().getId(), playerOne.getStatus());
+        playerUpdatePage.hasPlayerFields(players.get(0).getId(), players.get(0).getVersion(), null, players.get(0).getCurrentDivision().getId(), players.get(0).getLeague().getId(), players.get(0).getStatus());
     }
 
     @Test
@@ -119,11 +119,11 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", playerOne.getId().toString())
-                .param("version", playerOne.getVersion().toString())
-                .param("user", playerOne.getUser().getId().toString())
-                .param("currentDivision", divisionOne.getId().toString())
-                .param("league", divisionOne.getLeague().getId().toString())
+                .param("id", players.get(0).getId().toString())
+                .param("version", players.get(0).getVersion().toString())
+                .param("user", players.get(0).getUser().getId().toString())
+                .param("currentDivision", divisions.get(0).getId().toString())
+                .param("league", divisions.get(0).getLeague().getId().toString())
                 .param("status", "")
         )
 
@@ -134,7 +134,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 1);
-        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), playerOne.getUser().getId(), playerOne.getCurrentDivision().getId(), playerOne.getLeague().getId(), null);
+        playerUpdatePage.hasPlayerFields(players.get(0).getId(), players.get(0).getVersion(), players.get(0).getUser().getId(), players.get(0).getCurrentDivision().getId(), players.get(0).getLeague().getId(), null);
     }
 
     @Test
@@ -142,8 +142,8 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", playerOne.getId().toString())
-                .param("version", playerOne.getVersion().toString())
+                .param("id", players.get(0).getId().toString())
+                .param("version", players.get(0).getVersion().toString())
         )
                 // then
                 .andExpect(status().isOk())
@@ -152,16 +152,16 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
         playerUpdatePage.hasErrors("player", 3);
-        playerUpdatePage.hasPlayerFields(playerOne.getId(), playerOne.getVersion(), null, null, null, null);
+        playerUpdatePage.hasPlayerFields(players.get(0).getId(), players.get(0).getVersion(), null, null, null, null);
     }
 
     @Test
     public void shouldDeletePlayer() throws Exception {
         // given
         Player player = new Player()
-                .withUser(userOne)
+                .withUser(users.get(0))
                 .withStatus(PlayerStatus.ACTIVE)
-                .withLeague(leagueThree);
+                .withLeague(leagues.get(leagues.size() - 1));
         playerDAO.save(player);
         assertNotNull(playerDAO.findById(player.getId()));
 

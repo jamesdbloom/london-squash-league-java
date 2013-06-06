@@ -112,9 +112,9 @@
                     <#list player.matches as match>
                         <tr>
                             <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
-                            <td id="match_${player_index}_${match_index}_date" >${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
-                            <td id="match_${player_index}_${match_index}_playerOne" ><@showContactDetails match.playerOne.user/></td>
-                            <td id="match_${player_index}_${match_index}_playerTwo" ><@showContactDetails match.playerTwo.user/></td>
+                            <td id="match_${player_index}_${match_index}_date">${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                            <td id="match_${player_index}_${match_index}_playerOne"><@showContactDetails match.playerOne.user/></td>
+                            <td id="match_${player_index}_${match_index}_playerTwo"><@showContactDetails match.playerTwo.user/></td>
                             <td id="match_${player_index}_${match_index}_scoreEntered" class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
                             <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
                         </tr>
@@ -122,7 +122,7 @@
                 </tbody>
             </table>
             <div class="standalone_link">
-                <a id="mailto_${player_index}" href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>, </#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
+                <a id="mailto_${player_index}" href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>,</#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
             </div>
             </#if>
         </#list>

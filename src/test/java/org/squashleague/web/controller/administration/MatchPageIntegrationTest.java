@@ -21,17 +21,17 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveMatchWithNoErrors() throws Exception {
-        assertNull(matchDAO.findById(matchFive.getId() + 1));
+        assertNull(matchDAO.findById(matches.get(matches.size() - 1).getId() + 1));
 
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("playerOne", playerOne.getId().toString())
-                .param("playerTwo", playerTwo.getId().toString())
-                .param("round", roundOne.getId().toString())
+                .param("playerOne", players.get(0).getId().toString())
+                .param("playerTwo", players.get(1).getId().toString())
+                .param("round", rounds.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        matchDAO.delete(matchFive.getId() + 1);
+        matchDAO.delete(matches.get(matches.size() - 1).getId() + 1);
     }
 
     @Test
@@ -46,22 +46,22 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + matchOne.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + matches.get(0).getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
-        MatchUpdatePage.hasMatchFields(matchOne.getId(), matchOne.getVersion(), matchOne.getPlayerOne().getId(), matchOne.getPlayerTwo().getId(), matchOne.getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerTwo().getId(), matches.get(0).getRound().getId());
     }
 
     @Test
     public void shouldUpdateMatchNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("playerOne", playerOne.getId().toString())
-                .param("playerTwo", playerTwo.getId().toString())
-                .param("round", roundOne.getId().toString())
+                .param("playerOne", players.get(0).getId().toString())
+                .param("playerTwo", players.get(1).getId().toString())
+                .param("round", rounds.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
     }
@@ -71,10 +71,10 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", matchOne.getId().toString())
-                .param("version", matchOne.getVersion().toString())
-                .param("playerOne", matchOne.getPlayerOne().getId().toString())
-                .param("playerTwo", matchOne.getPlayerTwo().getId().toString())
+                .param("id", matches.get(0).getId().toString())
+                .param("version", matches.get(0).getVersion().toString())
+                .param("playerOne", matches.get(0).getPlayerOne().getId().toString())
+                .param("playerTwo", matches.get(0).getPlayerTwo().getId().toString())
         )
 
                 // then
@@ -84,7 +84,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matchOne.getId(), matchOne.getVersion(), matchOne.getPlayerOne().getId(), matchOne.getPlayerTwo().getId(), null);
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerTwo().getId(), null);
     }
 
     @Test
@@ -92,11 +92,11 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", matchOne.getId().toString())
-                .param("version", matchOne.getVersion().toString())
+                .param("id", matches.get(0).getId().toString())
+                .param("version", matches.get(0).getVersion().toString())
                 .param("playerOne", "")
-                .param("playerTwo", matchOne.getPlayerTwo().getId().toString())
-                .param("round", matchOne.getRound().getId().toString())
+                .param("playerTwo", matches.get(0).getPlayerTwo().getId().toString())
+                .param("round", matches.get(0).getRound().getId().toString())
         )
 
                 // then
@@ -106,7 +106,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matchOne.getId(), matchOne.getVersion(), null, matchOne.getPlayerTwo().getId(), matchOne.getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), null, matches.get(0).getPlayerTwo().getId(), matches.get(0).getRound().getId());
     }
 
     @Test
@@ -114,11 +114,11 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", matchOne.getId().toString())
-                .param("version", matchOne.getVersion().toString())
-                .param("playerOne", matchOne.getPlayerOne().getId().toString())
+                .param("id", matches.get(0).getId().toString())
+                .param("version", matches.get(0).getVersion().toString())
+                .param("playerOne", matches.get(0).getPlayerOne().getId().toString())
                 .param("playerTwo", "")
-                .param("round", matchOne.getRound().getId().toString())
+                .param("round", matches.get(0).getRound().getId().toString())
         )
 
                 // then
@@ -128,7 +128,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matchOne.getId(), matchOne.getVersion(), matchOne.getPlayerOne().getId(), null, matchOne.getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), null, matches.get(0).getRound().getId());
     }
 
     @Test
@@ -136,11 +136,11 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", matchOne.getId().toString())
-                .param("version", matchOne.getVersion().toString())
-                .param("playerOne", matchOne.getPlayerOne().getId().toString())
-                .param("playerTwo", matchOne.getPlayerOne().getId().toString())
-                .param("round", matchOne.getRound().getId().toString())
+                .param("id", matches.get(0).getId().toString())
+                .param("version", matches.get(0).getVersion().toString())
+                .param("playerOne", matches.get(0).getPlayerOne().getId().toString())
+                .param("playerTwo", matches.get(0).getPlayerOne().getId().toString())
+                .param("round", matches.get(0).getRound().getId().toString())
         )
 
                 // then
@@ -150,7 +150,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matchOne.getId(), matchOne.getVersion(), matchOne.getPlayerOne().getId(), matchOne.getPlayerOne().getId(), matchOne.getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerOne().getId(), matches.get(0).getRound().getId());
     }
 
     @Test
@@ -158,8 +158,8 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", matchOne.getId().toString())
-                .param("version", matchOne.getVersion().toString())
+                .param("id", matches.get(0).getId().toString())
+                .param("version", matches.get(0).getVersion().toString())
         )
 
                 // then
@@ -169,16 +169,16 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 3);
-        MatchUpdatePage.hasMatchFields(matchOne.getId(), matchOne.getVersion(), null, null, null);
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), null, null, null);
     }
 
     @Test
     public void shouldDeleteMatch() throws Exception {
         // given
         Match match = new Match()
-                .withPlayerOne(playerOne)
-                .withPlayerTwo(playerTwo)
-                .withRound(roundOne);
+                .withPlayerOne(players.get(0))
+                .withPlayerTwo(players.get(1))
+                .withRound(rounds.get(0));
         matchDAO.save(match);
         assertNotNull(matchDAO.findById(match.getId()));
 

@@ -77,19 +77,19 @@ public class UpdatePasswordPageIntegrationTest extends MockDAOTest {
         // when
         mockMvc.perform(post("/updatePassword")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("email", userOne.getEmail())
-                .param("oneTimeToken", userOne.getOneTimeToken())
-                .param("password", userOne.getPassword())
-                .param("passwordConfirm", userOne.getPassword())
+                .param("email", users.get(0).getEmail())
+                .param("oneTimeToken", users.get(0).getOneTimeToken())
+                .param("password", users.get(0).getPassword())
+                .param("passwordConfirm", users.get(0).getPassword())
         )
                 // then
                 .andExpect(redirectedUrl("/account"));
 
-        User actualUser = userDAO.findByEmail(userOne.getEmail());
-        assertNotEquals(userOne.getPassword(), actualUser.getPassword());
+        User actualUser = userDAO.findByEmail(users.get(0).getEmail());
+        assertNotEquals(users.get(0).getPassword(), actualUser.getPassword());
         assertEquals("", actualUser.getOneTimeToken());
 
-        assertEquals(userOne.getEmail(), securityUserContext.getCurrentUser().getEmail());
+        assertEquals(users.get(0).getEmail(), securityUserContext.getCurrentUser().getEmail());
     }
 
     @Test
@@ -97,10 +97,10 @@ public class UpdatePasswordPageIntegrationTest extends MockDAOTest {
         // when
         MvcResult response = mockMvc.perform(post("/updatePassword")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("email", userOne.getEmail())
-                .param("oneTimeToken", userOne.getOneTimeToken())
+                .param("email", users.get(0).getEmail())
+                .param("oneTimeToken", users.get(0).getOneTimeToken())
                 .param("password", "invalid_format")
-                .param("passwordConfirm", userOne.getPassword())
+                .param("passwordConfirm", users.get(0).getPassword())
         )
                 // then
                 .andExpect(status().isOk())
@@ -116,9 +116,9 @@ public class UpdatePasswordPageIntegrationTest extends MockDAOTest {
         // when
         MvcResult response = mockMvc.perform(post("/updatePassword")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("email", userOne.getEmail())
-                .param("oneTimeToken", userOne.getOneTimeToken())
-                .param("password", userOne.getPassword())
+                .param("email", users.get(0).getEmail())
+                .param("oneTimeToken", users.get(0).getOneTimeToken())
+                .param("password", users.get(0).getPassword())
                 .param("passwordConfirm", "none_matching_password")
         )
                 // then

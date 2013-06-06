@@ -37,9 +37,9 @@ public class AccountPage {
         assertEquals(user.getMobilePrivacy().name(), mobilePrivacyElement.text());
     }
 
-    public void hasPlayers(List<League> unregisteredLeagues, Player... players) {
-        for (int i = 0; i < players.length; i++) {
-            Player player = players[i];
+    public void hasPlayers(List<League> unregisteredLeagues, List<Player> players) {
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
 
             Element clubElement = html.select("#player_" + i + "_club").first();
             assertEquals(player.getLeague().getClub().getName(), clubElement.text());
@@ -64,9 +64,9 @@ public class AccountPage {
         }
     }
 
-    public void hasRounds(Round... rounds) {
-        for (int i = 0; i < rounds.length; i++) {
-            Round round = rounds[i];
+    public void hasRounds(List<Round> rounds) {
+        for (int i = 0; i < rounds.size(); i++) {
+            Round round = rounds.get(i);
 
             Element divisionElement = html.select("#round_" + i + "_division").first();
             assertEquals(round.getDivision().getLeague().getClub().getName() + " – " + round.getDivision().getLeague().getName() + " – " + round.getDivision().getName(), divisionElement.text());
@@ -82,10 +82,10 @@ public class AccountPage {
         }
     }
 
-    public void hasMatches(Match[][] matches, User currentUser) {
+    public void hasMatches(User currentUser, List<Match>... matches) {
         for (int i = 0; i < matches.length; i++) {
-            for (int j = 0; j < matches[i].length; j++) {
-                Match match = matches[i][j];
+            for (int j = 0; j < matches[i].size(); j++) {
+                Match match = matches[i].get(j);
 
                 Element divisionElement = html.select("#match_" + i + "_" + j + "_division").first();
                 assertEquals(match.getRound().getDivision().getLeague().getName() + " – " + match.getRound().getDivision().getName(), divisionElement.text());
@@ -112,7 +112,7 @@ public class AccountPage {
         }
     }
 
-    private String emailList(Match[] matches, User currentUser) {
+    private String emailList(List<Match> matches, User currentUser) {
         List<String> emails = new ArrayList<>();
         for (Match match : matches) {
             User userOne = match.getPlayerOne().getUser();

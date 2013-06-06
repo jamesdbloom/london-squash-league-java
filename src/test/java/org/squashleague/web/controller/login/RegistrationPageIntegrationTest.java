@@ -107,10 +107,10 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", userOne.getName())
-                .param("email", userOne.getEmail())
-                .param("mobile", userOne.getMobile())
-                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
+                .param("name", users.get(0).getName())
+                .param("email", users.get(0).getEmail())
+                .param("mobile", users.get(0).getMobile())
+                .param("mobilePrivacy", users.get(0).getMobilePrivacy().name())
         )
 
                 // then
@@ -120,7 +120,7 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(users.get(0).getName(), users.get(0).getEmail(), users.get(0).getMobile(), users.get(0).getMobilePrivacy());
     }
 
     @Test
@@ -128,10 +128,10 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", userOne.getName())
-                .param("email", userOne.getEmail())
-                .param("mobile", userOne.getMobile())
-                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
+                .param("name", users.get(0).getName())
+                .param("email", users.get(0).getEmail())
+                .param("mobile", users.get(0).getMobile())
+                .param("mobilePrivacy", users.get(0).getMobilePrivacy().name())
         )
 
                 // then
@@ -141,7 +141,7 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(users.get(0).getName(), users.get(0).getEmail(), users.get(0).getMobile(), users.get(0).getMobilePrivacy());
     }
 
     @Test
@@ -149,10 +149,10 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", userOne.getName())
-                .param("email", userOne.getEmail())
-                .param("mobile", userOne.getMobile())
-                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
+                .param("name", users.get(0).getName())
+                .param("email", users.get(0).getEmail())
+                .param("mobile", users.get(0).getMobile())
+                .param("mobilePrivacy", users.get(0).getMobilePrivacy().name())
         )
 
                 // then
@@ -162,7 +162,7 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(users.get(0).getName(), users.get(0).getEmail(), users.get(0).getMobile(), users.get(0).getMobilePrivacy());
     }
 
     @Test
@@ -222,10 +222,10 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
         // when
         MvcResult response = mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", userOne.getName())
-                .param("email", userOne.getEmail())
-                .param("mobile", userOne.getMobile())
-                .param("mobilePrivacy", userOne.getMobilePrivacy().name())
+                .param("name", users.get(0).getName())
+                .param("email", users.get(0).getEmail())
+                .param("mobile", users.get(0).getMobile())
+                .param("mobilePrivacy", users.get(0).getMobilePrivacy().name())
         )
                 // then
                 .andExpect(status().isOk())
@@ -234,7 +234,7 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
 
         RegistrationPage registrationPage = new RegistrationPage(response);
         registrationPage.hasErrors("user", 1);
-        registrationPage.hasRegistrationFields(userOne.getName(), userOne.getEmail(), userOne.getMobile(), userOne.getMobilePrivacy());
+        registrationPage.hasRegistrationFields(users.get(0).getName(), users.get(0).getEmail(), users.get(0).getMobile(), users.get(0).getMobilePrivacy());
     }
 
 }

@@ -104,7 +104,9 @@ public class Player extends ModelObject<Player> {
         List<String> emails = new ArrayList<>();
         String myEmail = user.getEmail();
         if (matches != null && !matches.isEmpty()) {
-            for (Match match : matches.values()) {
+            List<Match> values = new ArrayList<>(matches.values());
+            Collections.sort(values);
+            for (Match match : values) {
                 String playerOneEmail = match.getPlayerOne().user.getEmail();
                 if (!playerOneEmail.equals(myEmail) && !emails.contains(playerOneEmail)) {
                     emails.add(playerOneEmail);

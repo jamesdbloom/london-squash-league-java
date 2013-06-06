@@ -21,16 +21,16 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveDivisionWithNoErrors() throws Exception {
-        assertNull(divisionDAO.findById(divisionTwo.getId() + 1));
+        assertNull(divisionDAO.findById(divisions.get(divisions.size() - 1).getId() + 1));
 
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
-                .param("league", leagueOne.getId().toString())
+                .param("league", leagues.get(2).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        divisionDAO.delete(divisionTwo.getId() + 1);
+        divisionDAO.delete(divisions.get(divisions.size() - 1).getId() + 1);
     }
 
     @Test
@@ -45,13 +45,13 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + divisionOne.getId()).accept(MediaType.TEXT_HTML))
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + divisions.get(0).getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn();
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
-        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), divisionOne.getName(), divisionOne.getLeague().getId());
+        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), divisions.get(0).getName(), divisions.get(0).getLeague().getId());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("name", "test name")
-                .param("league", leagueOne.getId().toString())
+                .param("league", leagues.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
     }
@@ -69,9 +69,9 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", divisionOne.getId().toString())
-                .param("version", divisionOne.getVersion().toString())
-                .param("name", divisionOne.getName())
+                .param("id", divisions.get(0).getId().toString())
+                .param("version", divisions.get(0).getVersion().toString())
+                .param("name", divisions.get(0).getName())
         )
 
                 // then
@@ -81,7 +81,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 1);
-        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), divisionOne.getName(), null);
+        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), divisions.get(0).getName(), null);
     }
 
     @Test
@@ -89,10 +89,10 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", divisionOne.getId().toString())
-                .param("version", divisionOne.getVersion().toString())
+                .param("id", divisions.get(0).getId().toString())
+                .param("version", divisions.get(0).getVersion().toString())
                 .param("name", "four")
-                .param("league", divisionOne.getLeague().getId().toString())
+                .param("league", divisions.get(0).getLeague().getId().toString())
         )
 
                 // then
@@ -102,7 +102,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 1);
-        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), "four", divisionOne.getLeague().getId());
+        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), "four", divisions.get(0).getLeague().getId());
     }
 
     @Test
@@ -110,8 +110,8 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", divisionOne.getId().toString())
-                .param("version", divisionOne.getVersion().toString())
+                .param("id", divisions.get(0).getId().toString())
+                .param("version", divisions.get(0).getVersion().toString())
                 .param("name", "four")
         )
 
@@ -122,7 +122,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 2);
-        DivisionUpdatePage.hasDivisionFields(divisionOne.getId(), divisionOne.getVersion(), "four", null);
+        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), "four", null);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
         // given
         Division division = new Division()
                 .withName("to delete")
-                .withLeague(leagueOne);
+                .withLeague(leagues.get(0));
         divisionDAO.save(division);
         assertNotNull(divisionDAO.findById(division.getId()));
 

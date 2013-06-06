@@ -67,7 +67,7 @@
             </table>
         </#list>
     <#else>
-        <div class="errors_messages"  style="margin: 5em auto;">
+        <div id="no_rounds" class="errors_messages"  style="margin: 5em auto;">
             <p style="margin: 0.25em 0;">You are not currently in any rounds for one of the following reasons:</p>
             <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
                 <li style="margin-left: 2em;">you are not an active player in any leagues,</li>

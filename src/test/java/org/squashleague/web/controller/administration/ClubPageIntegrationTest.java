@@ -21,7 +21,7 @@ public class ClubPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldSaveClubWithNoErrors() throws Exception {
-        assertNull(clubDAO.findById(club.getId() + 1));
+        assertNull(clubDAO.findById(clubs.get(clubs.size() - 1).getId() + 1));
 
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -30,7 +30,7 @@ public class ClubPageIntegrationTest extends WebAndDataIntegrationTest {
         )
                 .andExpect(redirectedUrl("/administration"));
 
-        clubDAO.delete(club.getId() + 1);
+        clubDAO.delete(clubs.get(clubs.size() - 1).getId() + 1);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ClubPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldReturnPopulatedUpdateForm() throws Exception {
-        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + club.getId())
+        MvcResult response = mockMvc.perform(get("/" + OBJECT_NAME + "/update/" + clubs.get(0).getId())
                 .accept(MediaType.TEXT_HTML)
         )
                 .andExpect(status().isOk())
@@ -53,7 +53,7 @@ public class ClubPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andReturn();
 
         ClubUpdatePage clubUpdatePage = new ClubUpdatePage(response);
-        clubUpdatePage.hasClubFields(club.getId(), club.getVersion(), club.getName(), club.getAddress());
+        clubUpdatePage.hasClubFields(clubs.get(0).getId(), clubs.get(0).getVersion(), clubs.get(0).getName(), clubs.get(0).getAddress());
     }
 
     @Test

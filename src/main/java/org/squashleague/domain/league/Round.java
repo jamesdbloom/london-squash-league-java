@@ -113,7 +113,9 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     }
 
     public Collection<Match> getMatches() {
-        return matches.values();
+        List<Match> matches = new ArrayList<>(this.matches.values());
+        Collections.sort(matches);
+        return matches;
     }
 
     public Match getMatch(Long playerOneId, Long playerTwoId) {

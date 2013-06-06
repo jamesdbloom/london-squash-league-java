@@ -3,15 +3,13 @@ package org.squashleague.web.controller.account;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.squashleague.domain.league.Match;
+import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,8 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AccountPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
-    public void shouldDisplayUserDetails() throws Exception {
-        securityUserContext.setCurrentUser(userOne);
+    public void shouldDisplayAccountPage() throws Exception {
+        User user = users.get(0);
+        securityUserContext.setCurrentUser(user);
 
         try {
             MvcResult result = mockMvc.perform(get("/account").accept(MediaType.TEXT_HTML))
@@ -32,10 +31,10 @@ public class AccountPageIntegrationTest extends WebAndDataIntegrationTest {
                     .andReturn();
 
             AccountPage accountPage = new AccountPage(result);
-            accountPage.hasUserDetails(userOne);
-            accountPage.hasPlayers(Arrays.asList(leagueThree), playerOne, playerFour);
-            accountPage.hasRounds(roundOne, roundTwo);
-            accountPage.hasMatches(new Match[][]{{matchOne, matchTwo, matchFive}, {matchFive}}, userOne);
+            accountPage.hasUserDetails(user);
+            accountPage.hasPlayers(leaguesNoPlayers, playersUserBothDivisions);
+            accountPage.hasRounds(rounds);
+            accountPage.hasMatches(user, getUserMatches(addLists(matchesDivisionZeroRoundZero, matchesDivisionZeroRoundOne), user), getUserMatches(addLists(matchesDivisionOneRoundZero, matchesDivisionOneRoundOne), user));
         } finally {
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }
@@ -43,66 +42,66 @@ public class AccountPageIntegrationTest extends WebAndDataIntegrationTest {
 
     @Test
     public void shouldRegisterPlayer() throws Exception {
-        securityUserContext.setCurrentUser(userThree);
+        securityUserContext.setCurrentUser(users.get(0));
 
         try {
-            assertEquals(PlayerStatus.INACTIVE, playerDAO.findById(playerThree.getId()).getStatus());
+            playerDAO.updateStatus(players.get(0), PlayerStatus.INACTIVE);
+            assertEquals(PlayerStatus.INACTIVE, playerDAO.findById(players.get(0).getId()).getStatus());
 
             mockMvc.perform(get("/account/register")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .param("player", playerThree.getId().toString())
+                    .param("player", players.get(0).getId().toString())
             )
                     // then
                     .andExpect(redirectedUrl("/account"));
 
-            assertEquals(PlayerStatus.ACTIVE, playerDAO.findById(playerThree.getId()).getStatus());
+            assertEquals(PlayerStatus.ACTIVE, playerDAO.findById(players.get(0).getId()).getStatus());
         } finally {
-            playerDAO.updateStatus(playerThree, PlayerStatus.INACTIVE);
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }
     }
 
     @Test
     public void shouldUnregisterPlayer() throws Exception {
-        securityUserContext.setCurrentUser(userOne);
+        securityUserContext.setCurrentUser(users.get(0));
 
         try {
-            assertEquals(PlayerStatus.ACTIVE, playerDAO.findById(playerOne.getId()).getStatus());
+            assertEquals(PlayerStatus.ACTIVE, playerDAO.findById(players.get(0).getId()).getStatus());
 
             mockMvc.perform(get("/account/unregister")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .param("player", playerOne.getId().toString())
+                    .param("player", players.get(0).getId().toString())
             )
                     // then
                     .andExpect(redirectedUrl("/account"));
 
-            assertEquals(PlayerStatus.INACTIVE, playerDAO.findById(playerOne.getId()).getStatus());
+            assertEquals(PlayerStatus.INACTIVE, playerDAO.findById(players.get(0).getId()).getStatus());
         } finally {
-            playerDAO.updateStatus(playerOne, PlayerStatus.ACTIVE);
+            playerDAO.updateStatus(players.get(0), PlayerStatus.ACTIVE);
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }
     }
 
     @Test
     public void shouldRegisterLeague() throws Exception {
-        securityUserContext.setCurrentUser(userOne);
+        securityUserContext.setCurrentUser(users.get(users.size() - 1));
 
         try {
-            assertNull(playerDAO.findById(playerFour.getId() + 1));
+            assertNull(playerDAO.findById(players.get(players.size() - 1).getId() + 1));
 
             mockMvc.perform(post("/account/register")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .param("league", leagueThree.getId().toString())
+                    .param("league", leagues.get(2).getId().toString())
             )
                     // then
                     .andExpect(redirectedUrl("/account"));
 
-            Player newPlayer = playerDAO.findById(playerFour.getId() + 1);
+            Player newPlayer = playerDAO.findById(players.get(players.size() - 1).getId() + 1);
             assertEquals(PlayerStatus.ACTIVE, newPlayer.getStatus());
-            assertEquals(leagueThree.getId(), newPlayer.getLeague().getId());
-            assertEquals(userOne.getId(), newPlayer.getUser().getId());
+            assertEquals(leagues.get(leagues.size() - 1).getId(), newPlayer.getLeague().getId());
+            assertEquals(users.get(users.size() - 1).getId(), newPlayer.getUser().getId());
         } finally {
-            playerDAO.delete(playerFour.getId() + 1);
+            playerDAO.delete(players.get(players.size() - 1).getId() + 1);
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }
     }

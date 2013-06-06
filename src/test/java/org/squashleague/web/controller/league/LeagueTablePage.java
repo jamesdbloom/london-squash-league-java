@@ -11,7 +11,10 @@ import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,10 +39,10 @@ public class LeagueTablePage {
         }
     }
 
-    public void hasMatches(Match[][] matches, Player[][] players, User user) {
-        for (int i = 0; i < matches.length; i++) {  // rounds
-            for (int j = 0; j < matches[i].length; j++) {  // matches
-                Match match = matches[i][j];
+    public void hasMatches(List<List<Match>> matches, List<List<Player>> players, User user) {
+        for (int i = 0; i < matches.size(); i++) {  // rounds
+            for (int j = 0; j < matches.get(i).size(); j++) {  // matches
+                Match match = matches.get(i).get(j);
 
                 Element smallScreenScoreElement = html.select("#match_" + match.getPlayerOne().getId() + "_" + match.getPlayerTwo().getId() + "_smallScreenScore").first();
                 assertEquals(scoreValue(match, user), smallScreenScoreElement.text());
@@ -52,8 +55,8 @@ public class LeagueTablePage {
                 assertEquals(match.getPlayerTwo().getUser().getName(), smallScreenPlayerTwoElement.text());
             }
 
-            for (int j = 0; j < players[i].length; j++) { // players
-                Player player = players[i][j];
+            for (int j = 0; j < players.get(i).size(); j++) { // players
+                Player player = players.get(i).get(j);
 
                 Element largeScreenPlayerOneElement = html.select("#match_" + i + "_" + j + "_largeScreenPlayerOne").first();
                 assertEquals(player.getUser().getName(), largeScreenPlayerOneElement.text());
@@ -67,5 +70,10 @@ public class LeagueTablePage {
     private String scoreValue(Match match, User user) {
         boolean userMatch = match.getPlayerOne().getUser().getId().equals(user.getId()) || match.getPlayerTwo().getUser().getId().equals(user.getId());
         return (match.getScore() != null ? match.getScore() : (userMatch ? "enter" : ""));
+    }
+
+    public void hasNoRounds() {
+        assertNotNull(html.select("#no_rounds").first());
+        assertNull(html.select(".table_title").first());
     }
 }
