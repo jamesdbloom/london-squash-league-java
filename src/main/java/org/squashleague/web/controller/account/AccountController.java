@@ -96,7 +96,7 @@ public class AccountController {
         return "redirect:/account";
     }
 
-    @RequestMapping(value = "/score/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/score/{id:[0-9]+}", method = RequestMethod.GET)
     public String matchScoreForm(@PathVariable("id") Long id, @RequestHeader(value = "Referer", required = false) String referer, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
         Match match = matchDAO.findById(id);
         if (match == null) {

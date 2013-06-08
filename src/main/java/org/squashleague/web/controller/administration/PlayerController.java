@@ -52,7 +52,7 @@ public class PlayerController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("player", playerDAO.findById(id));
@@ -71,7 +71,7 @@ public class PlayerController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id:[0-9]+}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         playerDAO.delete(id);
         return "redirect:/administration";

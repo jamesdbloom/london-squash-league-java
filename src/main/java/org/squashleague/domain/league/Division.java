@@ -26,7 +26,7 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
     private League league;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "division_id")
-    private List<Round> rounds = new ArrayList<>();
+    private List<Round> rounds;
 
     public String getName() {
         return name;
@@ -70,13 +70,10 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
         return this;
     }
 
-    public void addRound(Round round) {
-        rounds.add(round);
-    }
-
     @Override
     public int compareTo(Division other) {
-        return (league.compareTo(other.league) == 0 ? name.compareTo(other.name) : league.compareTo(other.league));
+        int leagueComparison = league.compareTo(other.league);
+        return (leagueComparison == 0 ? name.compareTo(other.name) : leagueComparison);
     }
 
     public Division merge(Division division) {

@@ -34,7 +34,7 @@ public class RoleController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("role", roleDAO.findById(id));
@@ -53,7 +53,7 @@ public class RoleController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id:[0-9]+}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         roleDAO.delete(id);
         return "redirect:/administration";

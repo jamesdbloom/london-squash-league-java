@@ -185,7 +185,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
     }
 
     @Test
-    public void shouldGetPageWithPastDatesError() throws Exception {
+    public void shouldGetPageWithPastEndDateError() throws Exception {
         // given
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().minusDays(3))
@@ -210,7 +210,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andReturn();
 
         RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
-        RoundUpdatePage.hasErrors("round", 2);
+        RoundUpdatePage.hasErrors("round", 1);
         RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
     }
 

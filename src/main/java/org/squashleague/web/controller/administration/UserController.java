@@ -59,7 +59,7 @@ public class UserController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, @RequestHeader(value = "Referer", required = false) String referer, Model uiModel) {
         setupModel(uiModel);
         uiModel.addAttribute("user", userDAO.findById(id));
@@ -92,7 +92,7 @@ public class UserController {
         return "redirect:" + requestParser.parseRelativeURI(referer, "/account");
     }
 
-    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id:[0-9]+}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         userDAO.delete(id);
         return "redirect:/administration";

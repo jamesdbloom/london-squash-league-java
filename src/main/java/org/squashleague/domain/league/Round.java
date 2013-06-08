@@ -133,7 +133,8 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
 
     @Override
     public int compareTo(Round other) {
-        return (division.compareTo(other.division) == 0 ? startDate.compareTo(other.startDate) : division.compareTo(other.division));
+        int divisionComparison = division.compareTo(other.division);
+        return (divisionComparison == 0 ? startDate.compareTo(other.startDate) : divisionComparison);
     }
 
     public Round merge(Round round) {

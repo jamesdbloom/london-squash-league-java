@@ -34,7 +34,7 @@ public class ClubController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "update/{id:[0-9]+}", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("club", clubDAO.findById(id));
@@ -53,7 +53,7 @@ public class ClubController {
         return "redirect:/administration";
     }
 
-    @RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "delete/{id:[0-9]+}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id) {
         clubDAO.delete(id);
         return "redirect:/administration";
