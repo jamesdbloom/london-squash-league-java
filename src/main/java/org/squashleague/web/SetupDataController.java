@@ -54,11 +54,11 @@ public class SetupDataController {
         for (Player player : playerDAO.findAll()) {
             playerDAO.delete(player);
         }
-        for (Round round : roundDAO.findAll()) {
-            roundDAO.delete(round);
-        }
         for (Division division : divisionDAO.findAll()) {
             divisionDAO.delete(division);
+        }
+        for (Round round : roundDAO.findAll()) {
+            roundDAO.delete(round);
         }
         for (Division division : divisionDAO.findAll()) {
             divisionDAO.delete(division);
@@ -99,9 +99,8 @@ public class SetupDataController {
                             .withEndDate(new DateTime().plusDays(5 + r + l + c))
                             .withLeague(league);
                     roundDAO.save(round);
-                    List<Player> players = new ArrayList<>();
-                    List<User> users = new ArrayList<>();
                     for (int d = 0; d < count + 1; d++) {
+                        List<Player> players = new ArrayList<>();
                         Division division = new Division()
                                 .withName("Division name " + d + "-" + l + "-" + c)
                                 .withRound(round);
@@ -110,27 +109,25 @@ public class SetupDataController {
                         for (int p = 0; p < pmax; p++) {
                             if (p > (pmax / dmax) * r && p < (pmax / dmax) * (r + 1)) {
                                 User user = new User()
-                                        .withEmail(p + "_" + r + "_" + l + "_" + c + "@email.com")
-                                        .withName(p + "_" + r + "_" + l + "_" + c + " name")
+                                        .withEmail(p + "_" + d + "_" + r + "_" + l + "_" + c + "@email.com")
+                                        .withName(p + "_" + d + "_" + r + "_" + l + "_" + c + " name")
                                         .withMobilePrivacy(MobilePrivacy.SECRET)
                                         .withRoles(Role.ROLE_USER);
-                                users.add(user);
-                                players.add(new Player()
+                                userDAO.save(user);
+                                Player player = new Player()
                                         .withCurrentDivision(division)
                                         .withStatus(PlayerStatus.ACTIVE)
-                                        .withUser(user));
+                                        .withUser(user);
+                                players.add(player);
+                                playerDAO.save(player);
                             }
                         }
-                        if (r == 0) {
-                            players.add(new Player()
+                        if (r == 0 && d == 0) {
+                            Player player = new Player()
                                     .withCurrentDivision(division)
                                     .withStatus(PlayerStatus.ACTIVE)
-                                    .withUser(userDAO.findById(securityUserContext.getCurrentUser().getId())));
-                        }
-                        for (User user : users) {
-                            userDAO.save(user);
-                        }
-                        for (Player player : players) {
+                                    .withUser(userDAO.findById(securityUserContext.getCurrentUser().getId()));
+                            players.add(player);
                             playerDAO.save(player);
                         }
                         for (Match match : createMatches(players, division)) {
