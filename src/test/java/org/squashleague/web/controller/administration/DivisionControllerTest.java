@@ -11,9 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.DivisionDAO;
-import org.squashleague.dao.league.LeagueDAO;
+import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.League;
+import org.squashleague.domain.league.Round;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +28,11 @@ import static org.mockito.Mockito.*;
 public class DivisionControllerTest {
 
     private final List<Division> divisions = new ArrayList<>();
-    private final List<League> leagues = new ArrayList<>();
-
+    private final List<Round> rounds = new ArrayList<>();
     @Mock
     private DivisionDAO divisionDAO;
     @Mock
-    private LeagueDAO leagueDAO;
+    private RoundDAO roundDAO;
     @Mock
     private Environment environment;
     @InjectMocks
@@ -42,7 +41,7 @@ public class DivisionControllerTest {
     @Before
     public void setupFixture() {
         when(divisionDAO.findAll()).thenReturn(divisions);
-        when(leagueDAO.findAll()).thenReturn(leagues);
+        when(roundDAO.findAll()).thenReturn(rounds);
     }
 
     @Test
@@ -90,7 +89,7 @@ public class DivisionControllerTest {
 
         // then
         verify(uiModel).addAttribute("division", division);
-        verify(uiModel).addAttribute("leagues", leagues);
+        verify(uiModel).addAttribute("rounds", rounds);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/division/update", page);
     }
@@ -124,7 +123,7 @@ public class DivisionControllerTest {
         // then
         verify(uiModel).addAttribute("bindingResult", bindingResult);
         verify(uiModel).addAttribute("division", division);
-        verify(uiModel).addAttribute("leagues", leagues);
+        verify(uiModel).addAttribute("rounds", rounds);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/division/update", page);
     }

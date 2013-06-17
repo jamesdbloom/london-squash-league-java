@@ -27,7 +27,7 @@ public class MatchUpdatePage {
         assertEquals(errorCount, errorMessages.size());
     }
 
-    public void hasMatchFields(Long id, Integer version, Long playerOneId, Long playerTwoId, Long roundId) {
+    public void hasMatchFields(Long id, Integer version, Long playerOneId, Long playerTwoId, Long divisionId) {
         Element idElement = html.select("#id").first();
         assertNotNull(idElement);
         assertEquals(String.valueOf(id), idElement.val());
@@ -52,10 +52,10 @@ public class MatchUpdatePage {
             assertNull(playerTwoInputElement);
         }
 
-        Element roundInputElement = html.select("#round [selected=selected]").first();
-        if (roundId != null) {
+        Element roundInputElement = html.select("#division [selected=selected]").first();
+        if (divisionId != null) {
             assertNotNull(roundInputElement);
-            assertEquals(roundId.toString(), roundInputElement.val());
+            assertEquals(divisionId.toString(), roundInputElement.val());
         } else {
             assertNull(roundInputElement);
         }

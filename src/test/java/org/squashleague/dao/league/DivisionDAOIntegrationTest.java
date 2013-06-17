@@ -9,17 +9,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.squashleague.configuration.RootConfiguration;
-import org.squashleague.domain.league.Club;
-import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.League;
-import org.squashleague.domain.league.Round;
+import org.squashleague.dao.account.RoleDAO;
+import org.squashleague.dao.account.UserDAO;
+import org.squashleague.domain.account.MobilePrivacy;
+import org.squashleague.domain.account.Role;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -32,6 +32,13 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     @Resource
     private DivisionDAO divisionDAO;
     @Resource
+    private RoleDAO roleDAO;
+    private Role role;
+    @Resource
+    private UserDAO userDAO;
+    private User userOne;
+    private User userTwo;
+    @Resource
     private ClubDAO clubDAO;
     private Club club;
     @Resource
@@ -39,9 +46,32 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     private League league;
     @Resource
     private RoundDAO roundDAO;
+    private Round round;
+    @Resource
+    private MatchDAO matchDAO;
+    @Resource
+    private PlayerDAO playerDAO;
+    private Player playerOne;
+    private Player playerTwo;
 
     @Before
     public void setupDatabase() {
+        role = new Role()
+                .withName("role name")
+                .withDescription("role description");
+        roleDAO.save(role);
+        userOne = new User()
+                .withEmail("one@email.com")
+                .withName("playerOne name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(role);
+        userTwo = new User()
+                .withEmail("two@email.com")
+                .withName("playerTwo name")
+                .withMobilePrivacy(MobilePrivacy.SECRET)
+                .withRoles(role);
+        userDAO.save(userOne);
+        userDAO.save(userTwo);
         club = new Club()
                 .withName("club name")
                 .withAddress("address");
@@ -50,12 +80,34 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
+        round = new Round()
+                .withLeague(league)
+                .withStartDate(new DateTime().minusDays(1))
+                .withEndDate(new DateTime().plusDays(1));
+        roundDAO.save(round);
+
+        playerOne = new Player()
+                .withLeague(league)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userOne);
+        playerTwo = new Player()
+                .withLeague(league)
+                .withStatus(PlayerStatus.ACTIVE)
+                .withUser(userTwo);
+        playerDAO.save(playerOne);
+        playerDAO.save(playerTwo);
     }
 
     @After
     public void teardownDatabase() {
+        playerDAO.delete(playerOne);
+        playerDAO.delete(playerTwo);
+        roundDAO.delete(round);
         leagueDAO.delete(league);
         clubDAO.delete(club);
+        userDAO.delete(userOne);
+        userDAO.delete(userTwo);
+        roleDAO.delete(role);
     }
 
     @Test
@@ -63,7 +115,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division expectedDivision = new Division()
                 .withName("division name")
-                .withLeague(league);
+                .withRound(round);
 
         // when
         divisionDAO.save(expectedDivision);
@@ -82,7 +134,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division expectedDivision = new Division()
                 .withName("division name")
-                .withLeague(league);
+                .withRound(round);
         divisionDAO.save(expectedDivision);
         expectedDivision
                 .withName("new division name");
@@ -104,11 +156,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division expectedDivision = new Division()
                 .withName("division name")
-                .withLeague(league)
-                .withRounds(
-                        new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)),
-                        new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2))
-                );
+                .withRound(round);
 
         // when
         divisionDAO.save(expectedDivision);
@@ -118,9 +166,6 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         try {
             assertEquals(expectedDivision, actualDivision);
         } finally {
-            for (Round round : expectedDivision.getRounds()) {
-                roundDAO.delete(round);
-            }
             divisionDAO.delete(expectedDivision);
         }
     }
@@ -130,18 +175,14 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division expectedDivision = new Division()
                 .withName("division name")
-                .withLeague(league)
-                .withRounds(
-                        new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)),
-                        new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2))
-                );
+                .withRound(round);
 
         // when
         divisionDAO.save(expectedDivision);
         Division updatedDivision =
                 expectedDivision.merge(new Division()
                         .withName("new division name")
-                        .withLeague(league));
+                        .withRound(round));
         divisionDAO.update(updatedDivision);
 
         // then
@@ -150,9 +191,6 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
             assertEquals(updatedDivision.incrementVersion(), actualDivision);
             assertEquals("new division name", actualDivision.getName());
         } finally {
-            for (Round round : expectedDivision.getRounds()) {
-                roundDAO.delete(round);
-            }
             divisionDAO.delete(expectedDivision);
         }
     }
@@ -162,10 +200,10 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division divisionOne = new Division()
                 .withName("divisionOne name")
-                .withLeague(league);
+                .withRound(round);
         Division divisionTwo = new Division()
                 .withName("divisionTwo name")
-                .withLeague(league);
+                .withRound(round);
 
         // when
         divisionDAO.save(divisionOne);
@@ -186,7 +224,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division expectedDivision = new Division()
                 .withName("division name")
-                .withLeague(league);
+                .withRound(round);
         divisionDAO.save(expectedDivision);
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
 
@@ -202,7 +240,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         // given
         Division expectedDivision = new Division()
                 .withName("division name")
-                .withLeague(league);
+                .withRound(round);
         divisionDAO.save(expectedDivision);
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
 

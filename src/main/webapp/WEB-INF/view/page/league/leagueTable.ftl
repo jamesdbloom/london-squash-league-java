@@ -14,15 +14,15 @@
         <div class="standalone_link"><#if showAllDivisions?? && !showAllDivisions><a href="/leagueTable?showAllDivisions=true">View Leagues</a><#else><a href="/leagueTable">View Divisions</a></#if></div>
         <div class="standalone_link"><a href="/account#matches">Contact your opponents</a></div>
     </#if>
-    <#if (user.rounds?size > 0)>
-        <#assign dateHash = user.rounds[0].startDate.hashCode() + "_" + user.rounds[0].endDate.hashCode() />
-        <h2 class="table_title">(${user.rounds[0].startDate.toDate()?string("dd MMM yyyy")} &ndash; ${user.rounds[0].endDate.toDate()?string("dd MMM yyyy")})</h2>
-        <#list user.rounds as round>
-            <#if dateHash != round.startDate.hashCode() + "_" + round.endDate.hashCode()>
-                <#assign dateHash = round.startDate.hashCode() + "_" + round.endDate.hashCode() />
-                <h2 class="table_title page_break" style="margin-top: 2em;">(${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</h2>
+    <#if (user.divisions?size > 0)>
+        <#assign dateHash = user.divisions[0].round.startDate.hashCode() + "_" + user.divisions[0].round.endDate.hashCode() />
+        <h2 class="table_title">(${user.divisions[0].round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${user.divisions[0].round.endDate.toDate()?string("dd MMM yyyy")})</h2>
+        <#list user.divisions as division>
+            <#if dateHash != division.round.startDate.hashCode() + "_" + division.round.endDate.hashCode()>
+                <#assign dateHash = division.round.startDate.hashCode() + "_" + division.round.endDate.hashCode() />
+                <h2 class="table_title page_break" style="margin-top: 2em;">(${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</h2>
             </#if>
-            <h2 class="table_subtitle">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</h2>
+            <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.round.league.name}</h2>
             <table class="small_screen">
                 <tbody>
                     <tr>
@@ -30,10 +30,10 @@
                         <th>Player Two</th>
                         <th>Score</th>
                     </tr>
-                    <#list round.matches as match>
+                    <#list division.matches as match>
                         <tr>
-                            <td id="match_${round_index}_${match_index}_smallScreenPlayerOne">${match.playerOne.user.name}</td>
-                            <td id="match_${round_index}_${match_index}_smallScreenPlayerTwo">${match.playerTwo.user.name}</td>
+                            <td id="match_${division_index}_${match_index}_smallScreenPlayerOne">${match.playerOne.user.name}</td>
+                            <td id="match_${division_index}_${match_index}_smallScreenPlayerTwo">${match.playerTwo.user.name}</td>
                             <@matchCell match true/>
                         </tr>
                     </#list>
@@ -43,19 +43,19 @@
                 <tbody>
                     <tr>
                         <th class="player"></th>
-                        <#list round.players as playerColumn>
-                            <th id="match_${round_index}_${playerColumn_index}_largeScreenPlayerOne">${playerColumn.user.name}</th>
+                        <#list division.players as playerColumn>
+                            <th id="match_${division_index}_${playerColumn_index}_largeScreenPlayerOne">${playerColumn.user.name}</th>
                         </#list>
                     </tr>
-                    <#list round.players as playerRow>
+                    <#list division.players as playerRow>
                         <tr>
-                            <td id="match_${round_index}_${playerRow_index}_largeScreenPlayerTwo">${playerRow.user.name}</td>
-                            <#list round.players as playerColumn>
+                            <td id="match_${division_index}_${playerRow_index}_largeScreenPlayerTwo">${playerRow.user.name}</td>
+                            <#list division.players as playerColumn>
                                 <#if playerRow.id != playerColumn.id >
-                                    <#if round.getMatch(playerRow.id, playerColumn.id)?? >
-                                        <@matchCell round.getMatch(playerRow.id, playerColumn.id) false/>
-                                    <#elseif round.getMatch(playerColumn.id, playerRow.id)?? >
-                                        <@matchCell round.getMatch(playerColumn.id, playerRow.id) false/>
+                                    <#if division.getMatch(playerRow.id, playerColumn.id)?? >
+                                        <@matchCell division.getMatch(playerRow.id, playerColumn.id) false/>
+                                    <#elseif division.getMatch(playerColumn.id, playerRow.id)?? >
+                                        <@matchCell division.getMatch(playerColumn.id, playerRow.id) false/>
                                     </#if>
                                 <#else>
                                     <td style="white-space: nowrap">X</td>

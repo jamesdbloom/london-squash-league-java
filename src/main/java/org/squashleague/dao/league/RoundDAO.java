@@ -26,10 +26,10 @@ public class RoundDAO extends AbstractJpaDAO<Round> {
     public List<Round> findAllForUser(User user) {
         return entityManager.createQuery("" +
                 "from Round round " +
-                "where round.division.id IN (" +
-                "    select division.id from Division division " +
-                "    where division.id IN (" +
-                "        select player.currentDivision.id from Player player " +
+                "where round.league.id IN (" +
+                "    select league.id from League league " +
+                "    where league.id IN (" +
+                "        select player.league.id from Player player " +
                 "        where player.user.id = " + user.getId() + " and player.status = " + PlayerStatus.ACTIVE.ordinal() +
                 "    )" +
                 ")", Round.class).getResultList();

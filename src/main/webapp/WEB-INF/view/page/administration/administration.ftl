@@ -172,6 +172,51 @@
     </table>
 </form>
 
+<h2 id="rounds" class="table_title">Rounds</h2>
+
+<form method="post" action="/round/save">
+    <@errors.print_binding_errors "round"/>
+    <table class="action_table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <th><label for="division">League</label></th>
+                <th class="hide_on_small_screen">Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th class="button_column last"></th>
+            </tr>
+            <#list rounds as round>
+                <tr>
+                    <td>${round.id}</td>
+                    <td>${round.league.club.name} &ndash; ${round.league.name}</td>
+                    <td class="hide_on_small_screen">${round.status}</td>
+                    <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                    <td class="button_column last"><a class="button" href="/round/delete/${round.id}">Delete</a><a class="button" href="/round/update/${round.id}">Modify</a></td>
+                </tr>
+            </#list>
+            <tr class="create_row" id="create_round">
+                <td class="last"></td>
+                <td class="last">
+                    <#if (leagues?size > 0)>
+                        <select id="league" name="league" required="required" title="${environment.getProperty("validation.division.league")}">
+                            <option value="">${environment.getProperty("message.general.please_select")}</option>
+                            <#list leagues as league>
+                                <option value="${league.id}" <#if round.league?? && league.id == round.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
+                            </#list>
+                        </select>
+                    </#if>
+                </td>
+                <td class="hide_on_small_screen last"></td>
+                <td class="last"><@spring.formInput  path="round.startDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.startDate")}"'/></td>
+                <td class="last"><@spring.formInput  path="round.endDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.endDate")}"'/></td>
+                <td class="button_column last"><input type="submit" value="save"></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
 <h2 id="divisions" class="table_title">Divisions</h2>
 
 <form method="post" action="/division/save">
@@ -187,7 +232,7 @@
             <#list divisions as division>
                 <tr>
                     <td>${division.id}</td>
-                    <td>${division.league.club.name} &ndash; ${division.league.name}</td>
+                    <td>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; (${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</td>
                     <td>${division.name}</td>
                     <td class="button_column last"><a class="button" href="/division/delete/${division.id}">Delete</a><a class="button" href="/division/update/${division.id}">Modify</a></td>
                 </tr>
@@ -195,61 +240,16 @@
             <tr class="create_row" id="create_division">
                 <td class="last"></td>
                 <td class="last">
-                    <#if (leagues?size > 0)>
-                        <select id="league" name="league" required="required" title="${environment.getProperty("validation.division.league")}">
+                    <#if (rounds?size > 0)>
+                        <select id="round" name="round" required="required" title="${environment.getProperty("validation.round.division")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
-                            <#list leagues as league>
-                                <option value="${league.id}" <#if division.league?? && league.id == division.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
+                            <#list rounds as round>
+                                <option value="${round.id}" <#if division.round?? && round.id == division.round.id>selected="selected"</#if>>${round.league.club.name} &ndash; ${round.league.name} &ndash; (${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</option>
                             </#list>
                         </select>
                     </#if>
                 </td>
                 <td class="last"><@spring.formInput  path="division.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.division.name")}" class="show_validation"'/></td>
-                <td class="button_column last"><input type="submit" value="save"></td>
-            </tr>
-        </tbody>
-    </table>
-</form>
-
-<h2 id="rounds" class="table_title">Rounds</h2>
-
-<form method="post" action="/round/save">
-    <@errors.print_binding_errors "round"/>
-    <table class="action_table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <th><label for="division">Division</label></th>
-                <th class="hide_on_small_screen">Status</th>
-                <th>Start</th>
-                <th>End</th>
-                <th class="button_column last"></th>
-            </tr>
-            <#list rounds as round>
-                <tr>
-                    <td>${round.id}</td>
-                    <td>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
-                    <td class="hide_on_small_screen">${round.status}</td>
-                    <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
-                    <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
-                    <td class="button_column last"><a class="button" href="/round/delete/${round.id}">Delete</a><a class="button" href="/round/update/${round.id}">Modify</a></td>
-                </tr>
-            </#list>
-            <tr class="create_row" id="create_round">
-                <td class="last"></td>
-                <td class="last">
-                    <#if (divisions?size > 0)>
-                        <select id="division" name="division" required="required" title="${environment.getProperty("validation.round.division")}">
-                            <option value="">${environment.getProperty("message.general.please_select")}</option>
-                            <#list divisions as division>
-                                <option value="${division.id}" <#if round.division?? && division.id == round.division.id>selected="selected"</#if>>${division.league.club.name} &ndash; ${division.league.name} &ndash; ${division.name}</option>
-                            </#list>
-                        </select>
-                    </#if>
-                </td>
-                <td class="hide_on_small_screen last"></td>
-                <td class="last"><@spring.formInput  path="round.startDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.startDate")}"'/></td>
-                <td class="last"><@spring.formInput  path="round.endDate" fieldType="date" attributes='required="required" title="${environment.getProperty("validation.round.endDate")}"'/></td>
                 <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
@@ -285,7 +285,7 @@
                         <select id="currentDivision" name="currentDivision" required="required" title="${environment.getProperty("validation.player.currentDivision")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
                             <#list divisions as division>
-                                <option value="${division.id}" <#if player.currentDivision?? && division.id == player.currentDivision.id>selected="selected"</#if>>${division.league.club.name} &ndash; ${division.league.name} &ndash; ${division.name}</option>
+                                <option value="${division.id}" <#if player.currentDivision?? && division.id == player.currentDivision.id>selected="selected"</#if>>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.name}</option>
                             </#list>
                         </select>
                     </#if>
@@ -330,7 +330,7 @@
             <#list matches as match>
                 <tr>
                     <td>${match.id}</td>
-                    <td>${match.round.division.league.club.name} &ndash; ${match.round.division.league.name} &ndash; ${match.round.division.name} &ndash; (${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")})</td>
+                    <td>${match.division.round.league.club.name} &ndash; ${match.division.round.league.name} &ndash; ${match.division.name} &ndash; (${match.division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.division.round.endDate.toDate()?string("dd MMM yyyy")})</td>
                     <td>${match.playerOne.user.name}</td>
                     <td>${match.playerTwo.user.name}</td>
                     <td>${match.score!""}</td>
@@ -341,11 +341,11 @@
             <tr class="create_row" id="create_match">
                 <td class="last"></td>
                 <td class="last">
-                    <#if (rounds?size > 0)>
-                        <select id="round" name="round" required="required" title="${environment.getProperty("validation.match.round")}">
+                    <#if (divisions?size > 0)>
+                        <select id="division" name="division" required="required" title="${environment.getProperty("validation.match.round")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
-                            <#list rounds as round>
-                                <option value="${round.id}" <#if match.round?? && round.id == match.round.id>selected="selected"</#if>>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name} &ndash; (${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</option>
+                            <#list divisions as division>
+                                <option value="${division.id}" <#if match.division?? && division.id == match.division.id>selected="selected"</#if>>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; (${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</option>
                             </#list>
                         </select>
                     </#if>

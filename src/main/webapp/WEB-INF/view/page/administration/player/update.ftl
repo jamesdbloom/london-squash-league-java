@@ -54,7 +54,7 @@
                 <select id="currentDivision" name="currentDivision" required="required" title="${environment.getProperty("validation.player.currentDivision")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>
                     <#list divisions as division>
-                        <option value="${division.id}" <#if (player.currentDivision?? && player.currentDivision.id == division.id)>selected="selected"</#if>>${division.league.club.name} &ndash; ${division.league.name} &ndash; ${division.name}</option>
+                        <option value="${division.id}" <#if (player.currentDivision?? && player.currentDivision.id == division.id)>selected="selected"</#if>>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.name}</option>
                     </#list>
                 </select> <span class="error_message"></span>
             </#if>

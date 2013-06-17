@@ -14,7 +14,7 @@
         content: "${environment.getProperty("validation.division.name")}";
     }
 
-    #league:invalid.filled + .error_message::after {
+    #round:invalid.filled + .error_message::after {
         content: "${environment.getProperty("validation.division.league")}";
     }
 </style>
@@ -34,12 +34,12 @@
         </p>
 
         <p class="select">
-            <label class="league" for="league">League:</label>
-            <#if (leagues?size > 0)>
-                <select id="league" name="league" required="required" title="${environment.getProperty("validation.division.league")}">
+            <label class="round" for="round">Round:</label>
+            <#if (rounds?size > 0)>
+                <select id="round" name="round" required="required" title="${environment.getProperty("validation.division.league")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>
-                    <#list leagues as league>
-                        <option value="${league.id}" <#if (division.league?? && division.league.id == league.id)>selected="selected"</#if>>${league.name}</option>
+                    <#list rounds as round>
+                        <option value="${round.id}" <#if (division.round?? && division.round.id == round.id)>selected="selected"</#if>>${round.league.club.name} &ndash; ${round.league.name} &ndash; (${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</option>
                     </#list>
                 </select> <span class="error_message"></span>
             </#if>
@@ -54,7 +54,7 @@
     var errors = errors || {},
             validation = {
                 filled: ['name'],
-                changed: ['league'],
+                changed: ['round'],
                 onload: errors && errors.division
             };
 </script>

@@ -34,13 +34,8 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     private DateTime endDate;
     @NotNull(message = "{validation.round.division}")
     @ManyToOne
-    private Division division;
-    @Transient
-    private transient Map<Long, Match> matches = new HashMap<>();
-    @Transient
-    private transient Map<Long, Map<Long, Match>> matchGrid = new HashMap<>();
-    @Transient
-    private transient Map<Long, Player> players = new LinkedHashMap<>();
+    private League league;
+
 
     public DateTime getStartDate() {
         return startDate;
@@ -85,55 +80,22 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
         return status;
     }
 
-    public Division getDivision() {
-        return division;
+    public League getLeague() {
+        return league;
     }
 
-    public void setDivision(Division division) {
-        this.division = division;
+    public void setLeague(League division) {
+        this.league = division;
     }
 
-    public Round withDivision(Division division) {
-        setDivision(division);
+    public Round withLeague(League division) {
+        setLeague(division);
         return this;
-    }
-
-    public Round addMatch(Match match) {
-        Player playerOne = match.getPlayerOne();
-        Player playerTwo = match.getPlayerTwo();
-        matches.put(match.getId(), match);
-        players.put(playerOne.getId(), playerOne);
-        players.put(playerTwo.getId(), playerTwo);
-        if (!matchGrid.containsKey(playerOne.getId())) {
-            matchGrid.put(playerOne.getId(), new HashMap<Long, Match>());
-        }
-        matchGrid.get(playerOne.getId()).put(playerTwo.getId(), match);
-        return this;
-    }
-
-    public Collection<Match> getMatches() {
-        List<Match> matches = new ArrayList<>(this.matches.values());
-        Collections.sort(matches);
-        return matches;
-    }
-
-    public Match getMatch(Long playerOneId, Long playerTwoId) {
-        if (matchGrid.containsKey(playerOneId)) {
-            Map<Long, Match> matchColumn = matchGrid.get(playerOneId);
-            if (matchColumn.containsKey(playerTwoId)) {
-                return matchColumn.get(playerTwoId);
-            }
-        }
-        return null;
-    }
-
-    public List<Player> getPlayers() {
-        return new ArrayList<>(players.values());
     }
 
     @Override
     public int compareTo(Round other) {
-        int divisionComparison = division.compareTo(other.division);
+        int divisionComparison = league.compareTo(other.league);
         return (divisionComparison == 0 ? startDate.compareTo(other.startDate) : divisionComparison);
     }
 
@@ -144,24 +106,24 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
         if (round.endDate != null) {
             this.endDate = round.endDate;
         }
-        if (round.division != null) {
-            this.division = round.division;
+        if (round.league != null) {
+            this.league = round.league;
         }
         return this;
     }
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "logger", "matches", "matchGrid", "players");
+        return ReflectionToStringBuilder.toStringExclude(this, "logger");
     }
 
     @Override
     public boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other, "matches", "matchGrid", "players");
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, "matches", "matches", "matchGrid", "players");
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

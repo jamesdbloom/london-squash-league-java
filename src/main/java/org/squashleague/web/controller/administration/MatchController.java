@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Match;
 
 import javax.annotation.Resource;
@@ -24,14 +24,14 @@ public class MatchController {
     @Resource
     private MatchDAO matchDAO;
     @Resource
-    private RoundDAO roundDAO;
+    private DivisionDAO divisionDAO;
     @Resource
     private PlayerDAO playerDAO;
     @Resource
     private Environment environment;
 
     private void setupModel(Model uiModel) {
-        uiModel.addAttribute("rounds", roundDAO.findAll());
+        uiModel.addAttribute("divisions", divisionDAO.findAll());
         uiModel.addAttribute("players", playerDAO.findAll());
         uiModel.addAttribute("environment", environment);
     }

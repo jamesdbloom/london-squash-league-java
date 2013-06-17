@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.squashleague.domain.ModelObject;
+import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 
@@ -55,7 +56,7 @@ public class User extends ModelObject<User> {
     private List<Player> players;
     // view collections
     @Transient
-    private transient Collection<Round> rounds;
+    private transient Collection<Division> divisions;
 
 
     public boolean showMobileToOpponent() {
@@ -186,12 +187,12 @@ public class User extends ModelObject<User> {
         return this;
     }
 
-    public Collection<Round> getRounds() {
-        return rounds;
+    public Collection<Division> getDivisions() {
+        return divisions;
     }
 
-    public void setRounds(Collection<Round> rounds) {
-        this.rounds = rounds;
+    public void setDivisions(Collection<Division> divisions) {
+        this.divisions = divisions;
     }
 
     public User merge(User user) {

@@ -88,7 +88,7 @@
             </tr>
             <#list rounds as round>
                 <tr>
-                    <td id="round_${round_index}_division">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</td>
+                    <td id="round_${round_index}_division">${round.league.club.name} &ndash; ${round.league.name}</td>
                     <td id="round_${round_index}_status" class="hide_on_small_screen">${round.status}</td>
                     <td id="round_${round_index}_startDate">${round.startDate.toDate()?string("dd MMM yyyy")}</td>
                     <td id="round_${round_index}_endDate">${round.endDate.toDate()?string("dd MMM yyyy")}</td>
@@ -98,7 +98,7 @@
     </table><h2 class="table_title" id="matches">Your Matches</h2>
         <#list user.players as player>
             <#if (player.matches?size > 0)>
-            <h2 class="table_subtitle">${player.currentDivision.league.club.name} &ndash; ${player.currentDivision.league.name}</h2>
+            <h2 class="table_subtitle">${player.currentDivision.round.league.club.name} &ndash; ${player.currentDivision.round.league.name}</h2>
             <table>
                 <tbody>
                     <tr>
@@ -111,8 +111,8 @@
                     </tr>
                     <#list player.matches as match>
                         <tr>
-                            <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.round.division.league.name} &ndash; ${match.round.division.name}</td>
-                            <td id="match_${player_index}_${match_index}_date">${match.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                            <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.division.round.league.name} &ndash; ${match.division.round.league.name}</td>
+                            <td id="match_${player_index}_${match_index}_date">${match.division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.division.round.endDate.toDate()?string("dd MMM yyyy")}</td>
                             <td id="match_${player_index}_${match_index}_playerOne"><@showContactDetails match.playerOne.user/></td>
                             <td id="match_${player_index}_${match_index}_playerTwo"><@showContactDetails match.playerTwo.user/></td>
                             <td id="match_${player_index}_${match_index}_scoreEntered" class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
@@ -122,7 +122,7 @@
                 </tbody>
             </table>
             <div class="standalone_link">
-                <a id="mailto_${player_index}" href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>,</#if></#list>" target="_blank">email all ${player.currentDivision.league.name} &ndash; ${player.currentDivision.name} opponents</a>
+                <a id="mailto_${player_index}" href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>,</#if></#list>" target="_blank">email all ${player.currentDivision.round.league.name} &ndash; ${player.currentDivision.name} opponents</a>
             </div>
             </#if>
         </#list>

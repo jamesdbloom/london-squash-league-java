@@ -27,7 +27,7 @@ public class DivisionUpdatePage {
         assertEquals(errorCount, errorMessages.size());
     }
 
-    public void hasDivisionFields(Long id, Integer version, String name, Long leagueId) {
+    public void hasDivisionFields(Long id, Integer version, String name, Long roundId) {
         Element idElement = html.select("#id").first();
         assertNotNull(idElement);
         assertEquals(String.valueOf(id), idElement.val());
@@ -40,10 +40,10 @@ public class DivisionUpdatePage {
         assertNotNull(nameInputElement);
         assertEquals(name, nameInputElement.val());
 
-        Element leagueInputElement = html.select("#league [selected=selected]").first();
-        if (leagueId != null) {
+        Element leagueInputElement = html.select("#round [selected=selected]").first();
+        if (roundId != null) {
             assertNotNull(leagueInputElement);
-            assertEquals(leagueId.toString(), leagueInputElement.val());
+            assertEquals(roundId.toString(), leagueInputElement.val());
         } else {
             assertNull(leagueInputElement);
         }

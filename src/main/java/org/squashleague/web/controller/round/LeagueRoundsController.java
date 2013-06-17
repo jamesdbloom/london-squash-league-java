@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.dao.league.RoundDAO;
-import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
@@ -49,14 +48,14 @@ public class LeagueRoundsController {
 
         Map<String, Round> rounds = new LinkedHashMap<>();
         for (Round round : roundDAO.findAll()) {
-            rounds.put(round.getDivision().getLeague().getId().toString() + round.getStartDate() + round.getEndDate(), round);
+            rounds.put(round.getLeague().getId().toString() + round.getStartDate() + round.getEndDate(), round);
         }
 
         List<Round> values = new ArrayList<>(rounds.values());
         Collections.sort(values, new Comparator<Round>() {
             @Override
             public int compare(Round roundOne, Round roundTwo) {
-                int leagueComparison = roundOne.getDivision().getLeague().compareTo(roundTwo.getDivision().getLeague());
+                int leagueComparison = roundOne.getLeague().compareTo(roundTwo.getLeague());
                 int startDate = roundOne.getStartDate().compareTo(roundTwo.getStartDate());
                 return (leagueComparison == 0 ? (startDate == 0 ? roundOne.getEndDate().compareTo(roundTwo.getEndDate()) : startDate) : leagueComparison);
             }
@@ -92,9 +91,7 @@ public class LeagueRoundsController {
         }
 
         List<Player> players = playerDAO.findAllActiveByLeague(league);
-        for (Division division : league.getDivisions()) {
-            roundDAO.save(new Round().withDivision(division).withStartDate(startDate).withEndDate(endDate));
-        }
+        roundDAO.save(new Round().withLeague(league).withStartDate(startDate).withEndDate(endDate));
         return "redirect:/leagueRounds";
     }
 
@@ -136,23 +133,8 @@ public class LeagueRoundsController {
             uiModel.addAttribute("validationErrors", validationErrors);
             return "page/round/update";
         }
-        DateTime startDateToMatch = new DateTime(round.getStartDate());
-        DateTime endDateToMatch = new DateTime(round.getEndDate());
-        for (Division division : round.getDivision().getLeague().getDivisions()) {
-            for (Round divisionRound : division.getRounds()) {
-                if (datesMatch(divisionRound, startDateToMatch, endDateToMatch)) {
-                    roundDAO.update(divisionRound.withStartDate(startDate).withEndDate(endDate));
-                }
-            }
-        }
+        roundDAO.update(round.withStartDate(startDate).withEndDate(endDate));
         return "redirect:/leagueRounds";
-    }
-
-    private boolean datesMatch(Round roundOne, DateTime startDateToMatch, DateTime endDateToMatch) {
-        logger.warn("roundOne = " + roundOne.getStartDate() + " - " + roundOne.getEndDate());
-        logger.warn("dateToMatch = " + startDateToMatch + " - " + endDateToMatch);
-        logger.warn("DATE_ONLY_COMPARATOR = " + (DATE_ONLY_COMPARATOR.compare(roundOne.getStartDate(), startDateToMatch) == 0 && DATE_ONLY_COMPARATOR.compare(roundOne.getEndDate(), endDateToMatch) == 0));
-        return DATE_ONLY_COMPARATOR.compare(roundOne.getStartDate(), startDateToMatch) == 0 && DATE_ONLY_COMPARATOR.compare(roundOne.getEndDate(), endDateToMatch) == 0;
     }
 
 }

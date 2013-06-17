@@ -27,7 +27,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("playerOne", players.get(0).getId().toString())
                 .param("playerTwo", players.get(1).getId().toString())
-                .param("round", rounds.get(0).getId().toString())
+                .param("division", divisions.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
 
@@ -52,7 +52,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andReturn();
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
-        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerTwo().getId(), matches.get(0).getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerTwo().getId(), matches.get(0).getDivision().getId());
     }
 
     @Test
@@ -61,7 +61,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("playerOne", players.get(0).getId().toString())
                 .param("playerTwo", players.get(1).getId().toString())
-                .param("round", rounds.get(0).getId().toString())
+                .param("division", divisions.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
     }
@@ -96,7 +96,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", matches.get(0).getVersion().toString())
                 .param("playerOne", "")
                 .param("playerTwo", matches.get(0).getPlayerTwo().getId().toString())
-                .param("round", matches.get(0).getRound().getId().toString())
+                .param("division", matches.get(0).getDivision().getId().toString())
         )
 
                 // then
@@ -106,7 +106,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), null, matches.get(0).getPlayerTwo().getId(), matches.get(0).getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), null, matches.get(0).getPlayerTwo().getId(), matches.get(0).getDivision().getId());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", matches.get(0).getVersion().toString())
                 .param("playerOne", matches.get(0).getPlayerOne().getId().toString())
                 .param("playerTwo", "")
-                .param("round", matches.get(0).getRound().getId().toString())
+                .param("division", matches.get(0).getDivision().getId().toString())
         )
 
                 // then
@@ -128,7 +128,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), null, matches.get(0).getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), null, matches.get(0).getDivision().getId());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", matches.get(0).getVersion().toString())
                 .param("playerOne", matches.get(0).getPlayerOne().getId().toString())
                 .param("playerTwo", matches.get(0).getPlayerOne().getId().toString())
-                .param("round", matches.get(0).getRound().getId().toString())
+                .param("division", matches.get(0).getDivision().getId().toString())
         )
 
                 // then
@@ -150,7 +150,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
 
         MatchUpdatePage MatchUpdatePage = new MatchUpdatePage(response);
         MatchUpdatePage.hasErrors("match", 1);
-        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerOne().getId(), matches.get(0).getRound().getId());
+        MatchUpdatePage.hasMatchFields(matches.get(0).getId(), matches.get(0).getVersion(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerOne().getId(), matches.get(0).getDivision().getId());
     }
 
     @Test
@@ -178,7 +178,7 @@ public class MatchPageIntegrationTest extends WebAndDataIntegrationTest {
         Match match = new Match()
                 .withPlayerOne(players.get(0))
                 .withPlayerTwo(players.get(1))
-                .withRound(rounds.get(0));
+                .withDivision(divisions.get(0));
         matchDAO.save(match);
         assertNotNull(matchDAO.findById(match.getId()));
 

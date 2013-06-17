@@ -20,7 +20,7 @@
 </style>
 <form action="/leagueRounds/update" method="POST">
 
-    <h2 class="table_subtitle" style="margin-left: 5em; margin-top: 3em;">${round.division.league.club.name} &ndash; ${round.division.league.name}</h2>
+    <h2 class="table_subtitle" style="margin-left: 5em; margin-top: 3em;">${round.league.club.name} &ndash; ${round.league.name}</h2>
 
     <@errors.print_errors_list "round"/>
     <div class="standard_form">

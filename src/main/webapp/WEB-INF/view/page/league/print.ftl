@@ -10,32 +10,32 @@
 
 <#macro content_section>
 <div class="section">
-    <#if (rounds?size > 0)>
-        <#assign dateHash = rounds[0].startDate.hashCode() + "_" + rounds[0].endDate.hashCode() />
-        <h2 class="table_title">(${rounds[0].startDate.toDate()?string("dd MMM yyyy")} &ndash; ${rounds[0].endDate.toDate()?string("dd MMM yyyy")})</h2>
-        <#list rounds as round>
-            <#if dateHash != round.startDate.hashCode() + "_" + round.endDate.hashCode()>
-                <#assign dateHash = round.startDate.hashCode() + "_" + round.endDate.hashCode() />
-                <h2 class="table_title page_break" style="margin-top: 2em;">(${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</h2>
+    <#if (user.divisions?size > 0)>
+        <#assign dateHash = user.divisions[0].round.startDate.hashCode() + "_" + user.divisions[0].round.endDate.hashCode() />
+        <h2 class="table_title">(${user.divisions[0].round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${user.divisions[0].round.endDate.toDate()?string("dd MMM yyyy")})</h2>
+        <#list user.divisions as division>
+            <#if dateHash != division.round.startDate.hashCode() + "_" + division.round.endDate.hashCode()>
+                <#assign dateHash = division.round.startDate.hashCode() + "_" + division.round.endDate.hashCode() />
+                <h2 class="table_title page_break" style="margin-top: 2em;">(${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</h2>
             </#if>
-            <h2 class="table_subtitle">${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name}</h2>
+            <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.round.league.name}</h2>
             <table>
                 <tbody>
                     <tr>
                         <th class="player"></th>
-                        <#list round.players as playerColumn>
+                        <#list division.players as playerColumn>
                             <th>${playerColumn.user.name}</th>
                         </#list>
                     </tr>
-                    <#list round.players as playerRow>
+                    <#list division.players as playerRow>
                         <tr>
                             <td>${playerRow.user.name}</td>
-                            <#list round.players as playerColumn>
+                            <#list division.players as playerColumn>
                                 <#if playerRow.id != playerColumn.id >
-                                    <#if round.getMatch(playerRow.id, playerColumn.id)?? >
-                                        <@matchCell round.getMatch(playerRow.id, playerColumn.id)/>
-                                    <#elseif round.getMatch(playerColumn.id, playerRow.id)?? >
-                                        <@matchCell round.getMatch(playerColumn.id, playerRow.id)/>
+                                    <#if division.getMatch(playerRow.id, playerColumn.id)?? >
+                                        <@matchCell division.getMatch(playerRow.id, playerColumn.id)/>
+                                    <#elseif division.getMatch(playerColumn.id, playerRow.id)?? >
+                                        <@matchCell division.getMatch(playerColumn.id, playerRow.id)/>
                                     </#if>
                                 <#else>
                                     <td style="white-space: nowrap">X</td>

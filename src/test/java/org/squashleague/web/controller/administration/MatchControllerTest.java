@@ -11,12 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.squashleague.dao.league.DivisionDAO;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.dao.league.RoundDAO;
+import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
-import org.squashleague.domain.league.Round;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +31,12 @@ import static org.mockito.Mockito.*;
 public class MatchControllerTest {
 
     private final List<Match> matches = new ArrayList<>();
-    private final List<Round> rounds = new ArrayList<>();
+    private final List<Division> divisions = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
     @Mock
     private MatchDAO matchDAO;
     @Mock
-    private RoundDAO roundDAO;
+    private DivisionDAO divisionDAO;
     @Mock
     private PlayerDAO playerDAO;
     @Mock
@@ -47,7 +47,7 @@ public class MatchControllerTest {
     @Before
     public void setupFixture() {
         when(matchDAO.findAll()).thenReturn(matches);
-        when(roundDAO.findAll()).thenReturn(rounds);
+        when(divisionDAO.findAll()).thenReturn(divisions);
         when(playerDAO.findAll()).thenReturn(players);
     }
 
@@ -118,7 +118,7 @@ public class MatchControllerTest {
 
         // then
         verify(uiModel).addAttribute("match", match);
-        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("divisions", divisions);
         verify(uiModel).addAttribute("players", players);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/match/update", page);
@@ -153,7 +153,7 @@ public class MatchControllerTest {
         // then
         verify(uiModel).addAttribute("bindingResult", bindingResult);
         verify(uiModel).addAttribute("match", match);
-        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("divisions", divisions);
         verify(uiModel).addAttribute("players", players);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/match/update", page);
@@ -177,7 +177,7 @@ public class MatchControllerTest {
         verify(bindingResult).addError(new ObjectError(objectName, playersIdentical));
         verify(uiModel).addAttribute("bindingResult", bindingResult);
         verify(uiModel).addAttribute("match", match);
-        verify(uiModel).addAttribute("rounds", rounds);
+        verify(uiModel).addAttribute("divisions", divisions);
         verify(uiModel).addAttribute("players", players);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/match/update", page);

@@ -91,15 +91,15 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
-        division = new Division()
-                .withName("division name")
-                .withLeague(league);
-        divisionDAO.save(division);
         round = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         roundDAO.save(round);
+        division = new Division()
+                .withName("division name")
+                .withRound(round);
+        divisionDAO.save(division);
         playerOne = new Player()
                 .withCurrentDivision(division)
                 .withStatus(PlayerStatus.ACTIVE)
@@ -122,8 +122,8 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         playerDAO.delete(playerOne);
         playerDAO.delete(playerTwo);
         playerDAO.delete(playerThree);
-        roundDAO.delete(round);
         divisionDAO.delete(division);
+        roundDAO.delete(round);
         leagueDAO.delete(league);
         clubDAO.delete(club);
         userDAO.delete(userOne);
@@ -138,23 +138,23 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match matchOne = new Match()
                 .withPlayerOne(playerThree)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         Match matchTwo = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerOne)
-                .withRound(round);
+                .withDivision(division);
         Match matchThree = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerThree)
-                .withRound(round);
+                .withDivision(division);
         Match matchFour = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         Match matchFive = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerOne)
-                .withRound(round);
+                .withDivision(division);
         matchDAO.save(matchOne);
         matchDAO.save(matchTwo);
         matchDAO.save(matchThree);
@@ -181,7 +181,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match expectedMatch = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
 
         // when
         matchDAO.save(expectedMatch);
@@ -201,7 +201,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match expectedMatch = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         matchDAO.save(expectedMatch);
         expectedMatch
                 .withPlayerOne(playerTwo)
@@ -225,7 +225,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match expectedMatch = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
 
         // when
         matchDAO.save(expectedMatch);
@@ -245,7 +245,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match expectedMatch = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
 
         // when
         matchDAO.save(expectedMatch);
@@ -270,19 +270,19 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match matchOne = new Match()
                 .withPlayerOne(playerThree)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         Match matchTwo = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerOne)
-                .withRound(round);
+                .withDivision(division);
         Match matchThree = new Match()
                 .withPlayerOne(playerTwo)
                 .withPlayerTwo(playerThree)
-                .withRound(round);
+                .withDivision(division);
         Match matchFour = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         matchDAO.save(matchOne);
         matchDAO.save(matchTwo);
         matchDAO.save(matchThree);
@@ -307,7 +307,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match expectedMatch = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         matchDAO.save(expectedMatch);
         assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
 
@@ -324,7 +324,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Match expectedMatch = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         matchDAO.save(expectedMatch);
         assertEquals(expectedMatch, matchDAO.findById(expectedMatch.getId()));
 

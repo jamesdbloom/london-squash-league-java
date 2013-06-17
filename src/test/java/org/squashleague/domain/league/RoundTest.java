@@ -89,14 +89,12 @@ public class RoundTest {
         Club clubOne = new Club().withName("c_a");
         League leagueOne = new League().withName("l_a").withClub(clubOne);
         League leagueTwo = new League().withName("l_b").withClub(clubOne);
-        Division divisionOne = new Division().withName("d_a").withLeague(leagueOne);
-        Division divisionTwo = new Division().withName("d_b").withLeague(leagueOne);
-        Division divisionThree = new Division().withName("d_d").withLeague(leagueTwo);
-        Round roundOne = new Round().withStartDate(DATE_TIME.plusDays(1)).withEndDate(DATE_TIME).withDivision(divisionOne);
-        Round roundTwo = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME).withDivision(divisionOne);
-        Round roundThree = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME.plusDays(1)).withDivision(divisionOne);
-        Round roundFour = new Round().withStartDate(DATE_TIME.plusDays(4)).withEndDate(DATE_TIME.plusDays(4)).withDivision(divisionTwo);
-        Round roundFive = new Round().withStartDate(DATE_TIME).withEndDate(DATE_TIME).withDivision(divisionThree);
+        Round roundOne = new Round().withStartDate(DATE_TIME.plusDays(1)).withEndDate(DATE_TIME).withLeague(leagueOne);
+        Round roundTwo = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME).withLeague(leagueOne);
+        Round roundThree = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME.plusDays(1)).withLeague(leagueOne);
+        Round roundFour = new Round().withStartDate(DATE_TIME.plusDays(4)).withEndDate(DATE_TIME.plusDays(4)).withLeague(leagueOne);
+        Round roundFive = new Round().withStartDate(DATE_TIME).withEndDate(DATE_TIME).withLeague(leagueTwo);
+
 
         List<Round> rounds = Arrays.asList(roundFive, roundTwo, roundThree, roundFour, roundOne);
         Collections.sort(rounds);
@@ -109,12 +107,12 @@ public class RoundTest {
         Round existing = new Round()
                 .withStartDate(DATE_TIME.plusDays(1))
                 .withEndDate(DATE_TIME.plusDays(2))
-                .withDivision(new Division().withName("old"));
+                .withLeague(new League().withName("old"));
 
         Round newVersion = new Round()
                 .withStartDate(DATE_TIME.plusDays(10))
                 .withEndDate(DATE_TIME.plusDays(20))
-                .withDivision(new Division().withName("new"));
+                .withLeague(new League().withName("new"));
 
         assertEquals(newVersion, existing.merge(newVersion));
         assertEquals(existing, existing.merge(new Round()));

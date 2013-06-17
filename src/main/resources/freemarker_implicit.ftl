@@ -21,6 +21,7 @@
 [#-- @ftlvariable name="playerStatuses" type="java.util.List<org.squashleague.domain.league.PlayerStatus>" --]
 [#-- @ftlvariable name="match" type="org.squashleague.domain.league.Match" --]
 [#-- @ftlvariable name="matches" type="java.util.List<org.squashleague.domain.league.Match>" --]
+[#-- @ftlvariable name="scorePattern" type="java.lang.String" --]
 
 <!-- login -->
 [#-- @ftlvariable name="SPRING_SECURITY_LAST_EXCEPTION" type="org.springframework.security.core.AuthenticationException" --]

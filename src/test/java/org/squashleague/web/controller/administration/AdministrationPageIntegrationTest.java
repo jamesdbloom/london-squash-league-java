@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.*;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import java.util.ArrayList;
@@ -35,37 +37,44 @@ public class AdministrationPageIntegrationTest extends WebAndDataIntegrationTest
 
     @Test
     public void shouldGetPageWithUserErrors() throws Exception {
-        getAdministrationPage("user", 2, users.get(0)).hasUserFields(users.get(0).getName(), users.get(0).getEmail(), users.get(0).getMobile(), users.get(0).getMobilePrivacy(), users.get(0).getRoleNames());
+        User user = users.get(0);
+        getAdministrationPage("user", 2, user).hasUserFields(user.getName(), user.getEmail(), user.getMobile(), user.getMobilePrivacy(), user.getRoleNames());
     }
 
     @Test
     public void shouldGetPageWithClubErrors() throws Exception {
-        getAdministrationPage("club", 2, clubs.get(0)).hasClubFields(clubs.get(0).getName(), clubs.get(0).getAddress());
+        Club club = clubs.get(0);
+        getAdministrationPage("club", 2, club).hasClubFields(club.getName(), club.getAddress());
     }
 
     @Test
     public void shouldGetPageWithLeagueErrors() throws Exception {
-        getAdministrationPage("league", 2, leagues.get(0)).hasLeagueFields(leagues.get(0).getName());
-    }
-
-    @Test
-    public void shouldGetPageWithDivisionErrors() throws Exception {
-        getAdministrationPage("division", 2, divisions.get(0)).hasDivisionFields(divisions.get(0).getName());
+        League league = leagues.get(0);
+        getAdministrationPage("league", 2, league).hasLeagueFields(league.getClub().getId(), league.getName());
     }
 
     @Test
     public void shouldGetPageWithRoundErrors() throws Exception {
-        getAdministrationPage("round", 2, rounds.get(0)).hasRoundFields(rounds.get(0).getDivision().getId(), rounds.get(0).getStartDate(), rounds.get(0).getEndDate());
+        Round round = rounds.get(0);
+        getAdministrationPage("round", 2, round).hasRoundFields(round.getLeague().getId(), round.getStartDate(), round.getEndDate());
+    }
+
+    @Test
+    public void shouldGetPageWithDivisionErrors() throws Exception {
+        Division division = divisions.get(0);
+        getAdministrationPage("division", 2, division).hasDivisionFields(division.getRound().getId(), division.getName());
     }
 
     @Test
     public void shouldGetPageWithPlayerErrors() throws Exception {
-        getAdministrationPage("player", 2, players.get(0)).hasPlayerFields(players.get(0).getUser().getId(), players.get(0).getCurrentDivision().getId(), players.get(0).getStatus());
+        Player player = players.get(0);
+        getAdministrationPage("player", 2, player).hasPlayerFields(player.getUser().getId(), player.getCurrentDivision().getId(), player.getStatus());
     }
 
     @Test
     public void shouldGetPageWithMatchErrors() throws Exception {
-        getAdministrationPage("match", 2, matches.get(0)).hasMatchFields(matches.get(0).getRound().getId(), matches.get(0).getPlayerOne().getId(), matches.get(0).getPlayerTwo().getId(), matches.get(0).getScore());
+        Match match = matches.get(0);
+        getAdministrationPage("match", 2, match).hasMatchFields(match.getDivision().getId(), match.getPlayerOne().getId(), match.getPlayerTwo().getId(), match.getScore());
     }
 
     private AdministrationPage getAdministrationPage(String objectName, int errorCount, Object object) throws Exception {

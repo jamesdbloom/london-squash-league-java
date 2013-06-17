@@ -26,7 +26,7 @@ public class League extends ModelObject<League> implements Comparable<League> {
     private Club club;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    private List<Division> divisions;
+    private List<Round> rounds;
 
     public String getName() {
         return name;
@@ -54,18 +54,18 @@ public class League extends ModelObject<League> implements Comparable<League> {
         return this;
     }
 
-    public List<Division> getDivisions() {
-        return divisions;
+    public List<Round> getRounds() {
+        return rounds;
     }
 
-    public void setDivisions(List<Division> divisions) {
-        this.divisions = divisions;
+    public void setRounds(List<Round> rounds) {
+        this.rounds = rounds;
     }
 
-    public League withDivisions(Division... divisions) {
-        this.divisions = new ArrayList<>();
-        for (Division division : divisions) {
-            this.divisions.add(division.withLeague(this));
+    public League withRounds(Round... rounds) {
+        this.rounds = new ArrayList<>();
+        for (Round round : rounds) {
+            this.rounds.add(round.withLeague(this));
         }
         return this;
     }
@@ -83,24 +83,24 @@ public class League extends ModelObject<League> implements Comparable<League> {
         if (league.club != null) {
             this.club = league.club;
         }
-        if (league.divisions != null) {
-            this.divisions = league.divisions;
+        if (league.rounds != null) {
+            this.rounds = league.rounds;
         }
         return this;
     }
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "logger", "divisions");
+        return ReflectionToStringBuilder.toStringExclude(this, "logger", "rounds");
     }
 
     @Override
     public boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other, "divisions");
+        return EqualsBuilder.reflectionEquals(this, other, "rounds");
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, "divisions");
+        return HashCodeBuilder.reflectionHashCode(this, "rounds");
     }
 }

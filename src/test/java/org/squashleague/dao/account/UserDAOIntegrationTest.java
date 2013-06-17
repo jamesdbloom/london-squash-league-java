@@ -1,5 +1,6 @@
 package org.squashleague.dao.account;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +19,8 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author jamesdbloom
@@ -41,6 +42,10 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     private LeagueDAO leagueDAO;
     private League leagueOne;
     private League leagueTwo;
+    @Resource
+    private RoundDAO roundDAO;
+    private Round roundOne;
+    private Round roundTwo;
     @Resource
     private DivisionDAO divisionDAO;
     private Division divisionOne;
@@ -66,13 +71,23 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withClub(club);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
+        roundOne = new Round()
+                .withLeague(leagueOne)
+                .withStartDate(new DateTime().minusDays(1))
+                .withEndDate(new DateTime().plusDays(1));
+        roundDAO.save(roundOne);
+        roundTwo = new Round()
+                .withLeague(leagueTwo)
+                .withStartDate(new DateTime().minusDays(1))
+                .withEndDate(new DateTime().plusDays(1));
+        roundDAO.save(roundTwo);
         divisionOne = new Division()
                 .withName("division one name")
-                .withLeague(leagueOne);
+                .withRound(roundOne);
         divisionDAO.save(divisionOne);
         divisionTwo = new Division()
                 .withName("division two name")
-                .withLeague(leagueTwo);
+                .withRound(roundTwo);
         divisionDAO.save(divisionTwo);
     }
 
@@ -80,6 +95,8 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
     public void teardownDatabase() {
         divisionDAO.delete(divisionOne);
         divisionDAO.delete(divisionTwo);
+        roundDAO.delete(roundOne);
+        roundDAO.delete(roundTwo);
         leagueDAO.delete(leagueOne);
         leagueDAO.delete(leagueTwo);
         clubDAO.delete(club);

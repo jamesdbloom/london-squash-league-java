@@ -18,7 +18,7 @@
         content: "${environment.getProperty("validation.match.playerTwo")}";
     }
 
-    #round:invalid.filled + .error_message::after {
+    #division:invalid.filled + .error_message::after {
         content: "${environment.getProperty("validation.match.round")}";
     }
 
@@ -61,12 +61,12 @@
         </p>
 
         <p class="select">
-            <label class="round" for="round">Round:</label>
-            <#if (rounds?size > 0)>
-                <select id="round" name="round" required="required" title="${environment.getProperty("validation.match.round")}">
+            <label class="division" for="division">Round:</label>
+            <#if (divisions?size > 0)>
+                <select id="division" name="division" required="required" title="${environment.getProperty("validation.match.round")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>
-                    <#list rounds as round>
-                        <option value="${round.id}" <#if (match.round?? && match.round.id == round.id)>selected="selected"</#if>>${round.division.league.club.name} &ndash; ${round.division.league.name} &ndash; ${round.division.name} &ndash; (${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</option>
+                    <#list divisions as division>
+                        <option value="${division.id}" <#if (match.division?? && match.division.id == division.id)>selected="selected"</#if>>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.name} &ndash; (${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</option>
                     </#list>
                 </select> <span class="error_message"></span>
             </#if>
@@ -91,7 +91,7 @@
     var errors = errors || {},
             validation = {
                 filled: ['score'],
-                changed: ['playerOne', 'playerTwo', 'round'],
+                changed: ['playerOne', 'playerTwo', 'division'],
                 onload: errors && errors.match
             };
 </script>

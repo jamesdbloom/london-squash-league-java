@@ -33,7 +33,7 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
     private Player playerTwo;
     @NotNull(message = "{validation.match.round}")
     @ManyToOne
-    private Round round;
+    private Division division;
     @Pattern(regexp = "\\d{1,2}-\\d{1,2}", message = "{validation.match.score}")
     private String score;
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -69,16 +69,16 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return this;
     }
 
-    public Round getRound() {
-        return round;
+    public Division getDivision() {
+        return division;
     }
 
-    public void setRound(Round round) {
-        this.round = round;
+    public void setDivision(Division round) {
+        this.division = round;
     }
 
-    public Match withRound(Round round) {
-        setRound(round);
+    public Match withDivision(Division round) {
+        setDivision(round);
         return this;
     }
 
@@ -109,8 +109,8 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         if (match.playerTwo != null) {
             this.playerTwo = match.playerTwo;
         }
-        if (match.round != null) {
-            this.round = match.round;
+        if (match.division != null) {
+            this.division = match.division;
         }
         if (match.score != null) {
             this.score = match.score;
@@ -123,7 +123,7 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
 
     @Override
     public int compareTo(Match other) {
-        int roundComparison = round.compareTo(other.round);
+        int roundComparison = division.compareTo(other.division);
         if (roundComparison == 0) {
             int playerOneComparison = playerOne.getUser().getName().compareTo(other.playerOne.getUser().getName());
             if (playerOneComparison == 0) {

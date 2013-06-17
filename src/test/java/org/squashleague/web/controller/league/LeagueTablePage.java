@@ -35,7 +35,7 @@ public class LeagueTablePage {
             Round round = rounds[i];
 
             assertEquals("(" + round.getStartDate().toString("dd MMM yyyy") + " – " + round.getEndDate().toString("dd MMM yyyy") + ")", tableTitleElements.get(i).text());
-            assertEquals(round.getDivision().getLeague().getClub().getName() + " – " + round.getDivision().getLeague().getName() + " – " + round.getDivision().getName(), tableSubTitleElements.get(i).text());
+            assertEquals(round.getLeague().getClub().getName() + " – " + round.getLeague().getName() + " – " + round.getLeague().getName(), tableSubTitleElements.get(i).text());
         }
     }
 

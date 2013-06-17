@@ -81,21 +81,21 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
-        division = new Division()
-                .withName("division name")
-                .withLeague(league);
-        divisionDAO.save(division);
         round = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         roundDAO.save(round);
+        division = new Division()
+                .withName("division name")
+                .withRound(round);
+        divisionDAO.save(division);
     }
 
     @After
     public void teardownDatabase() {
-        roundDAO.delete(round);
         divisionDAO.delete(division);
+        roundDAO.delete(round);
         leagueDAO.delete(league);
         clubDAO.delete(club);
         userDAO.delete(userOne);
@@ -112,14 +112,24 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         League leagueTwo = new League()
                 .withName("league name")
                 .withClub(club);
+        Round roundOne = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withLeague(leagueOne);
+        Round roundTwo = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withLeague(leagueTwo);
         Division divisionOne = new Division()
                 .withName("division name")
-                .withLeague(leagueOne);
+                .withRound(roundOne);
         Division divisionTwo = new Division()
                 .withName("division name")
-                .withLeague(leagueTwo);
+                .withRound(roundTwo);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
+        roundDAO.save(roundOne);
+        roundDAO.save(roundTwo);
         divisionDAO.save(divisionOne);
         divisionDAO.save(divisionTwo);
         Player expectedPlayerOne = new Player()
@@ -151,6 +161,8 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
             playerDAO.delete(expectedPlayerThree);
             divisionDAO.delete(divisionOne);
             divisionDAO.delete(divisionTwo);
+            roundDAO.delete(roundOne);
+            roundDAO.delete(roundTwo);
             leagueDAO.delete(leagueOne);
             leagueDAO.delete(leagueTwo);
         }
@@ -165,14 +177,24 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
         League leagueTwo = new League()
                 .withName("league name")
                 .withClub(club);
+        Round roundOne = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withLeague(leagueOne);
+        Round roundTwo = new Round()
+                .withStartDate(new DateTime().plusDays(1))
+                .withEndDate(new DateTime().plusDays(2))
+                .withLeague(leagueTwo);
         Division divisionOne = new Division()
                 .withName("division name")
-                .withLeague(leagueOne);
+                .withRound(roundOne);
         Division divisionTwo = new Division()
                 .withName("division name")
-                .withLeague(leagueTwo);
+                .withRound(roundTwo);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
+        roundDAO.save(roundOne);
+        roundDAO.save(roundTwo);
         divisionDAO.save(divisionOne);
         divisionDAO.save(divisionTwo);
         Player expectedPlayerOne = new Player()
@@ -204,6 +226,8 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
             playerDAO.delete(expectedPlayerThree);
             divisionDAO.delete(divisionOne);
             divisionDAO.delete(divisionTwo);
+            roundDAO.delete(roundOne);
+            roundDAO.delete(roundTwo);
             leagueDAO.delete(leagueOne);
             leagueDAO.delete(leagueTwo);
         }

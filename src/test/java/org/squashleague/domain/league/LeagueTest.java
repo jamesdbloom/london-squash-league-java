@@ -31,11 +31,11 @@ public class LeagueTest {
     public void shouldMerge() {
         League existing = new League()
                 .withName("name")
-                .withDivisions(new Division(), new Division());
+                .withRounds(new Round(), new Round());
 
         League newVersion = new League()
                 .withName("new name")
-                .withDivisions(new Division(), new Division(), new Division());
+                .withRounds(new Round(), new Round(), new Round());
 
         assertEquals(newVersion, existing.merge(newVersion));
         assertEquals(existing, existing.merge(new League()));

@@ -1,5 +1,6 @@
 package org.squashleague.domain.league;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -20,11 +21,15 @@ public class DivisionTest {
         League leagueTwo = new League().withName("l_b").withClub(clubOne);
         League leagueThree = new League().withName("l_d").withClub(clubTwo);
         League leagueFour = new League().withName("l_c").withClub(clubThree);
-        Division divisionOne = new Division().withName("d_a").withLeague(leagueOne);
-        Division divisionTwo = new Division().withName("d_b").withLeague(leagueOne);
-        Division divisionThree = new Division().withName("d_d").withLeague(leagueTwo);
-        Division divisionFour = new Division().withName("d_e").withLeague(leagueThree);
-        Division divisionFive = new Division().withName("d_a").withLeague(leagueFour);
+        Round roundOne = new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)).withLeague(leagueOne);
+        Round roundTwo = new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)).withLeague(leagueTwo);
+        Round roundThree = new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)).withLeague(leagueThree);
+        Round roundFour = new Round().withStartDate(new DateTime().plusDays(1)).withEndDate(new DateTime().plusDays(2)).withLeague(leagueFour);
+        Division divisionOne = new Division().withName("d_a").withRound(roundOne);
+        Division divisionTwo = new Division().withName("d_b").withRound(roundOne);
+        Division divisionThree = new Division().withName("d_d").withRound(roundTwo);
+        Division divisionFour = new Division().withName("d_e").withRound(roundThree);
+        Division divisionFive = new Division().withName("d_a").withRound(roundFour);
 
         List<Division> divisions = Arrays.asList(divisionFive, divisionThree, divisionFour, divisionOne, divisionTwo);
         Collections.sort(divisions);
@@ -36,11 +41,11 @@ public class DivisionTest {
     public void shouldMerge() {
         Division existing = new Division()
                 .withName("name")
-                .withRounds(new Round(), new Round());
+                .withRound(new Round().withLeague(new League().withName("league")));
 
         Division newVersion = new Division()
                 .withName("new name")
-                .withRounds(new Round(), new Round(), new Round());
+                .withRound(new Round().withLeague(new League().withName("new league")));
 
         assertEquals(newVersion, existing.merge(newVersion));
         assertEquals(existing, existing.merge(new Division()));

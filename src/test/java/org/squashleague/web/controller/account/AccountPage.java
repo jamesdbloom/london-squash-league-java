@@ -69,7 +69,7 @@ public class AccountPage {
             Round round = rounds.get(i);
 
             Element divisionElement = html.select("#round_" + i + "_division").first();
-            assertEquals(round.getDivision().getLeague().getClub().getName() + " – " + round.getDivision().getLeague().getName() + " – " + round.getDivision().getName(), divisionElement.text());
+            assertEquals(round.getLeague().getClub().getName() + " – " + round.getLeague().getName(), divisionElement.text());
 
             Element statusElement = html.select("#round_" + i + "_status").first();
             assertEquals(round.getStatus().name(), statusElement.text());
@@ -88,10 +88,10 @@ public class AccountPage {
                 Match match = matches[i].get(j);
 
                 Element divisionElement = html.select("#match_" + i + "_" + j + "_division").first();
-                assertEquals(match.getRound().getDivision().getLeague().getName() + " – " + match.getRound().getDivision().getName(), divisionElement.text());
+                assertEquals(match.getDivision().getRound().getLeague().getName() + " – " + match.getDivision().getRound().getLeague().getName(), divisionElement.text());
 
                 Element dateElement = html.select("#match_" + i + "_" + j + "_date").first();
-                assertEquals(match.getRound().getStartDate().toString("dd MMM yyyy") + " – " + match.getRound().getEndDate().toString("dd MMM yyyy"), dateElement.text());
+                assertEquals(match.getDivision().getRound().getStartDate().toString("dd MMM yyyy") + " – " + match.getDivision().getRound().getEndDate().toString("dd MMM yyyy"), dateElement.text());
 
                 Element playerOneElement = html.select("#match_" + i + "_" + j + "_playerOne").first();
                 assertEquals(buildPlayerContactDetails(match.getPlayerOne().getUser()), playerOneElement.text());

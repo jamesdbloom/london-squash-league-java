@@ -71,22 +71,20 @@ public class AdministrationPage {
         assertEquals(address, addressInputElement.val());
     }
 
-    public void hasLeagueFields(String name) {
+    public void hasLeagueFields(Long clubId, String name) {
+        Element divisionInputElement = html.select("#create_league #club [selected=selected]").first();
+        assertNotNull(divisionInputElement);
+        assertEquals(clubId.toString(), divisionInputElement.attr("value"));
+
         Element nameInputElement = html.select("#create_league #name").first();
         assertNotNull(nameInputElement);
         assertEquals(name, nameInputElement.val());
     }
 
-    public void hasDivisionFields(String name) {
-        Element nameInputElement = html.select("#create_division #name").first();
-        assertNotNull(nameInputElement);
-        assertEquals(name, nameInputElement.val());
-    }
-
-    public void hasRoundFields(Long divisionId, DateTime startDate, DateTime endDate) {
-        Element divisionInputElement = html.select("#create_round #division [selected=selected]").first();
+    public void hasRoundFields(Long leagueId, DateTime startDate, DateTime endDate) {
+        Element divisionInputElement = html.select("#create_round #league [selected=selected]").first();
         assertNotNull(divisionInputElement);
-        assertEquals(divisionId.toString(), divisionInputElement.attr("value"));
+        assertEquals(leagueId.toString(), divisionInputElement.attr("value"));
 
         Element startDateInputElement = html.select("#create_round #startDate").first();
         assertNotNull(startDateInputElement);
@@ -95,6 +93,16 @@ public class AdministrationPage {
         Element endDateInputElement = html.select("#create_round #endDate").first();
         assertNotNull(endDateInputElement);
         assertEquals(endDate.toString("yyyy-MM-dd"), endDateInputElement.val());
+    }
+
+    public void hasDivisionFields(Long roundId, String name) {
+        Element divisionInputElement = html.select("#create_division #round [selected=selected]").first();
+        assertNotNull(divisionInputElement);
+        assertEquals(roundId.toString(), divisionInputElement.attr("value"));
+
+        Element nameInputElement = html.select("#create_division #name").first();
+        assertNotNull(nameInputElement);
+        assertEquals(name, nameInputElement.val());
     }
 
     public void hasPlayerFields(Long userId, Long divisionId, PlayerStatus playerStatus) {
@@ -111,10 +119,10 @@ public class AdministrationPage {
         assertEquals(playerStatus.name(), statusInputElement.attr("value"));
     }
 
-    public void hasMatchFields(Long roundId, Long playerOneId, Long playerTwoId, String score) {
-        Element roundInputElement = html.select("#create_match #round [selected=selected]").first();
+    public void hasMatchFields(Long divisionId, Long playerOneId, Long playerTwoId, String score) {
+        Element roundInputElement = html.select("#create_match #division [selected=selected]").first();
         assertNotNull(roundInputElement);
-        assertEquals(roundId.toString(), roundInputElement.attr("value"));
+        assertEquals(divisionId.toString(), roundInputElement.attr("value"));
 
         Element playerOneInputElement = html.select("#create_match #playerOne [selected=selected]").first();
         assertNotNull(playerOneInputElement);

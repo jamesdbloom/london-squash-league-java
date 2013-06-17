@@ -1,5 +1,6 @@
 package org.squashleague.dao.league;
 
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +20,7 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -34,14 +33,14 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
     @Resource
     private LeagueDAO leagueDAO;
     @Resource
-    private ClubDAO clubDAO;
-    private Club club;
-    @Resource
-    private DivisionDAO divisionDAO;
-    @Resource
     private RoleDAO roleDAO;
     @Resource
     private UserDAO userDAO;
+    @Resource
+    private ClubDAO clubDAO;
+    private Club club;
+    @Resource
+    private RoundDAO roundDAO;
     @Resource
     private PlayerDAO playerDAO;
 
@@ -80,19 +79,21 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         League leagueThree = new League()
                 .withName("league name")
                 .withClub(club);
-        Division divisionOne = new Division()
-                .withName("division name")
+        Round roundOne = new Round()
+                .withStartDate(new DateTime().minusDays(1))
+                .withEndDate(new DateTime().plusDays(1))
                 .withLeague(leagueOne);
-        Division divisionTwo = new Division()
-                .withName("division name")
+        Round roundTwo = new Round()
+                .withStartDate(new DateTime().minusDays(1))
+                .withEndDate(new DateTime().plusDays(1))
                 .withLeague(leagueTwo);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
         leagueDAO.save(leagueThree);
-        divisionDAO.save(divisionOne);
-        divisionDAO.save(divisionTwo);
+        roundDAO.save(roundOne);
+        roundDAO.save(roundTwo);
         Player expectedPlayerOne = new Player()
-                .withCurrentDivision(divisionOne)
+                .withLeague(leagueOne)
                 .withStatus(PlayerStatus.ACTIVE)
                 .withUser(user);
         Player expectedPlayerTwo = new Player()
@@ -112,8 +113,8 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         } finally {
             playerDAO.delete(expectedPlayerOne);
             playerDAO.delete(expectedPlayerTwo);
-            divisionDAO.delete(divisionOne);
-            divisionDAO.delete(divisionTwo);
+            roundDAO.delete(roundOne);
+            roundDAO.delete(roundTwo);
             leagueDAO.delete(leagueOne);
             leagueDAO.delete(leagueTwo);
             leagueDAO.delete(leagueThree);
@@ -169,9 +170,13 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         League expectedLeague = new League()
                 .withName("league name")
                 .withClub(club)
-                .withDivisions(
-                        new Division().withName("league one"),
-                        new Division().withName("league two")
+                .withRounds(
+                        new Round()
+                                .withStartDate(new DateTime().minusDays(1))
+                                .withEndDate(new DateTime().plusDays(1)),
+                        new Round()
+                                .withStartDate(new DateTime().minusDays(1))
+                                .withEndDate(new DateTime().plusDays(1))
                 );
 
         // when
@@ -182,8 +187,8 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         try {
             assertEquals(expectedLeague, actualLeague);
         } finally {
-            for (Division division : expectedLeague.getDivisions()) {
-                divisionDAO.delete(division);
+            for (Round round : expectedLeague.getRounds()) {
+                roundDAO.delete(round);
             }
             leagueDAO.delete(expectedLeague);
         }
@@ -195,9 +200,13 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
         League expectedLeague = new League()
                 .withName("league name")
                 .withClub(club)
-                .withDivisions(
-                        new Division().withName("league one"),
-                        new Division().withName("league two")
+                .withRounds(
+                        new Round()
+                                .withStartDate(new DateTime().minusDays(1))
+                                .withEndDate(new DateTime().plusDays(1)),
+                        new Round()
+                                .withStartDate(new DateTime().minusDays(1))
+                                .withEndDate(new DateTime().plusDays(1))
                 );
 
         // when
@@ -213,8 +222,8 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
             assertEquals(updatedLeague.incrementVersion(), actualLeague);
             assertEquals("new league name", actualLeague.getName());
         } finally {
-            for (Division division : expectedLeague.getDivisions()) {
-                divisionDAO.delete(division);
+            for (Round round : expectedLeague.getRounds()) {
+                roundDAO.delete(round);
             }
             leagueDAO.delete(expectedLeague);
         }

@@ -12,9 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.squashleague.dao.league.DivisionDAO;
+import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Round;
 
 import java.util.ArrayList;
@@ -30,12 +31,12 @@ import static org.mockito.Mockito.*;
 public class RoundControllerTest {
 
     private final List<Round> rounds = new ArrayList<>();
-    private final List<Division> divisions = new ArrayList<>();
+    private final List<League> leagues = new ArrayList<>();
 
     @Mock
     private RoundDAO roundDAO;
     @Mock
-    private DivisionDAO divisionDAO;
+    private LeagueDAO leagueDAO;
     @Mock
     private Environment environment;
     @InjectMocks
@@ -44,7 +45,7 @@ public class RoundControllerTest {
     @Before
     public void setupFixture() {
         when(roundDAO.findAll()).thenReturn(rounds);
-        when(divisionDAO.findAll()).thenReturn(divisions);
+        when(leagueDAO.findAll()).thenReturn(leagues);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class RoundControllerTest {
 
         // then
         verify(uiModel).addAttribute("round", round);
-        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("leagues", leagues);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/round/update", page);
     }
@@ -148,7 +149,7 @@ public class RoundControllerTest {
         // then
         verify(uiModel).addAttribute("bindingResult", bindingResult);
         verify(uiModel).addAttribute("round", round);
-        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("leagues", leagues);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/round/update", page);
     }
@@ -171,7 +172,7 @@ public class RoundControllerTest {
         verify(bindingResult).addError(new ObjectError("round", startDateAfterEndDate));
         verify(uiModel).addAttribute("bindingResult", bindingResult);
         verify(uiModel).addAttribute("round", round);
-        verify(uiModel).addAttribute("divisions", divisions);
+        verify(uiModel).addAttribute("leagues", leagues);
         verify(uiModel).addAttribute("environment", environment);
         assertEquals("page/administration/round/update", page);
     }

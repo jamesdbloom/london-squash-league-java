@@ -42,7 +42,6 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
     private League league;
     @Resource
     private DivisionDAO divisionDAO;
-    private Division division;
     @Resource
     private RoleDAO roleDAO;
     @Resource
@@ -60,15 +59,10 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
-        division = new Division()
-                .withName("division name")
-                .withLeague(league);
-        divisionDAO.save(division);
     }
 
     @After
     public void teardownDatabase() {
-        divisionDAO.delete(division);
         leagueDAO.delete(league);
         clubDAO.delete(club);
     }
@@ -95,37 +89,37 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         League leagueThree = new League()
                 .withName("league name")
                 .withClub(club);
-        Division divisionOne = new Division()
-                .withName("division name")
-                .withLeague(leagueOne);
-        Division divisionTwo = new Division()
-                .withName("division name")
-                .withLeague(leagueTwo);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
         leagueDAO.save(leagueThree);
-        divisionDAO.save(divisionOne);
-        divisionDAO.save(divisionTwo);
         Round roundOne = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(divisionOne);
+                .withLeague(leagueOne);
         Round roundTwo = new Round()
                 .withStartDate(new DateTime().plusDays(3))
                 .withEndDate(new DateTime().plusDays(4))
-                .withDivision(divisionOne);
+                .withLeague(leagueOne);
         Round roundThree = new Round()
                 .withStartDate(new DateTime().plusDays(5))
                 .withEndDate(new DateTime().plusDays(6))
-                .withDivision(divisionTwo);
+                .withLeague(leagueTwo);
         Round roundFour = new Round()
                 .withStartDate(new DateTime().plusDays(7))
                 .withEndDate(new DateTime().plusDays(8))
-                .withDivision(divisionTwo);
+                .withLeague(leagueTwo);
         roundDAO.save(roundOne);
         roundDAO.save(roundTwo);
         roundDAO.save(roundThree);
         roundDAO.save(roundFour);
+        Division divisionOne = new Division()
+                .withName("division name")
+                .withRound(roundOne);
+        Division divisionTwo = new Division()
+                .withName("division name")
+                .withRound(roundThree);
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
         Player playerOne = new Player()
                 .withCurrentDivision(divisionOne)
                 .withStatus(PlayerStatus.ACTIVE)
@@ -147,12 +141,12 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         } finally {
             playerDAO.delete(playerOne);
             playerDAO.delete(playerTwo);
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
             roundDAO.delete(roundOne);
             roundDAO.delete(roundTwo);
             roundDAO.delete(roundThree);
             roundDAO.delete(roundFour);
-            divisionDAO.delete(divisionOne);
-            divisionDAO.delete(divisionTwo);
             leagueDAO.delete(leagueOne);
             leagueDAO.delete(leagueTwo);
             leagueDAO.delete(leagueThree);
@@ -167,7 +161,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
 
         // when
         roundDAO.save(expectedRound);
@@ -187,7 +181,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         roundDAO.save(expectedRound);
         expectedRound
                 .withStartDate(new DateTime().plusDays(3))
@@ -211,7 +205,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
 
         // when
         roundDAO.save(expectedRound);
@@ -231,7 +225,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
 
         // when
         roundDAO.save(expectedRound);
@@ -257,11 +251,11 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round roundOne = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         Round roundTwo = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
 
         // when
         roundDAO.save(roundOne);
@@ -283,7 +277,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         roundDAO.save(expectedRound);
         assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
 
@@ -300,7 +294,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         Round expectedRound = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         roundDAO.save(expectedRound);
         assertEquals(expectedRound, roundDAO.findById(expectedRound.getId()));
 

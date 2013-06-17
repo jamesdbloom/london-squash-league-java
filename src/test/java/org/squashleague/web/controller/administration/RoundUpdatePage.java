@@ -28,7 +28,7 @@ public class RoundUpdatePage {
         assertEquals(errorCount, errorMessages.size());
     }
 
-    public void hasRoundFields(Long id, Integer version, DateTime startDate, DateTime endDate, Long divisionId) {
+    public void hasRoundFields(Long id, Integer version, DateTime startDate, DateTime endDate, Long leagueId) {
         Element idElement = html.select("#id").first();
         assertNotNull(idElement);
         assertEquals(String.valueOf(id), idElement.val());
@@ -45,10 +45,10 @@ public class RoundUpdatePage {
         assertNotNull(endDateInputElement);
         assertEquals((endDate != null ? endDate.toString("yyyy-MM-dd") : ""), endDateInputElement.val());
 
-        Element divisionInputElement = html.select("#division [selected=selected]").first();
-        if (divisionId != null) {
+        Element divisionInputElement = html.select("#league [selected=selected]").first();
+        if (leagueId != null) {
             assertNotNull(divisionInputElement);
-            assertEquals(divisionId.toString(), divisionInputElement.val());
+            assertEquals(leagueId.toString(), divisionInputElement.val());
         } else {
             assertNull(divisionInputElement);
         }

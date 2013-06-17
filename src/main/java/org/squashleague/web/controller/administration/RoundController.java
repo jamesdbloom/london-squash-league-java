@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.squashleague.dao.league.DivisionDAO;
+import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Round;
 
@@ -23,12 +23,12 @@ public class RoundController {
     @Resource
     private RoundDAO roundDAO;
     @Resource
-    private DivisionDAO divisionDAO;
+    private LeagueDAO leagueDAO;
     @Resource
     private Environment environment;
 
     private void setupModel(Model uiModel) {
-        uiModel.addAttribute("divisions", divisionDAO.findAll());
+        uiModel.addAttribute("leagues", leagueDAO.findAll());
         uiModel.addAttribute("environment", environment);
     }
 

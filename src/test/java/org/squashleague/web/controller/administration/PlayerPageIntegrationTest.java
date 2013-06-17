@@ -62,7 +62,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("user", users.get(0).getId().toString())
                 .param("currentDivision", divisions.get(0).getId().toString())
-                .param("league", divisions.get(0).getLeague().getId().toString())
+                .param("league", leagues.get(0).getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
                 .andExpect(redirectedUrl("/administration"));
@@ -100,7 +100,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", players.get(0).getVersion().toString())
                 .param("user", "")
                 .param("currentDivision", divisions.get(0).getId().toString())
-                .param("league", divisions.get(0).getLeague().getId().toString())
+                .param("league", leagues.get(0).getId().toString())
                 .param("status", PlayerStatus.ACTIVE.name())
         )
 
@@ -123,7 +123,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", players.get(0).getVersion().toString())
                 .param("user", players.get(0).getUser().getId().toString())
                 .param("currentDivision", divisions.get(0).getId().toString())
-                .param("league", divisions.get(0).getLeague().getId().toString())
+                .param("league", leagues.get(0).getId().toString())
                 .param("status", "")
         )
 

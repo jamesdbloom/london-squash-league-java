@@ -55,7 +55,7 @@ public class LeagueTableController {
         Map<Long, Round> roundsById = new HashMap<>();
         for (Round round : Lists.transform(matches, new Function<Match, Round>() {
             public Round apply(Match match) {
-                return match.getRound().addMatch(match);
+                return match.getDivision().addMatches(match).getRound();
             }
         })) {
             roundsById.put(round.getId(), round);

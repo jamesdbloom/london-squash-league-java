@@ -2,7 +2,6 @@ package org.squashleague.web.controller.administration;
 
 import com.eaio.uuid.UUID;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -45,7 +44,6 @@ public class MockDAOTest extends AdministratorLoggedInTest {
     @Resource
     protected RoundDAO roundDAO;
     protected List<Round> rounds = new ArrayList<>();
-    protected ArrayListMultimap<Long, Round> roundsByDivisionId = ArrayListMultimap.create();
     @Resource
     protected PlayerDAO playerDAO;
     protected List<Player> playersDivisionZero = new ArrayList<>();
@@ -55,10 +53,8 @@ public class MockDAOTest extends AdministratorLoggedInTest {
     protected List<Player> players = new ArrayList<>();
     @Resource
     protected MatchDAO matchDAO;
-    protected List<Match> matchesDivisionZeroRoundZero = new ArrayList<>();
-    protected List<Match> matchesDivisionZeroRoundOne = new ArrayList<>();
-    protected List<Match> matchesDivisionOneRoundZero = new ArrayList<>();
-    protected List<Match> matchesDivisionOneRoundOne = new ArrayList<>();
+    protected List<Match> matchesDivisionZero = new ArrayList<>();
+    protected List<Match> matchesDivisionOne = new ArrayList<>();
     protected List<Match> matches = new ArrayList<>();
 
     @Before
@@ -103,25 +99,21 @@ public class MockDAOTest extends AdministratorLoggedInTest {
             leagueDAO.save(league);
         }
 
+        for (int r = 0; r < 2; r++) {
+            Round round = new Round()
+                    .withStartDate(new DateTime().plusDays(r + 1))
+                    .withEndDate(new DateTime().plusDays(r + 11))
+                    .withLeague(leagues.get(r));
+            rounds.add(round);
+            roundDAO.save(round);
+        }
 
         for (int d = 0; d < 2; d++) {
             Division division = new Division()
                     .withName("division " + d)
-                    .withLeague(leagues.get(d));
+                    .withRound(rounds.get(d));
             divisions.add(division);
             divisionDAO.save(division);
-        }
-
-        for (int d = 0; d < divisions.size(); d++) {
-            for (int r = 0; r < 2; r++) {
-                Round round = new Round()
-                        .withStartDate(new DateTime().plusDays((d * 10) + r + 1))
-                        .withEndDate(new DateTime().plusDays((d * 10) + r + 11))
-                        .withDivision(divisions.get(d));
-                rounds.add(round);
-                roundsByDivisionId.put(divisions.get(d).getId(), round);
-                roundDAO.save(round);
-            }
         }
 
         for (int u = 0; u < NO_OF_USERS - 3; u++) {
@@ -168,16 +160,11 @@ public class MockDAOTest extends AdministratorLoggedInTest {
             playerDAO.save(player);
         }
 
-        matchesDivisionZeroRoundZero.addAll(createMatches(playersDivisionZero, roundsByDivisionId.get(divisions.get(0).getId()).get(0)));
-        matchesDivisionZeroRoundOne.addAll(createMatches(playersDivisionZero, roundsByDivisionId.get(divisions.get(0).getId()).get(1)));
+        matchesDivisionZero.addAll(createMatches(playersDivisionZero, divisions.get(0)));
+        matchesDivisionOne.addAll(createMatches(playersDivisionOne, divisions.get(1)));
 
-        matchesDivisionOneRoundZero.addAll(createMatches(playersDivisionOne, roundsByDivisionId.get(divisions.get(1).getId()).get(0)));
-        matchesDivisionOneRoundOne.addAll(createMatches(playersDivisionOne, roundsByDivisionId.get(divisions.get(1).getId()).get(1)));
-
-        matches.addAll(matchesDivisionZeroRoundZero);
-        matches.addAll(matchesDivisionZeroRoundOne);
-        matches.addAll(matchesDivisionOneRoundZero);
-        matches.addAll(matchesDivisionOneRoundOne);
+        matches.addAll(matchesDivisionZero);
+        matches.addAll(matchesDivisionOne);
 
         for (Match match : matches) {
             matchDAO.save(match);
@@ -210,11 +197,11 @@ public class MockDAOTest extends AdministratorLoggedInTest {
         for (Player player : players) {
             playerDAO.delete(player);
         }
-        for (Round round : rounds) {
-            roundDAO.delete(round);
-        }
         for (Division division : divisions) {
             divisionDAO.delete(division);
+        }
+        for (Round round : rounds) {
+            roundDAO.delete(round);
         }
         for (League league : leagues) {
             leagueDAO.delete(league);
@@ -228,7 +215,7 @@ public class MockDAOTest extends AdministratorLoggedInTest {
         roleDAO.delete(role);
     }
 
-    private List<Match> createMatches(List<Player> players, Round round) {
+    private List<Match> createMatches(List<Player> players, Division division) {
         List<Match> matches = new ArrayList<>();
         Set<String> playerCombinations = new HashSet<>();
         for (Player playerOne : players) {
@@ -238,7 +225,7 @@ public class MockDAOTest extends AdministratorLoggedInTest {
                     String playerTwoFirst = String.valueOf(playerTwo.getId()) + String.valueOf(playerOne.getId());
                     if (!playerCombinations.contains(playerOneFirst) && !playerCombinations.contains(playerTwoFirst)) {
                         playerCombinations.add(playerOneFirst);
-                        matches.add(new Match().withPlayerOne(playerOne).withPlayerTwo(playerTwo).withRound(round));
+                        matches.add(new Match().withPlayerOne(playerOne).withPlayerTwo(playerTwo).withDivision(division));
                     }
                 }
             }

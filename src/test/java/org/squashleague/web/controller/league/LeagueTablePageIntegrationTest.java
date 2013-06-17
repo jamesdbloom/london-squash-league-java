@@ -23,7 +23,9 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
         securityUserContext.setCurrentUser(user);
 
         try {
-            MvcResult result = mockMvc.perform(get("/leagueTable").accept(MediaType.TEXT_HTML))
+            MvcResult result = mockMvc.perform(get("/leagueTable")
+                    .accept(MediaType.TEXT_HTML)
+            )
                     .andExpect(status().isOk())
                     .andExpect(content().contentType("text/html;charset=UTF-8"))
                     .andReturn();
@@ -32,15 +34,11 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
             leagueTablePage.hasRounds(rounds.get(0), rounds.get(1));
             leagueTablePage.hasMatches(
                     Arrays.asList(
-                            getUserMatches(matchesDivisionZeroRoundZero, user),
-                            getUserMatches(matchesDivisionZeroRoundOne, user),
-                            getUserMatches(matchesDivisionOneRoundZero, user),
-                            getUserMatches(matchesDivisionOneRoundOne, user)
+                            getUserMatches(matchesDivisionZero, user),
+                            getUserMatches(matchesDivisionOne, user)
                     ),
                     Arrays.asList(
                             playersDivisionZero,
-                            playersDivisionZero,
-                            playersDivisionOne,
                             playersDivisionOne
                     ),
                     user);
@@ -55,7 +53,10 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
         securityUserContext.setCurrentUser(user);
 
         try {
-            MvcResult result = mockMvc.perform(get("/leagueTable").accept(MediaType.TEXT_HTML))
+            MvcResult result = mockMvc.perform(get("/leagueTable")
+                    .accept(MediaType.TEXT_HTML)
+                    .param("showAllDivisions", "true")
+            )
                     .andExpect(status().isOk())
                     .andExpect(content().contentType("text/html;charset=UTF-8"))
                     .andReturn();
@@ -64,15 +65,11 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
             leagueTablePage.hasRounds(rounds.get(0), rounds.get(1)); // todo make different between tests
             leagueTablePage.hasMatches(
                     Arrays.asList(
-                            getUserMatches(matchesDivisionZeroRoundZero, user),
-                            getUserMatches(matchesDivisionZeroRoundOne, user),
-                            getUserMatches(matchesDivisionOneRoundZero, user),
-                            getUserMatches(matchesDivisionOneRoundOne, user)
+                            getUserMatches(matchesDivisionZero, user),
+                            getUserMatches(matchesDivisionOne, user)
                     ),
                     Arrays.asList(
                             playersDivisionZero,
-                            playersDivisionZero,
-                            playersDivisionOne,
                             playersDivisionOne
                     ),
                     user);
@@ -86,7 +83,9 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
         securityUserContext.setCurrentUser(users.get(5));
 
         try {
-            MvcResult result = mockMvc.perform(get("/leagueTable").accept(MediaType.TEXT_HTML))
+            MvcResult result = mockMvc.perform(get("/leagueTable")
+                    .accept(MediaType.TEXT_HTML)
+            )
                     .andExpect(status().isOk())
                     .andExpect(content().contentType("text/html;charset=UTF-8"))
                     .andReturn();
@@ -112,8 +111,8 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
                     .andReturn();
 
             LeagueTablePage leagueTablePage = new LeagueTablePage(result);
-            leagueTablePage.hasRounds(roundsByDivisionId.get(divisions.get(1).getId()).get(0), roundsByDivisionId.get(divisions.get(1).getId()).get(1));
-            leagueTablePage.hasMatches(Arrays.asList(matchesDivisionOneRoundZero, matchesDivisionOneRoundOne), Arrays.asList(playersDivisionOne, playersDivisionOne), user);
+            leagueTablePage.hasRounds(rounds.get(1));
+            leagueTablePage.hasMatches(Arrays.asList(matchesDivisionOne), Arrays.asList(playersDivisionOne), user);
         } finally {
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }
@@ -124,7 +123,9 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
         securityUserContext.setCurrentUser(users.get(6));
 
         try {
-            MvcResult result = mockMvc.perform(get("/leagueTable").accept(MediaType.TEXT_HTML))
+            MvcResult result = mockMvc.perform(get("/leagueTable")
+                    .accept(MediaType.TEXT_HTML)
+            )
                     .andExpect(status().isOk())
                     .andExpect(content().contentType("text/html;charset=UTF-8"))
                     .andReturn();

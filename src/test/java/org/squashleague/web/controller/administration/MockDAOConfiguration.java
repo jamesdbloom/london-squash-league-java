@@ -63,14 +63,14 @@ public class MockDAOConfiguration {
             divisions.add(
                     (Division) new Division()
                             .withName("division " + i)
-                            .withLeague(leagues.get(i))
+                            .withRound(rounds.get(i))
                             .withId((long) i)
             );
             rounds.add(
                     (Round) new Round()
                             .withStartDate(new DateTime().plus(1))
                             .withEndDate(new DateTime().plus(2))
-                            .withDivision(divisions.get(i))
+                            .withLeague(leagues.get(i))
                             .withId((long) i)
             );
             players.add(
@@ -84,7 +84,7 @@ public class MockDAOConfiguration {
                     (Match) new Match()
                             .withPlayerOne(players.get(i))
                             .withPlayerTwo(players.get(i))
-                            .withRound(rounds.get(i))
+                            .withDivision(divisions.get(i))
                             .withId((long) i)
             );
         }

@@ -7,11 +7,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.squashleague.domain.ModelObject;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Cacheable
@@ -23,10 +25,13 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
     private String name;
     @NotNull(message = "{validation.club.name}")
     @ManyToOne
-    private League league;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "division_id")
-    private List<Round> rounds;
+    private Round round;
+    @Transient
+    private transient Map<Long, Match> matches = new HashMap<>();
+    @Transient
+    private transient Map<Long, Map<Long, Match>> matchGrid = new HashMap<>();
+    @Transient
+    private transient Map<Long, Player> players = new LinkedHashMap<>();
 
     public String getName() {
         return name;
@@ -41,38 +46,57 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
         return this;
     }
 
-    public League getLeague() {
-        return league;
+    public Round getRound() {
+        return round;
     }
 
-    public void setLeague(League league) {
-        this.league = league;
+    public void setRound(Round league) {
+        this.round = league;
     }
 
-    public Division withLeague(League league) {
-        setLeague(league);
+    public Division withRound(Round league) {
+        setRound(league);
         return this;
     }
 
-    public List<Round> getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(List<Round> rounds) {
-        this.rounds = rounds;
-    }
-
-    public Division withRounds(Round... rounds) {
-        this.rounds = new ArrayList<>();
-        for (Round round : rounds) {
-            this.rounds.add(round.withDivision(this));
+    public Division addMatches(Match... matches) {
+        for (Match match : matches) {
+            Player playerOne = match.getPlayerOne();
+            Player playerTwo = match.getPlayerTwo();
+            this.matches.put(match.getId(), match);
+            players.put(playerOne.getId(), playerOne);
+            players.put(playerTwo.getId(), playerTwo);
+            if (!matchGrid.containsKey(playerOne.getId())) {
+                matchGrid.put(playerOne.getId(), new HashMap<Long, Match>());
+            }
+            matchGrid.get(playerOne.getId()).put(playerTwo.getId(), match);
         }
         return this;
     }
 
+    public Collection<Match> getMatches() {
+        List<Match> matches = new ArrayList<>(this.matches.values());
+        Collections.sort(matches);
+        return matches;
+    }
+
+    public Match getMatch(Long playerOneId, Long playerTwoId) {
+        if (matchGrid.containsKey(playerOneId)) {
+            Map<Long, Match> matchColumn = matchGrid.get(playerOneId);
+            if (matchColumn.containsKey(playerTwoId)) {
+                return matchColumn.get(playerTwoId);
+            }
+        }
+        return null;
+    }
+
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players.values());
+    }
+
     @Override
     public int compareTo(Division other) {
-        int leagueComparison = league.compareTo(other.league);
+        int leagueComparison = round.compareTo(other.round);
         return (leagueComparison == 0 ? name.compareTo(other.name) : leagueComparison);
     }
 
@@ -80,27 +104,24 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
         if (division.name != null) {
             this.name = division.name;
         }
-        if (division.league != null) {
-            this.league = division.league;
-        }
-        if (division.rounds != null) {
-            this.rounds = division.rounds;
+        if (division.round != null) {
+            this.round = division.round;
         }
         return this;
     }
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toStringExclude(this, "logger", "rounds");
+        return ReflectionToStringBuilder.toStringExclude(this, "logger", "matches", "matchGrid", "players");
     }
 
     @Override
     public boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other, "rounds");
+        return EqualsBuilder.reflectionEquals(this, other, "matches", "matchGrid", "players");
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, "rounds");
+        return HashCodeBuilder.reflectionHashCode(this, "matches", "matchGrid", "players");
     }
 }

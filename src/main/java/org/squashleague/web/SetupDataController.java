@@ -93,47 +93,47 @@ public class SetupDataController {
                         .withClub(club);
                 leagueDAO.save(league);
                 int dmax = count + 1;
-                for (int d = 0; d < dmax; d++) {
-                    Division division = new Division()
-                            .withName("Division name " + d + "-" + l + "-" + c)
+                for (int r = 0; r < dmax; r++) {
+                    Round round = new Round()
+                            .withStartDate(new DateTime().plusDays(1 + r + l + c))
+                            .withEndDate(new DateTime().plusDays(5 + r + l + c))
                             .withLeague(league);
-                    divisionDAO.save(division);
+                    roundDAO.save(round);
                     List<Player> players = new ArrayList<>();
                     List<User> users = new ArrayList<>();
-                    int pmax = (count + 6) * dmax;
-                    for (int p = 0; p < pmax; p++) {
-                        if (p > (pmax / dmax) * d && p < (pmax / dmax) * (d + 1)) {
-                            User user = new User()
-                                    .withEmail(p + "_" + d + "_" + l + "_" + c + "@email.com")
-                                    .withName(p + "_" + d + "_" + l + "_" + c + " name")
-                                    .withMobilePrivacy(MobilePrivacy.SECRET)
-                                    .withRoles(Role.ROLE_USER);
-                            users.add(user);
+                    for (int d = 0; d < count + 1; d++) {
+                        Division division = new Division()
+                                .withName("Division name " + d + "-" + l + "-" + c)
+                                .withRound(round);
+                        divisionDAO.save(division);
+                        int pmax = (count + 6) * dmax;
+                        for (int p = 0; p < pmax; p++) {
+                            if (p > (pmax / dmax) * r && p < (pmax / dmax) * (r + 1)) {
+                                User user = new User()
+                                        .withEmail(p + "_" + r + "_" + l + "_" + c + "@email.com")
+                                        .withName(p + "_" + r + "_" + l + "_" + c + " name")
+                                        .withMobilePrivacy(MobilePrivacy.SECRET)
+                                        .withRoles(Role.ROLE_USER);
+                                users.add(user);
+                                players.add(new Player()
+                                        .withCurrentDivision(division)
+                                        .withStatus(PlayerStatus.ACTIVE)
+                                        .withUser(user));
+                            }
+                        }
+                        if (r == 0) {
                             players.add(new Player()
                                     .withCurrentDivision(division)
                                     .withStatus(PlayerStatus.ACTIVE)
-                                    .withUser(user));
+                                    .withUser(userDAO.findById(securityUserContext.getCurrentUser().getId())));
                         }
-                    }
-                    if (d == 0) {
-                        players.add(new Player()
-                                .withCurrentDivision(division)
-                                .withStatus(PlayerStatus.ACTIVE)
-                                .withUser(userDAO.findById(securityUserContext.getCurrentUser().getId())));
-                    }
-                    for (User user : users) {
-                        userDAO.save(user);
-                    }
-                    for (Player player : players) {
-                        playerDAO.save(player);
-                    }
-                    for (int r = 0; r < count + 1; r++) {
-                        Round round = new Round()
-                                .withStartDate(new DateTime().plusDays(1 + r + l + c))
-                                .withEndDate(new DateTime().plusDays(5 + r + l + c))
-                                .withDivision(division);
-                        roundDAO.save(round);
-                        for (Match match : createMatches(players, round)) {
+                        for (User user : users) {
+                            userDAO.save(user);
+                        }
+                        for (Player player : players) {
+                            playerDAO.save(player);
+                        }
+                        for (Match match : createMatches(players, division)) {
                             matchDAO.save(match);
                         }
                     }
@@ -143,7 +143,7 @@ public class SetupDataController {
         return "redirect:/administration";
     }
 
-    private List<Match> createMatches(List<Player> players, Round round) {
+    private List<Match> createMatches(List<Player> players, Division division) {
         List<Match> matches = new ArrayList<>();
         Set<String> playerCombinations = new HashSet<>();
         for (Player playerOne : players) {
@@ -153,7 +153,7 @@ public class SetupDataController {
                     String playerTwoFirst = String.valueOf(playerTwo.getId()) + String.valueOf(playerOne.getId());
                     if (!playerCombinations.contains(playerOneFirst) && !playerCombinations.contains(playerTwoFirst)) {
                         playerCombinations.add(playerOneFirst);
-                        matches.add(new Match().withPlayerOne(playerOne).withPlayerTwo(playerTwo).withRound(round));
+                        matches.add(new Match().withPlayerOne(playerOne).withPlayerTwo(playerTwo).withDivision(division));
                     }
                 }
             }

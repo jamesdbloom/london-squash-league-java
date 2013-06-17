@@ -52,8 +52,8 @@
         </p>
     </div>
 </form><h2 class="table_title">Existing Rounds</h2>
-    <#assign club_league_id = rounds[0].division.league.club.id + "_" + rounds[0].division.league.id />
-<h2 class="table_subtitle page_break">${rounds[0].division.league.club.name} &ndash; ${rounds[0].division.league.name}</h2>
+    <#assign club_league_id = rounds[0].league.club.id + "_" + rounds[0].league.id />
+<h2 class="table_subtitle page_break">${rounds[0].league.club.name} &ndash; ${rounds[0].league.name}</h2>
 <table class="action_table">
 <tbody>
     <tr>
@@ -63,19 +63,19 @@
         <th class="button_column last"></th>
     </tr>
     <#list rounds as round>
-        <#if club_league_id != round.division.league.club.id + "_" + round.division.league.id>
-            <#assign club_league_id = round.division.league.club.id + "_" + round.division.league.id />
-            </tbody>
-            </table>
-            <table class="action_table">
-                <h2 class="table_subtitle page_break" style="margin-top: 2em;">${round.division.league.club.name} &ndash; ${round.division.league.name}</h2>
-            <tbody>
-                <tr>
-                    <th style="width: 35%;">Status</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th class="button_column last"></th>
-                </tr>
+        <#if club_league_id != round.league.club.id + "_" + round.league.id>
+            <#assign club_league_id = round.league.club.id + "_" + round.league.id />
+        </tbody>
+        </table>
+        <h2 class="table_subtitle page_break" style="margin-top: 2em;">${round.league.club.name} &ndash; ${round.league.name}</h2>
+        <table class="action_table">
+        <tbody>
+            <tr>
+                <th style="width: 35%;">Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th class="button_column last"></th>
+            </tr>
         </#if>
         <tr>
             <td>${round.status}</td>

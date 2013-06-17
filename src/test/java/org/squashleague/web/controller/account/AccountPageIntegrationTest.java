@@ -34,7 +34,7 @@ public class AccountPageIntegrationTest extends WebAndDataIntegrationTest {
             accountPage.hasUserDetails(user);
             accountPage.hasPlayers(leaguesNoPlayers, playersUserBothDivisions);
             accountPage.hasRounds(rounds);
-            accountPage.hasMatches(user, getUserMatches(addLists(matchesDivisionZeroRoundZero, matchesDivisionZeroRoundOne), user), getUserMatches(addLists(matchesDivisionOneRoundZero, matchesDivisionOneRoundOne), user));
+            accountPage.hasMatches(user, getUserMatches(addLists(matchesDivisionZero), user), getUserMatches(addLists(matchesDivisionOne), user));
         } finally {
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }

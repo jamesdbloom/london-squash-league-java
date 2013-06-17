@@ -29,7 +29,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("startDate", new DateTime().plusDays(1).toString("yyyy-MM-dd"))
                 .param("endDate", new DateTime().plusDays(2).toString("yyyy-MM-dd"))
-                .param("division", divisions.get(0).getId().toString())
+                .param("league", leagues.get(0).getId().toString())
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
@@ -58,7 +58,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andReturn();
 
         // then
-        new RoundUpdatePage(response).hasRoundFields(rounds.get(0).getId(), rounds.get(0).getVersion(), rounds.get(0).getStartDate(), rounds.get(0).getEndDate(), rounds.get(0).getDivision().getId());
+        new RoundUpdatePage(response).hasRoundFields(rounds.get(0).getId(), rounds.get(0).getVersion(), rounds.get(0).getStartDate(), rounds.get(0).getEndDate(), rounds.get(0).getLeague().getId());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("startDate", new DateTime().plusDays(1).toString("yyyy-MM-dd"))
                 .param("endDate", new DateTime().plusDays(2).toString("yyyy-MM-dd"))
-                .param("division", divisions.get(0).getId().toString())
+                .param("league", leagues.get(0).getId().toString())
         )
                 // then
                 .andExpect(redirectedUrl("/administration"));
@@ -100,7 +100,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(null)
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(divisions.get(0))
+                .withLeague(leagues.get(0))
                 .withId(2l);
         round.setVersion(5);
 
@@ -111,7 +111,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", round.getVersion().toString())
                 .param("startDate", "")
                 .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
-                .param("division", round.getDivision().getId().toString())
+                .param("league", round.getLeague().getId().toString())
         )
 
                 // then
@@ -121,7 +121,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
 
         RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
         RoundUpdatePage.hasErrors("round", 1);
-        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getLeague().getId());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().plusDays(2))
                 .withEndDate(null)
-                .withDivision(divisions.get(0))
+                .withLeague(leagues.get(0))
                 .withId(2l);
         round.setVersion(5);
 
@@ -141,7 +141,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", round.getVersion().toString())
                 .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
                 .param("endDate", "")
-                .param("division", round.getDivision().getId().toString())
+                .param("league", round.getLeague().getId().toString())
         )
 
                 // then
@@ -151,7 +151,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
 
         RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
         RoundUpdatePage.hasErrors("round", 1);
-        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getLeague().getId());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().plusDays(3))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(divisions.get(0))
+                .withLeague(leagues.get(0))
                 .withId(2l);
         round.setVersion(5);
 
@@ -171,7 +171,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", round.getVersion().toString())
                 .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
                 .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
-                .param("division", round.getDivision().getId().toString())
+                .param("league", round.getLeague().getId().toString())
         )
 
                 // then
@@ -181,7 +181,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
 
         RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
         RoundUpdatePage.hasErrors("round", 1);
-        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getLeague().getId());
     }
 
     @Test
@@ -190,7 +190,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
         Round round = (Round) new Round()
                 .withStartDate(new DateTime().minusDays(3))
                 .withEndDate(new DateTime().minusDays(2))
-                .withDivision(divisions.get(0))
+                .withLeague(leagues.get(0))
                 .withId(2l);
         round.setVersion(5);
 
@@ -201,7 +201,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
                 .param("version", round.getVersion().toString())
                 .param("startDate", round.getStartDate().toString("yyyy-MM-dd"))
                 .param("endDate", round.getEndDate().toString("yyyy-MM-dd"))
-                .param("division", round.getDivision().getId().toString())
+                .param("league", round.getLeague().getId().toString())
         )
 
                 // then
@@ -211,7 +211,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
 
         RoundUpdatePage RoundUpdatePage = new RoundUpdatePage(response);
         RoundUpdatePage.hasErrors("round", 1);
-        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getDivision().getId());
+        RoundUpdatePage.hasRoundFields(round.getId(), round.getVersion(), round.getStartDate(), round.getEndDate(), round.getLeague().getId());
     }
 
     @Test
@@ -246,7 +246,7 @@ public class RoundPageIntegrationTest extends WebAndDataIntegrationTest {
     public void shouldDeleteRound() throws Exception {
         // given
         Round round = new Round()
-                .withDivision(divisions.get(0))
+                .withLeague(leagues.get(0))
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(10));
         roundDAO.save(round);

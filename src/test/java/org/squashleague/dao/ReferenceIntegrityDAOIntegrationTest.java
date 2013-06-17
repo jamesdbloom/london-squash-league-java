@@ -82,15 +82,15 @@ public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInT
                 .withName("league name")
                 .withClub(club);
         leagueDAO.save(league);
-        division = new Division()
-                .withName("division name")
-                .withLeague(league);
-        divisionDAO.save(division);
         round = new Round()
                 .withStartDate(new DateTime().plusDays(1))
                 .withEndDate(new DateTime().plusDays(2))
-                .withDivision(division);
+                .withLeague(league);
         roundDAO.save(round);
+        division = new Division()
+                .withName("division name")
+                .withRound(round);
+        divisionDAO.save(division);
         playerOne = new Player()
                 .withCurrentDivision(division)
                 .withStatus(PlayerStatus.ACTIVE)
@@ -104,7 +104,7 @@ public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInT
         match = new Match()
                 .withPlayerOne(playerOne)
                 .withPlayerTwo(playerTwo)
-                .withRound(round);
+                .withDivision(division);
         matchDAO.save(match);
     }
 
@@ -113,8 +113,8 @@ public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInT
         matchDAO.delete(match);
         playerDAO.delete(playerOne);
         playerDAO.delete(playerTwo);
-        roundDAO.delete(round);
         divisionDAO.delete(division);
+        roundDAO.delete(round);
         leagueDAO.delete(league);
         clubDAO.delete(club);
         userDAO.delete(userOne);
