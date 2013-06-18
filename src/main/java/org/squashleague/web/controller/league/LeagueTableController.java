@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.SpringSecurityUserContext;
@@ -52,19 +53,19 @@ public class LeagueTableController {
     @RequestMapping(value = "/print", method = RequestMethod.GET)
     public String getPage(Model uiModel) {
         List<Match> matches = matchDAO.findAll();
-        Map<Long, Round> roundsById = new HashMap<>();
-        for (Round round : Lists.transform(matches, new Function<Match, Round>() {
-            public Round apply(Match match) {
-                return match.getDivision().addMatches(match).getRound();
+        Map<Long, Division> roundsById = new HashMap<>();
+        for (Division division : Lists.transform(matches, new Function<Match, Division>() {
+            public Division apply(Match match) {
+                return match.getDivision().addMatches(match);
             }
         })) {
-            roundsById.put(round.getId(), round);
+            roundsById.put(division.getId(), division);
         }
-        List<Round> allRounds = new ArrayList<>(roundsById.values());
-        Collections.sort(allRounds);
+        List<Division> allDivisions = new ArrayList<>(roundsById.values());
+        Collections.sort(allDivisions);
 
         uiModel.addAttribute("print", true);
-        uiModel.addAttribute("rounds", allRounds);
-        return "page/league/print";
+        uiModel.addAttribute("divisions", allDivisions);
+        return "page/league/leagueTable";
     }
 }

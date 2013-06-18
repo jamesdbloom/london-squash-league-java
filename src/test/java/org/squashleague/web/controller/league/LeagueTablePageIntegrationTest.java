@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.Round;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
                     .andReturn();
 
             LeagueTablePage leagueTablePage = new LeagueTablePage(result);
-            leagueTablePage.hasRounds(rounds.get(0), rounds.get(1));
+            leagueTablePage.hasRounds(rounds.toArray(new Round[rounds.size()]));
             leagueTablePage.hasMatches(
                     Arrays.asList(
                             getUserMatches(matchesDivisionZero, user),
@@ -62,7 +63,7 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
                     .andReturn();
 
             LeagueTablePage leagueTablePage = new LeagueTablePage(result);
-            leagueTablePage.hasRounds(rounds.get(0), rounds.get(1)); // todo make different between tests
+            leagueTablePage.hasRounds(rounds.toArray(new Round[rounds.size()])); // todo make different between tests
             leagueTablePage.hasMatches(
                     Arrays.asList(
                             getUserMatches(matchesDivisionZero, user),
@@ -73,6 +74,36 @@ public class LeagueTablePageIntegrationTest extends WebAndDataIntegrationTest {
                             playersDivisionOne
                     ),
                     user);
+        } finally {
+            securityUserContext.setCurrentUser(LOGGED_IN_USER);
+        }
+    }
+
+    @Test
+    public void shouldPrint() throws Exception {
+        User user = users.get(0);
+        securityUserContext.setCurrentUser(user);
+
+        try {
+            MvcResult result = mockMvc.perform(get("/print")
+                    .accept(MediaType.TEXT_HTML)
+            )
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType("text/html;charset=UTF-8"))
+                    .andReturn();
+
+            LeagueTablePage leagueTablePage = new LeagueTablePage(result);
+            leagueTablePage.hasRounds(rounds.toArray(new Round[rounds.size()]));
+            leagueTablePage.hasMatches(
+                    Arrays.asList(
+                            matchesDivisionZero,
+                            matchesDivisionOne
+                    ),
+                    Arrays.asList(
+                            playersDivisionZero,
+                            playersDivisionOne
+                    ),
+                    null);
         } finally {
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }

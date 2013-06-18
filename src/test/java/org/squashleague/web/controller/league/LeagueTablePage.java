@@ -68,7 +68,7 @@ public class LeagueTablePage {
     }
 
     private String scoreValue(Match match, User user) {
-        boolean userMatch = match.getPlayerOne().getUser().getId().equals(user.getId()) || match.getPlayerTwo().getUser().getId().equals(user.getId());
+        boolean userMatch = user != null && (match.getPlayerOne().getUser().getId().equals(user.getId()) || match.getPlayerTwo().getUser().getId().equals(user.getId()));
         return (match.getScore() != null ? match.getScore() : (userMatch ? "enter" : ""));
     }
 
