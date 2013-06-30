@@ -82,11 +82,11 @@ public class UserDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEndDate(new DateTime().plusDays(1));
         roundDAO.save(roundTwo);
         divisionOne = new Division()
-                .withName("division one name")
+                .withName(1)
                 .withRound(roundOne);
         divisionDAO.save(divisionOne);
         divisionTwo = new Division()
-                .withName("division two name")
+                .withName(2)
                 .withRound(roundTwo);
         divisionDAO.save(divisionTwo);
     }

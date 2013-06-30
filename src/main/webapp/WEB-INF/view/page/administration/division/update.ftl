@@ -15,7 +15,7 @@
     }
 
     #round:invalid.filled + .error_message::after {
-        content: "${environment.getProperty("validation.division.league")}";
+        content: "${environment.getProperty("validation.division.round")}";
     }
 </style>
 <form action="/division/update" method="POST">
@@ -36,7 +36,7 @@
         <p class="select">
             <label class="round" for="round">Round:</label>
             <#if (rounds?size > 0)>
-                <select id="round" name="round" required="required" title="${environment.getProperty("validation.division.league")}">
+                <select id="round" name="round" required="required" title="${environment.getProperty("validation.division.round")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>
                     <#list rounds as round>
                         <option value="${round.id}" <#if (division.round?? && division.round.id == round.id)>selected="selected"</#if>>${round.league.club.name} &ndash; ${round.league.name} &ndash; (${round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${round.endDate.toDate()?string("dd MMM yyyy")})</option>

@@ -114,7 +114,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveRequiredFieldsAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
 
         // when
@@ -133,11 +133,11 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveUpdateAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
         divisionDAO.save(expectedDivision);
         expectedDivision
-                .withName("new division name");
+                .withName(3);
 
         // when
         divisionDAO.update(expectedDivision);
@@ -155,7 +155,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAllFieldsWithObjectHierarchyAndRetrieveById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
 
         // when
@@ -174,14 +174,14 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldUpdateWhenContainsChildren() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
 
         // when
         divisionDAO.save(expectedDivision);
         Division updatedDivision =
                 expectedDivision.merge(new Division()
-                        .withName("new division name")
+                        .withName(3)
                         .withRound(round));
         divisionDAO.update(updatedDivision);
 
@@ -189,7 +189,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         Division actualDivision = divisionDAO.findById(expectedDivision.getId());
         try {
             assertEquals(updatedDivision.incrementVersion(), actualDivision);
-            assertEquals("new division name", actualDivision.getName());
+            assertEquals(3, (long)actualDivision.getName());
         } finally {
             divisionDAO.delete(expectedDivision);
         }
@@ -199,10 +199,10 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveList() throws Exception {
         // given
         Division divisionOne = new Division()
-                .withName("divisionOne name")
+                .withName(1)
                 .withRound(round);
         Division divisionTwo = new Division()
-                .withName("divisionTwo name")
+                .withName(2)
                 .withRound(round);
 
         // when
@@ -223,7 +223,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveAndDelete() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
         divisionDAO.save(expectedDivision);
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));
@@ -239,7 +239,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
     public void shouldSaveAndRetrieveAndDeleteById() throws Exception {
         // given
         Division expectedDivision = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
         divisionDAO.save(expectedDivision);
         assertEquals(expectedDivision, divisionDAO.findById(expectedDivision.getId()));

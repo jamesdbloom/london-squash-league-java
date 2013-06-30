@@ -95,14 +95,14 @@ public class AdministrationPage {
         assertEquals(endDate.toString("yyyy-MM-dd"), endDateInputElement.val());
     }
 
-    public void hasDivisionFields(Long roundId, String name) {
+    public void hasDivisionFields(Long roundId, Integer name) {
         Element divisionInputElement = html.select("#create_division #round [selected=selected]").first();
         assertNotNull(divisionInputElement);
         assertEquals(roundId.toString(), divisionInputElement.attr("value"));
 
         Element nameInputElement = html.select("#create_division #name").first();
         assertNotNull(nameInputElement);
-        assertEquals(name, nameInputElement.val());
+        assertEquals(String.valueOf(name), nameInputElement.val());
     }
 
     public void hasPlayerFields(Long userId, Long divisionId, PlayerStatus playerStatus) {

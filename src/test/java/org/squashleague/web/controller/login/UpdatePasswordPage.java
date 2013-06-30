@@ -21,6 +21,6 @@ public class UpdatePasswordPage {
 
     public void hasErrors(String objectName, int errorCount) {
         Elements errorMessages = html.select("#validation_error_" + objectName + " .validation_error");
-        assertEquals(errorCount, errorMessages.size());
+        assertEquals(errorMessages.toString(), errorCount, errorMessages.size());
     }
 }

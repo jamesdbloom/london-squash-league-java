@@ -48,7 +48,7 @@ public class AccountPage {
             assertEquals(player.getLeague().getName(), leagueElement.text());
 
             Element currentDivisionElement = html.select("#player_" + i + "_currentDivision").first();
-            assertEquals(player.getCurrentDivision().getName(), currentDivisionElement.text());
+            assertEquals(String.valueOf(player.getCurrentDivision().getName()), currentDivisionElement.text());
 
             Element statusElement = html.select("#player_" + i + "_status").first();
             assertEquals(player.getStatus().name(), statusElement.text());

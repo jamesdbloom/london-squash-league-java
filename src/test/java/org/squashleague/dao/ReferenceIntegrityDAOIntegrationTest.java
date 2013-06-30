@@ -88,7 +88,7 @@ public class ReferenceIntegrityDAOIntegrationTest extends AdministratorLoggedInT
                 .withLeague(league);
         roundDAO.save(round);
         division = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
         divisionDAO.save(division);
         playerOne = new Player()

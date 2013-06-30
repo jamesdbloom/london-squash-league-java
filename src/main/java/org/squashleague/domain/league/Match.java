@@ -98,6 +98,35 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return this;
     }
 
+    public double getPlayerOnePoints() {
+        return calculatePoints(0, 1);
+    }
+
+    public double getPlayerTwoPoints() {
+        return calculatePoints(1, 0);
+    }
+
+    private double calculatePoints(int currentPlayer, int opponent) {
+        double matchPoints = 0;
+        if(getPlayerScore(currentPlayer) > getPlayerScore(opponent)) {
+            matchPoints = (3 / division.getName());
+        } else if (getPlayerScore(opponent) > getPlayerScore(currentPlayer)) {
+            matchPoints = (1 / division.getName());
+        } else {
+            matchPoints = (2 / division.getName());
+        }
+        return matchPoints + (getPlayerScore(currentPlayer) / 10);
+    }
+
+    private double getPlayerScore(int i) {
+        String[] split = score.split("-");
+        if (split.length == 2) {
+            return Integer.parseInt(split[i]);
+        } else {
+            return 0;
+        }
+    }
+
     public DateTime getScoreEntered() {
         return scoreEntered;
     }

@@ -12,13 +12,13 @@ public class MatchTest {
         Match existing = new Match()
                 .withPlayerOne(new Player().withStatus(PlayerStatus.ACTIVE))
                 .withPlayerTwo(new Player().withStatus(PlayerStatus.ACTIVE))
-                .withDivision(new Division().withName("a"))
+                .withDivision(new Division().withName(1))
                 .withScore("1-2");
 
         Match newVersion = new Match()
                 .withPlayerOne(new Player().withStatus(PlayerStatus.INACTIVE))
                 .withPlayerTwo(new Player().withStatus(PlayerStatus.INACTIVE))
-                .withDivision(new Division().withName("b"))
+                .withDivision(new Division().withName(2))
                 .withScore("3-4");
 
         assertEquals(newVersion, existing.merge(newVersion));

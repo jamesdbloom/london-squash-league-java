@@ -87,7 +87,7 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withLeague(league);
         roundDAO.save(round);
         division = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(round);
         divisionDAO.save(division);
     }
@@ -121,10 +121,10 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEndDate(new DateTime().plusDays(2))
                 .withLeague(leagueTwo);
         Division divisionOne = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(roundOne);
         Division divisionTwo = new Division()
-                .withName("division name")
+                .withName(2)
                 .withRound(roundTwo);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);
@@ -186,10 +186,10 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
                 .withEndDate(new DateTime().plusDays(2))
                 .withLeague(leagueTwo);
         Division divisionOne = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(roundOne);
         Division divisionTwo = new Division()
-                .withName("division name")
+                .withName(2)
                 .withRound(roundTwo);
         leagueDAO.save(leagueOne);
         leagueDAO.save(leagueTwo);

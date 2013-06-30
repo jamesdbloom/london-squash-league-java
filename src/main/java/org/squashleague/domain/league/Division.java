@@ -11,6 +11,7 @@ import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -21,9 +22,9 @@ import java.util.*;
 public class Division extends ModelObject<Division> implements Comparable<Division> {
 
     @NotNull(message = "{validation.division.name}")
-    @Size(min = 5, max = 25, message = "{validation.division.name}")
-    private String name;
-    @NotNull(message = "{validation.club.name}")
+    @Min(value = 1, message = "{validation.division.name}")
+    private Integer name;
+    @NotNull(message = "{validation.division.round}")
     @ManyToOne
     private Round round;
     @Transient
@@ -33,15 +34,15 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
     @Transient
     private transient Map<Long, Player> players = new LinkedHashMap<>();
 
-    public String getName() {
+    public Integer getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Integer name) {
         this.name = name;
     }
 
-    public Division withName(String name) {
+    public Division withName(Integer name) {
         setName(name);
         return this;
     }

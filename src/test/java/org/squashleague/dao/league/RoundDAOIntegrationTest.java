@@ -113,10 +113,10 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
         roundDAO.save(roundThree);
         roundDAO.save(roundFour);
         Division divisionOne = new Division()
-                .withName("division name")
+                .withName(1)
                 .withRound(roundOne);
         Division divisionTwo = new Division()
-                .withName("division name")
+                .withName(2)
                 .withRound(roundThree);
         divisionDAO.save(divisionOne);
         divisionDAO.save(divisionTwo);

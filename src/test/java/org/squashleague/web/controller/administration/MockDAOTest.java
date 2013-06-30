@@ -110,7 +110,7 @@ public class MockDAOTest extends AdministratorLoggedInTest {
 
         for (int d = 0; d < 2; d++) {
             Division division = new Division()
-                    .withName("division " + d)
+                    .withName(d + 1)
                     .withRound(rounds.get(d));
             divisions.add(division);
             divisionDAO.save(division);

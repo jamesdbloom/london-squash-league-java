@@ -62,7 +62,7 @@ public class MockDAOConfiguration {
             );
             divisions.add(
                     (Division) new Division()
-                            .withName("division " + i)
+                            .withName(i)
                             .withRound(rounds.get(i))
                             .withId((long) i)
             );

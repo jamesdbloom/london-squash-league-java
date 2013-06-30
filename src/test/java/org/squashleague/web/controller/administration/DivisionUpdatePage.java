@@ -24,10 +24,10 @@ public class DivisionUpdatePage {
 
     public void hasErrors(String objectName, int errorCount) {
         Elements errorMessages = html.select("#validation_error_" + objectName + " .validation_error");
-        assertEquals(errorCount, errorMessages.size());
+        assertEquals(errorMessages.toString(), errorCount, errorMessages.size());
     }
 
-    public void hasDivisionFields(Long id, Integer version, String name, Long roundId) {
+    public void hasDivisionFields(Long id, Integer version, Integer name, Long roundId) {
         Element idElement = html.select("#id").first();
         assertNotNull(idElement);
         assertEquals(String.valueOf(id), idElement.val());
@@ -38,7 +38,7 @@ public class DivisionUpdatePage {
 
         Element nameInputElement = html.select("#name").first();
         assertNotNull(nameInputElement);
-        assertEquals(name, nameInputElement.val());
+        assertEquals(String.valueOf(name), nameInputElement.val());
 
         Element leagueInputElement = html.select("#round [selected=selected]").first();
         if (roundId != null) {

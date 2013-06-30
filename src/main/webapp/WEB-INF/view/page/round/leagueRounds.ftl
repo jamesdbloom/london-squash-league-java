@@ -54,6 +54,7 @@
 </form><h2 class="table_title">Existing Rounds</h2>
     <#assign club_league_id = rounds[0].league.club.id + "_" + rounds[0].league.id />
 <h2 class="table_subtitle page_break">${rounds[0].league.club.name} &ndash; ${rounds[0].league.name}</h2>
+<form action="/leagueRounds/createMatches" method="POST">
 <table class="action_table">
 <tbody>
     <tr>
@@ -67,7 +68,7 @@
             <#assign club_league_id = round.league.club.id + "_" + round.league.id />
         </tbody>
         </table>
-        <h2 class="table_subtitle page_break" style="margin-top: 2em;">${round.league.club.name} &ndash; ${round.league.name}</h2>
+            <h2 class="table_subtitle page_break" style="margin-top: 2em;">${round.league.club.name} &ndash; ${round.league.name}</h2>
         <table class="action_table">
         <tbody>
             <tr>
@@ -81,11 +82,12 @@
             <td>${round.status}</td>
             <td>${round.startDate.toDate()?string("dd MMM yyyy")}</td>
             <td>${round.endDate.toDate()?string("dd MMM yyyy")}</td>
-            <td class="button_column last"><a class="button" href="/leagueRounds/update/${round.id}">Modify</a></td>
+            <td class="button_column last"><a class="button" href="/leagueRounds/update/${round.id}">Modify</a><#if round.notStarted()><button class="submit button" type="submit" name="roundId" value="${round.id}" title="Create Matches">Create Matches</button></#if></td>
         </tr>
     </#list>
 </tbody>
 </table>
+</form>
 <script>
     var errors = errors || {},
             validation = {

@@ -25,7 +25,7 @@ public class PlayerUpdatePage {
 
     public void hasErrors(String objectName, int errorCount) {
         Elements errorMessages = html.select("#validation_error_" + objectName + " .validation_error");
-        assertEquals(errorCount, errorMessages.size());
+        assertEquals(errorMessages.toString(), errorCount, errorMessages.size());
     }
 
     public void hasPlayerFields(Long id, Integer version, Long userId, Long currentDivisionId, Long leagueId, PlayerStatus status) {

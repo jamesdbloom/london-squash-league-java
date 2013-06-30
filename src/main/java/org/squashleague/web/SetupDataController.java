@@ -102,7 +102,7 @@ public class SetupDataController {
                     for (int d = 0; d < count + 1; d++) {
                         List<Player> players = new ArrayList<>();
                         Division division = new Division()
-                                .withName("Division name " + d + "-" + l + "-" + c)
+                                .withName(d)
                                 .withRound(round);
                         divisionDAO.save(division);
                         int pmax = (count + 6) * dmax;

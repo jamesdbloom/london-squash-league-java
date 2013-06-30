@@ -10,12 +10,12 @@ public class PlayerTest {
     @Test
     public void shouldMerge() {
         Player existing = new Player()
-                .withCurrentDivision(new Division().withName("division").withRound(new Round().withLeague(new League().withName("league"))))
+                .withCurrentDivision(new Division().withName(0).withRound(new Round().withLeague(new League().withName("league"))))
                 .withStatus(PlayerStatus.ACTIVE)
                 .withUser(new User().withName("user"));
 
         Player newVersion = new Player()
-                .withCurrentDivision(new Division().withName("new division").withRound(new Round().withLeague(new League().withName("new league"))))
+                .withCurrentDivision(new Division().withName(1).withRound(new Round().withLeague(new League().withName("new league"))))
                 .withStatus(PlayerStatus.INACTIVE)
                 .withUser(new User().withName("new user"));
 

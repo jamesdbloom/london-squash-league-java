@@ -25,7 +25,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         mockMvc.perform(post("/" + OBJECT_NAME + "/save")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", "test name")
+                .param("name", "4")
                 .param("round", rounds.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
@@ -59,7 +59,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
     public void shouldUpdateDivisionNoErrors() throws Exception {
         mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("name", "test name")
+                .param("name", "4")
                 .param("round", rounds.get(0).getId().toString())
         )
                 .andExpect(redirectedUrl("/administration"));
@@ -72,7 +72,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", divisions.get(0).getId().toString())
                 .param("version", divisions.get(0).getVersion().toString())
-                .param("name", divisions.get(0).getName())
+                .param("name", String.valueOf(divisions.get(0).getName()))
         )
 
                 // then
@@ -92,7 +92,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", divisions.get(0).getId().toString())
                 .param("version", divisions.get(0).getVersion().toString())
-                .param("name", "four")
+                .param("name", "0")
                 .param("round", divisions.get(0).getRound().getId().toString())
         )
 
@@ -103,7 +103,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 1);
-        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), "four", divisions.get(0).getRound().getId());
+        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), 0, divisions.get(0).getRound().getId());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", divisions.get(0).getId().toString())
                 .param("version", divisions.get(0).getVersion().toString())
-                .param("name", "four")
+                .param("name", "0")
         )
 
                 // then
@@ -123,14 +123,14 @@ public class DivisionPageIntegrationTest extends WebAndDataIntegrationTest {
 
         DivisionUpdatePage DivisionUpdatePage = new DivisionUpdatePage(response);
         DivisionUpdatePage.hasErrors("division", 2);
-        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), "four", null);
+        DivisionUpdatePage.hasDivisionFields(divisions.get(0).getId(), divisions.get(0).getVersion(), 0, null);
     }
 
     @Test
     public void shouldDeleteDivision() throws Exception {
         // given
         Division division = new Division()
-                .withName("to delete")
+                .withName(1)
                 .withRound(rounds.get(0));
         divisionDAO.save(division);
         assertNotNull(divisionDAO.findById(division.getId()));

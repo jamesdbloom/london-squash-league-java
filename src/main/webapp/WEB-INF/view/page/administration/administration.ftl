@@ -200,7 +200,7 @@
                 <td class="last"></td>
                 <td class="last">
                     <#if (leagues?size > 0)>
-                        <select id="league" name="league" required="required" title="${environment.getProperty("validation.division.league")}">
+                        <select id="league" name="league" required="required" title="${environment.getProperty("validation.round.league")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
                             <#list leagues as league>
                                 <option value="${league.id}" <#if round.league?? && league.id == round.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
