@@ -1,5 +1,7 @@
 package org.squashleague.dao.league;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,7 +11,9 @@ import org.squashleague.dao.AbstractJpaDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.PlayerStatus;
+import org.squashleague.domain.league.Round;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +34,28 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
                 "(match.playerOne.user.id = " + user.getId() + " or match.playerTwo.user.id = " + user.getId() + ")", Match.class).getResultList();
     }
 
+    @Transactional
+    public List<Match> findAllInRound(Round round, int roundsBack) {
+        List<Long> roundIds = getPreviousRoundIds(round, roundsBack);
+        return entityManager.createQuery("from Match as match where match.division.round.id in (" + Joiner.on(",").join(roundIds) + ")", Match.class).getResultList();
+    }
+
+    @VisibleForTesting
+    protected List<Long> getPreviousRoundIds(Round round, int roundsBack) {
+        List<Long> roundIds = new ArrayList<>();
+        roundIds.add(round.getId());
+        Round previousRound = round.getPreviousRound();
+        for (int backCounter = 0; backCounter < roundsBack; backCounter++) {
+            if (previousRound != null) {
+                roundIds.add(previousRound.getId());
+                previousRound = previousRound.getPreviousRound();
+            } else {
+                break;
+            }
+        }
+        return roundIds;
+    }
+
     @Override
     public List<Match> findAll() {
         return entityManager.createQuery("from Match as match where match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal(), Match.class).getResultList();
@@ -46,5 +72,4 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
     public void update(Match match) {
         super.update(match);
     }
-
 }

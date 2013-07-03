@@ -1,4 +1,4 @@
-package org.squashleague.web.controller.league;
+package org.squashleague.web.controller.leagueTable;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -13,7 +13,6 @@ import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Match;
-import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.tasks.CommandHolder;
 import org.squashleague.web.tasks.league.LoadAllMatches;

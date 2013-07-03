@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Cacheable
@@ -73,12 +75,12 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return division;
     }
 
-    public void setDivision(Division round) {
-        this.division = round;
+    public void setDivision(Division division) {
+        this.division = division;
     }
 
-    public Match withDivision(Division round) {
-        setDivision(round);
+    public Match withDivision(Division division) {
+        setDivision(division);
         return this;
     }
 
@@ -98,33 +100,37 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return this;
     }
 
-    public double getPlayerOnePoints() {
-        return calculatePoints(0, 1);
+    public Double getPlayerOnePoints() {
+        return calculatePoints(getPlayerScore(0), getPlayerScore(1));
     }
 
-    public double getPlayerTwoPoints() {
-        return calculatePoints(1, 0);
+    public Double getPlayerTwoPoints() {
+        return calculatePoints(getPlayerScore(1), getPlayerScore(0));
     }
 
-    private double calculatePoints(int currentPlayer, int opponent) {
-        double matchPoints = 0;
-        if(getPlayerScore(currentPlayer) > getPlayerScore(opponent)) {
-            matchPoints = (3 / division.getName());
-        } else if (getPlayerScore(opponent) > getPlayerScore(currentPlayer)) {
-            matchPoints = (1 / division.getName());
-        } else {
-            matchPoints = (2 / division.getName());
+    private Double calculatePoints(int currentPlayer, int opponent) {
+        if (score != null) {
+            int wonOrLostPoints = 2;
+            if (currentPlayer > opponent) {
+                wonOrLostPoints = 3;
+            } else if (opponent > currentPlayer) {
+                wonOrLostPoints = 1;
+            }
+            double totalPoints = (wonOrLostPoints + (currentPlayer / 10.0)) / division.getName();
+//            return Math.floor(totalPoints * 100) / 100;
+            return new BigDecimal(totalPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
-        return matchPoints + (getPlayerScore(currentPlayer) / 10);
+        return 0.0;
     }
 
-    private double getPlayerScore(int i) {
-        String[] split = score.split("-");
-        if (split.length == 2) {
-            return Integer.parseInt(split[i]);
-        } else {
-            return 0;
+    private int getPlayerScore(int i) {
+        if (score != null) {
+            String[] split = score.split("-");
+            if (split.length == 2) {
+                return Integer.parseInt(split[i]);
+            }
         }
+        return 0;
     }
 
     public DateTime getScoreEntered() {

@@ -99,7 +99,7 @@ public class SetupDataController {
                             .withEndDate(new DateTime().plusDays(5 + r + l + c))
                             .withLeague(league);
                     roundDAO.save(round);
-                    for (int d = 0; d < count + 1; d++) {
+                    for (int d = 1; d < count + 2; d++) {
                         List<Player> players = new ArrayList<>();
                         Division division = new Division()
                                 .withName(d)

@@ -1,7 +1,6 @@
 package org.squashleague.web.controller.round;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.slf4j.Logger;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.*;
+import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.*;
 
 import javax.annotation.Resource;
@@ -30,6 +30,7 @@ import java.util.*;
 public class LeagueRoundsController {
 
     public static final DateTimeComparator DATE_ONLY_COMPARATOR = DateTimeComparator.getDateOnlyInstance();
+    private final NewDivisionService divisionSizeService = new NewDivisionService();
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     @Resource
     private LeagueDAO leagueDAO;
@@ -92,7 +93,6 @@ public class LeagueRoundsController {
             return "redirect:/leagueRounds";
         }
 
-        List<Player> players = playerDAO.findAllActiveByLeague(league);
         roundDAO.save(new Round().withLeague(league).withStartDate(startDate).withEndDate(endDate));
         return "redirect:/leagueRounds";
     }
@@ -109,48 +109,6 @@ public class LeagueRoundsController {
         uiModel.addAttribute("startDate", (round.getStartDate() != null ? round.getStartDate().toString("yyyy-MM-dd") : ""));
         uiModel.addAttribute("endDate", (round.getEndDate() != null ? round.getEndDate().toString("yyyy-MM-dd") : ""));
         return "page/round/update";
-    }
-
-    @Transactional
-    @RequestMapping(value = "/createMatches", params = "roundId", method = RequestMethod.POST)
-    public String createMatches(Long roundId, Model uiModel) {
-        Round round = roundDAO.findById(roundId);
-        if (round == null) {
-            return "redirect:/errors/403";
-        }
-        List<Player> players = playerDAO.findAllActiveByLeague(round.getLeague());
-
-        Multimap<Long, ScoreEntry> matchScores = HashMultimap.create();
-        for (Match match : matchDAO.findAll()) {
-            if (match.getDivision().getRound().getLeague().equals(round.getLeague())) {
-                matchScores.put(match.getPlayerOne().getId(), new ScoreEntry(match.getPlayerOne(), match, match.getPlayerOnePoints()));
-                matchScores.put(match.getPlayerTwo().getId(), new ScoreEntry(match.getPlayerTwo(), match, match.getPlayerTwoPoints()));
-            }
-        }
-
-        uiModel.addAttribute("environment", environment);
-        uiModel.addAttribute("round", round);
-        uiModel.addAttribute("startDate", (round.getStartDate() != null ? round.getStartDate().toString("yyyy-MM-dd") : ""));
-        uiModel.addAttribute("endDate", (round.getEndDate() != null ? round.getEndDate().toString("yyyy-MM-dd") : ""));
-        return "page/round/update";
-    }
-
-    private List<Match> createMatches(List<Player> players, Division division) {
-        List<Match> matches = new ArrayList<>();
-        Set<String> playerCombinations = new HashSet<>();
-        for (Player playerOne : players) {
-            for (Player playerTwo : players) {
-                if (!playerOne.getId().equals(playerTwo.getId())) {
-                    String playerOneFirst = String.valueOf(playerOne.getId()) + String.valueOf(playerTwo.getId());
-                    String playerTwoFirst = String.valueOf(playerTwo.getId()) + String.valueOf(playerOne.getId());
-                    if (!playerCombinations.contains(playerOneFirst) && !playerCombinations.contains(playerTwoFirst)) {
-                        playerCombinations.add(playerOneFirst);
-                        matches.add(new Match().withPlayerOne(playerOne).withPlayerTwo(playerTwo).withDivision(division));
-                    }
-                }
-            }
-        }
-        return matches;
     }
 
     @Transactional
@@ -180,5 +138,27 @@ public class LeagueRoundsController {
         roundDAO.update(round.withStartDate(startDate).withEndDate(endDate));
         return "redirect:/leagueRounds";
     }
+
+    @Transactional
+    @RequestMapping(value = "/createMatches", params = "roundId", method = RequestMethod.POST)
+    public String createMatches(Long roundId, Model uiModel) {
+        Round round = roundDAO.findById(roundId);
+        if (round == null) {
+            return "redirect:/errors/403";
+        }
+
+        Map<Long, Player> players = Maps.uniqueIndex(playerDAO.findAllActiveByLeague(round.getLeague()), ModelObject.TO_MAP);
+        List<Division> divisions = divisionSizeService.allocateDivisions(players, matchDAO.findAllInRound(round, 1), round);
+
+        // test all methods in NewDivisionService
+        // save players and divisions
+
+        uiModel.addAttribute("environment", environment);
+        uiModel.addAttribute("round", round);
+        uiModel.addAttribute("startDate", (round.getStartDate() != null ? round.getStartDate().toString("yyyy-MM-dd") : ""));
+        uiModel.addAttribute("endDate", (round.getEndDate() != null ? round.getEndDate().toString("yyyy-MM-dd") : ""));
+        return "page/round/update";
+    }
+
 
 }

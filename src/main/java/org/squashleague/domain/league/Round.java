@@ -10,10 +10,7 @@ import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.squashleague.domain.ModelObject;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -35,6 +32,9 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     @NotNull(message = "{validation.round.division}")
     @ManyToOne
     private League league;
+    // @NotNull(message = "{validation.round.previousRound}")
+    @OneToOne
+    private Round previousRound;
 
 
     public DateTime getStartDate() {
@@ -89,8 +89,21 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
         return league;
     }
 
-    public void setLeague(League division) {
-        this.league = division;
+    public void setLeague(League league) {
+        this.league = league;
+    }
+
+    public Round getPreviousRound() {
+        return previousRound;
+    }
+
+    public void setPreviousRound(Round previousRound) {
+        this.previousRound = previousRound;
+    }
+
+    public Round withPreviousRound(Round previousRound) {
+        setPreviousRound(previousRound);
+        return this;
     }
 
     public Round withLeague(League division) {
@@ -113,6 +126,9 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
         }
         if (round.league != null) {
             this.league = round.league;
+        }
+        if (round.previousRound != null) {
+            this.previousRound = round.previousRound;
         }
         return this;
     }

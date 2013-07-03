@@ -1,4 +1,4 @@
-package org.squashleague.web.controller.league;
+package org.squashleague.web.controller.leagueTable;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
