@@ -8,6 +8,7 @@ import org.squashleague.domain.ModelObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,6 +41,15 @@ public abstract class AbstractJpaDAO<T extends ModelObject<T>> {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void save(T entity) {
         entityManager.persist(entity);
+        entityManager.flush();
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void update(Collection<T> entities) {
+        for (T entity : entities) {
+            entityManager.merge(entity);
+        }
         entityManager.flush();
     }
 

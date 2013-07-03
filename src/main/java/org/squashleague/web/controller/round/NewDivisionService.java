@@ -22,9 +22,16 @@ public class NewDivisionService {
             incrementMap(matchScores, match.getPlayerOne().getId(), match.getPlayerOnePoints());
             incrementMap(matchScores, match.getPlayerTwo().getId(), match.getPlayerTwoPoints());
         }
+        // add player who did not have scores entered for any of their matches
         for (Long playerId : players.keySet()) {
             if (!matchScores.containsKey(playerId)) {
                 matchScores.put(playerId, 0.0);
+            }
+        }
+        // remove players who are no longer active
+        for (Long playerId : matchScores.keySet()) {
+            if (!players.containsKey(playerId)) {
+                matchScores.remove(playerId);
             }
         }
 
@@ -69,7 +76,8 @@ public class NewDivisionService {
         return divisions;
     }
 
-    public List<Match> createMatches(List<Player> players, Division division) {
+    @VisibleForTesting
+    List<Match> createMatches(List<Player> players, Division division) {
         List<Match> matches = new ArrayList<>();
         Set<String> playerCombinations = new HashSet<>();
         for (Player playerOne : players) {

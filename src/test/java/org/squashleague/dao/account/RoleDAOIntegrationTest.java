@@ -245,7 +245,7 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        roleDAO.update(null);
+        roleDAO.update((Role)null);
     }
 
     @Test(expected = Exception.class)

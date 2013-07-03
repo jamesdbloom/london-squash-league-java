@@ -297,7 +297,7 @@ public class LeagueDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        leagueDAO.update(null);
+        leagueDAO.update((League)null);
     }
 
     @Test(expected = Exception.class)

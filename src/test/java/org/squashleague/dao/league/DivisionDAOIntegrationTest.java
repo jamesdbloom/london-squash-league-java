@@ -18,6 +18,7 @@ import org.squashleague.domain.league.*;
 import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -189,7 +190,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         Division actualDivision = divisionDAO.findById(expectedDivision.getId());
         try {
             assertEquals(updatedDivision.incrementVersion(), actualDivision);
-            assertEquals(3, (long)actualDivision.getName());
+            assertEquals(3, (long) actualDivision.getName());
         } finally {
             divisionDAO.delete(expectedDivision);
         }
@@ -213,6 +214,39 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
         Object[] actualDivisions = divisionDAO.findAll().toArray();
         try {
             assertArrayEquals(new Division[]{divisionOne, divisionTwo}, actualDivisions);
+        } finally {
+            divisionDAO.delete(divisionOne);
+            divisionDAO.delete(divisionTwo);
+        }
+    }
+
+    @Test
+    public void shouldRetrieveAndUpdateList() throws Exception {
+        // given
+        Division divisionOne = new Division()
+                .withName(1)
+                .withRound(round);
+        Division divisionTwo = new Division()
+                .withName(2)
+                .withRound(round);
+
+        // when
+        divisionDAO.save(divisionOne);
+        divisionDAO.save(divisionTwo);
+        List<Division> divisionList = divisionDAO.findAll();
+
+        divisionList.get(0).withName(10);
+        divisionList.get(1).withName(20);
+
+        // then
+        divisionDAO.update(divisionList);
+        try {
+            assertArrayEquals(
+                    new Division[]{
+                            (Division) divisionOne.withName(10).incrementVersion(),
+                            (Division) divisionTwo.withName(20).incrementVersion()
+                    },
+                    divisionDAO.findAll().toArray());
         } finally {
             divisionDAO.delete(divisionOne);
             divisionDAO.delete(divisionTwo);
@@ -263,7 +297,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        divisionDAO.update(null);
+        divisionDAO.update((Division) null);
     }
 
     @Test(expected = Exception.class)

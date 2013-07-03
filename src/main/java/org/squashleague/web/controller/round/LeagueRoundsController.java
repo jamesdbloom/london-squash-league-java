@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.*;
 import org.squashleague.domain.ModelObject;
-import org.squashleague.domain.league.*;
+import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.League;
+import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.Round;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -141,23 +144,17 @@ public class LeagueRoundsController {
 
     @Transactional
     @RequestMapping(value = "/createMatches", params = "roundId", method = RequestMethod.POST)
-    public String createMatches(Long roundId, Model uiModel) {
+    public String createMatches(Long roundId) {
         Round round = roundDAO.findById(roundId);
         if (round == null) {
             return "redirect:/errors/403";
         }
-
         Map<Long, Player> players = Maps.uniqueIndex(playerDAO.findAllActiveByLeague(round.getLeague()), ModelObject.TO_MAP);
         List<Division> divisions = divisionSizeService.allocateDivisions(players, matchDAO.findAllInRound(round, 1), round);
+        divisionDAO.update(divisions);
+        playerDAO.update(players.values());
 
-        // test all methods in NewDivisionService
-        // save players and divisions
-
-        uiModel.addAttribute("environment", environment);
-        uiModel.addAttribute("round", round);
-        uiModel.addAttribute("startDate", (round.getStartDate() != null ? round.getStartDate().toString("yyyy-MM-dd") : ""));
-        uiModel.addAttribute("endDate", (round.getEndDate() != null ? round.getEndDate().toString("yyyy-MM-dd") : ""));
-        return "page/round/update";
+        return "redirect:/leagueRounds";
     }
 
 

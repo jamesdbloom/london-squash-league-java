@@ -347,7 +347,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        matchDAO.update(null);
+        matchDAO.update((Match)null);
     }
 
     @Test(expected = Exception.class)

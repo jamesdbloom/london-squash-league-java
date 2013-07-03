@@ -317,7 +317,7 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        roundDAO.update(null);
+        roundDAO.update((Round)null);
     }
 
     @Test(expected = Exception.class)

@@ -190,7 +190,7 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        clubDAO.update(null);
+        clubDAO.update((Club)null);
     }
 
     @Test(expected = Exception.class)

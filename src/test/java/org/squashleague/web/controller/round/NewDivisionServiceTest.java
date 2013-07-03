@@ -16,9 +16,73 @@ import static org.junit.Assert.assertEquals;
 public class NewDivisionServiceTest {
 
     @Test
+    public void shouldCreateMatches() {
+         // given
+        List<Player> players = Arrays.asList(
+                (Player) new Player().withId(0l),
+                (Player) new Player().withId(1l),
+                (Player) new Player().withId(2l),
+                (Player) new Player().withId(3l),
+                (Player) new Player().withId(5l),
+                (Player) new Player().withId(6l)
+        );
+        Division division = new Division();
+
+        // when
+        List<Match> matches = new NewDivisionService().createMatches(players, division);
+
+        // then
+        int numberOfMatch = 0;
+        for(int i = players.size()-1 ; i > 0 ; i--) {
+            numberOfMatch += i;
+        }
+        List<Match> expectedMatches = Arrays.asList(
+                new Match().withPlayerOne(players.get(0)).withPlayerTwo(players.get(1)).withDivision(division),
+                new Match().withPlayerOne(players.get(0)).withPlayerTwo(players.get(2)).withDivision(division),
+                new Match().withPlayerOne(players.get(0)).withPlayerTwo(players.get(3)).withDivision(division),
+                new Match().withPlayerOne(players.get(0)).withPlayerTwo(players.get(4)).withDivision(division),
+                new Match().withPlayerOne(players.get(0)).withPlayerTwo(players.get(5)).withDivision(division),
+                new Match().withPlayerOne(players.get(1)).withPlayerTwo(players.get(2)).withDivision(division),
+                new Match().withPlayerOne(players.get(1)).withPlayerTwo(players.get(3)).withDivision(division),
+                new Match().withPlayerOne(players.get(1)).withPlayerTwo(players.get(4)).withDivision(division),
+                new Match().withPlayerOne(players.get(1)).withPlayerTwo(players.get(5)).withDivision(division),
+                new Match().withPlayerOne(players.get(2)).withPlayerTwo(players.get(3)).withDivision(division),
+                new Match().withPlayerOne(players.get(2)).withPlayerTwo(players.get(4)).withDivision(division),
+                new Match().withPlayerOne(players.get(2)).withPlayerTwo(players.get(5)).withDivision(division),
+                new Match().withPlayerOne(players.get(3)).withPlayerTwo(players.get(4)).withDivision(division),
+                new Match().withPlayerOne(players.get(3)).withPlayerTwo(players.get(5)).withDivision(division),
+                new Match().withPlayerOne(players.get(4)).withPlayerTwo(players.get(5)).withDivision(division)
+        );
+
+        assertEquals(numberOfMatch, matches.size());
+        assertEquals(expectedMatches, matches);
+    }
+
+    @Test
+    public void shouldCreateMatchesWithNoPlayers() {
+       // given
+        List<Player> players = Arrays.asList();
+        Division division = new Division();
+
+        // when
+        List<Match> matches = new NewDivisionService().createMatches(players, division);
+        int numberOfMatch = 0;
+        for(int i = players.size()-1 ; i > 0 ; i--) {
+            numberOfMatch += i;
+        }
+
+        // then
+        List<Match> expectedMatches = Arrays.asList();
+
+        assertEquals(numberOfMatch, matches.size());
+        assertEquals(expectedMatches, matches);
+    }
+
+    @Test
     public void shouldSortPlayersByScore() {
+        // given
         Map<Long, Player> players = new HashMap<>();
-        players.put(1l, (Player) new Player().withId(1l)); // always lost  0:1/2 + 0:1/2 + 0:1/2 + 0:1/2 = 4/2 = 2
+        players.put(1l, (Player) new Player().withId(1l)); // always lost  0:1/2 + 0:1/2 + 0:1/2 + 0:1/2  + 0:1/2 = 5/2 = 2.5
         players.put(2l, (Player) new Player().withId(2l)); // always won 2:(3 + 0.2)/2 + 3:(3 + 0.3)/2 + 3:(3 + 0.3)/2 = 9.8/2 = 4.9
         players.put(3l, (Player) new Player().withId(3l)); // lost and won 2:(3 + 0.2)/2 2l:(1 + 0.2)/2 = 4.4/2 = 2.2
         players.put(4l, (Player) new Player().withId(4l)); // only played one 2:(3 + 0.2)/2 = 3.2/2 = 1.6
@@ -30,33 +94,35 @@ public class NewDivisionServiceTest {
                 new Match().withDivision(division).withPlayerOne(players.get(2l)).withPlayerTwo(players.get(1l)).withScore("3-0"),
                 new Match().withDivision(division).withPlayerOne(players.get(1l)).withPlayerTwo(players.get(3l)).withScore("0-2"),
                 new Match().withDivision(division).withPlayerOne(players.get(2l)).withPlayerTwo(players.get(3l)).withScore("3-2"),
-                new Match().withDivision(division).withPlayerOne(players.get(1l)).withPlayerTwo(players.get(4l)).withScore("0-2")
+                new Match().withDivision(division).withPlayerOne(players.get(1l)).withPlayerTwo(players.get(4l)).withScore("0-2"),
+                new Match().withDivision(division).withPlayerOne(players.get(1l)).withPlayerTwo((Player) new Player().withId(6l)).withScore("0-5") // 1l against inactive player
         );
 
+        // when
         Map<Long, Double> sortedScores = new NewDivisionService().sortPlayersByScore(players, matches);
-        assertEquals(Arrays.asList(4.9, 2.2, 2.0, 1.6, 0.0), new ArrayList<>(sortedScores.values()));
-        assertEquals(Arrays.asList(2l, 3l, 1l, 4l, 5l), new ArrayList<>(sortedScores.keySet()));
+
+        // then
+        assertEquals(Arrays.asList(4.9, 2.5, 2.2, 1.6, 0.0), new ArrayList<>(sortedScores.values()));
+        assertEquals(Arrays.asList(2l, 1l, 3l, 4l, 5l), new ArrayList<>(sortedScores.keySet()));
     }
 
     @Test
     public void shouldAllocatePlayersToDivisions() {
+        // given
         int numberOfPlayers = 20;
-
         Map<Long, Player> players = new LinkedHashMap<>();
         for (long p = 0; p < numberOfPlayers; p++) {
             players.put(p, (Player) new Player().withId(p));
         }
         NewDivisionService.DivisionSize divisionSize = new NewDivisionService().calculationDivisionSizeCharacteristics(numberOfPlayers); // 7, 2, 1
         List<Long> sortedPlayerIds = new ArrayList<>(players.keySet());
-
         Round round = new Round();
+
+        // when
         List<Division> divisions = new NewDivisionService().allocationDivisions(players, round, divisionSize, sortedPlayerIds);
 
+        // then
         assertEquals(3, divisions.size());
-        for (long p = 0; p < numberOfPlayers; p++) {
-            System.out.println("player: " + p + " in division: " + players.get(p).getCurrentDivision().getName());
-        }
-
         for (long p = 0; p < 7; p++) {
             int divisionName = 1;
             assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
@@ -73,23 +139,21 @@ public class NewDivisionServiceTest {
 
     @Test
     public void shouldAllocatePlayersToDivisionsMultipleSmallerDivisions() {
+        // given
         int numberOfPlayers = 37;
-
         Map<Long, Player> players = new LinkedHashMap<>();
         for (long p = 0; p < numberOfPlayers; p++) {
             players.put(p, (Player) new Player().withId(p));
         }
         NewDivisionService.DivisionSize divisionSize = new NewDivisionService().calculationDivisionSizeCharacteristics(numberOfPlayers); // 8, 2, 3
         List<Long> sortedPlayerIds = new ArrayList<>(players.keySet());
-
         Round round = new Round();
+
+        // when
         List<Division> divisions = new NewDivisionService().allocationDivisions(players, round, divisionSize, sortedPlayerIds);
 
+        // then
         assertEquals(5, divisions.size());
-        for (long p = 0; p < numberOfPlayers; p++) {
-            System.out.println("player: " + p + " in division: " + players.get(p).getCurrentDivision().getName());
-        }
-
         for (long p = 0; p < 8; p++) {
             int divisionName = 1;
             assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());

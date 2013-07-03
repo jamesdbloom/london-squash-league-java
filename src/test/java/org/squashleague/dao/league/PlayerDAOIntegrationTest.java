@@ -450,7 +450,7 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        playerDAO.update(null);
+        playerDAO.update((Player)null);
     }
 
     @Test(expected = IllegalArgumentException.class)
