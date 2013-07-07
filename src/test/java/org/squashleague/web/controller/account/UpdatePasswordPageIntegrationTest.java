@@ -1,4 +1,4 @@
-package org.squashleague.web.controller.login;
+package org.squashleague.web.controller.account;
 
 import org.junit.Before;
 import org.junit.Test;

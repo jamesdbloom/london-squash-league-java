@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.squashleague.domain.account.Role;
 import org.squashleague.domain.account.User;
 

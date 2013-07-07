@@ -14,7 +14,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.RoundDAO;
-import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Round;
 

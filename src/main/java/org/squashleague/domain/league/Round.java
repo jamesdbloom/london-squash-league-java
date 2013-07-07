@@ -13,7 +13,8 @@ import org.squashleague.domain.ModelObject;
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 @Entity
 @Cacheable
@@ -32,10 +33,12 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     @NotNull(message = "{validation.round.division}")
     @ManyToOne
     private League league;
-    // @NotNull(message = "{validation.round.previousRound}")
     @OneToOne
     private Round previousRound;
-
+    @Transient
+    private Collection<Division> divisions;
+    @Transient
+    private Map<Player, Double> playerSortedByScore;
 
     public DateTime getStartDate() {
         return startDate;
@@ -109,6 +112,27 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     public Round withLeague(League division) {
         setLeague(division);
         return this;
+    }
+
+    public Collection<Division> getDivisions() {
+        return divisions;
+    }
+
+    public void setDivisions(Collection<Division> divisions) {
+        this.divisions = divisions;
+    }
+
+    public Round withDivisions(Collection<Division> divisions) {
+        setDivisions(divisions);
+        return this;
+    }
+
+    public Map<Player, Double> getPlayerSortedByScore() {
+        return playerSortedByScore;
+    }
+
+    public void setPlayerSortedByScore(Map<Player, Double> playerSortedByScore) {
+        this.playerSortedByScore = playerSortedByScore;
     }
 
     @Override

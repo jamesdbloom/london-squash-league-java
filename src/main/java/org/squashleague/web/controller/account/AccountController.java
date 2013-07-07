@@ -5,15 +5,19 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.*;
-import org.squashleague.service.http.RequestParser;
+import org.squashleague.domain.league.League;
+import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.PlayerStatus;
+import org.squashleague.domain.league.Round;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.web.tasks.CommandHolder;
 import org.squashleague.web.tasks.account.LoadPlayerRounds;
@@ -22,7 +26,6 @@ import org.squashleague.web.tasks.account.LoadUserAccountData;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 
 /**

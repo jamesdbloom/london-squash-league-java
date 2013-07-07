@@ -1,4 +1,4 @@
-package org.squashleague.web.controller.login;
+package org.squashleague.web.controller.account;
 
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;

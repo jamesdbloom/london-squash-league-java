@@ -20,9 +20,7 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -312,12 +310,12 @@ public class RoundDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test(expected = Exception.class)
     public void shouldThrowExceptionWhenSavingNull() {
-        roundDAO.save(null);
+        roundDAO.save((Round) null);
     }
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        roundDAO.update((Round)null);
+        roundDAO.update((Round) null);
     }
 
     @Test(expected = Exception.class)

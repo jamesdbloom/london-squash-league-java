@@ -11,10 +11,7 @@ import org.joda.time.DateTime;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.account.User;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
@@ -100,27 +97,51 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return this;
     }
 
-    public Double getPlayerOnePoints() {
-        return calculatePoints(getPlayerScore(0), getPlayerScore(1));
+    public Double getPlayerOneTotalPoints() {
+        return calculateTotalPoints(getPlayerScore(0), getPlayerScore(1));
     }
 
-    public Double getPlayerTwoPoints() {
-        return calculatePoints(getPlayerScore(1), getPlayerScore(0));
+    public Integer getPlayerOneWonOrLostPoints() {
+        return calculateWonOrLostPoints(getPlayerScore(0), getPlayerScore(1));
     }
 
-    private Double calculatePoints(int currentPlayer, int opponent) {
+    public Double getPlayerOneGamesPoints() {
+        return calculateGamesPoints(getPlayerScore(0));
+    }
+
+    public Double getPlayerTwoTotalPoints() {
+        return calculateTotalPoints(getPlayerScore(1), getPlayerScore(0));
+    }
+
+    public Integer getPlayerTwoWonOrLostPoints() {
+        return calculateWonOrLostPoints(getPlayerScore(0), getPlayerScore(1));
+    }
+
+    public Double getPlayerTwoGamesPoints() {
+        return calculateGamesPoints(getPlayerScore(0));
+    }
+
+    private Double calculateTotalPoints(int currentPlayer, int opponent) {
         if (score != null) {
-            int wonOrLostPoints = 2;
-            if (currentPlayer > opponent) {
-                wonOrLostPoints = 3;
-            } else if (opponent > currentPlayer) {
-                wonOrLostPoints = 1;
-            }
-            double totalPoints = (wonOrLostPoints + (currentPlayer / 10.0)) / division.getName();
-//            return Math.floor(totalPoints * 100) / 100;
+            int wonOrLostPoints = calculateWonOrLostPoints(currentPlayer, opponent);
+            double totalPoints = (wonOrLostPoints + calculateGamesPoints(currentPlayer)) / division.getName();
             return new BigDecimal(totalPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
         return 0.0;
+    }
+
+    private double calculateGamesPoints(int currentPlayer) {
+        return (currentPlayer / 10.0);
+    }
+
+    private int calculateWonOrLostPoints(int currentPlayer, int opponent) {
+        int wonOrLostPoints = 2;
+        if (currentPlayer > opponent) {
+            wonOrLostPoints = 3;
+        } else if (opponent > currentPlayer) {
+            wonOrLostPoints = 1;
+        }
+        return wonOrLostPoints;
     }
 
     private int getPlayerScore(int i) {

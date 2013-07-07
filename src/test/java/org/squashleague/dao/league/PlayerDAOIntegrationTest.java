@@ -21,9 +21,7 @@ import javax.annotation.Resource;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -445,12 +443,12 @@ public class PlayerDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenSavingNull() {
-        playerDAO.save(null);
+        playerDAO.save((Player) null);
     }
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        playerDAO.update((Player)null);
+        playerDAO.update((Player) null);
     }
 
     @Test(expected = IllegalArgumentException.class)

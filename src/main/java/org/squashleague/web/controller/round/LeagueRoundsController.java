@@ -1,6 +1,10 @@
 package org.squashleague.web.controller.round;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.sun.istack.internal.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
 import org.slf4j.Logger;
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.league.*;
-import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Player;
@@ -52,13 +55,18 @@ public class LeagueRoundsController {
     public String list(Model uiModel) {
         uiModel.addAttribute("environment", environment);
 
+        Multimap<Long, Division> roundIdToDivision = Multimaps.index(divisionDAO.findAll(), new Function<Division, Long>() {
+            @Override
+            public Long apply(Division division) {
+                return division.getRound().getId();
+            }
+        });
         Map<String, Round> rounds = new LinkedHashMap<>();
         for (Round round : roundDAO.findAll()) {
-            rounds.put(round.getLeague().getId().toString() + round.getStartDate() + round.getEndDate(), round);
+            rounds.put(round.getLeague().getId().toString() + round.getStartDate() + round.getEndDate(), round.withDivisions(roundIdToDivision.get(round.getId())));
         }
-
-        List<Round> values = new ArrayList<>(rounds.values());
-        Collections.sort(values, new Comparator<Round>() {
+        List<Round> sortedRounds = new ArrayList<>(rounds.values());
+        Collections.sort(sortedRounds, new Comparator<Round>() {
             @Override
             public int compare(Round roundOne, Round roundTwo) {
                 int leagueComparison = roundOne.getLeague().compareTo(roundTwo.getLeague());
@@ -66,7 +74,8 @@ public class LeagueRoundsController {
                 return (leagueComparison == 0 ? (startDate == 0 ? roundOne.getEndDate().compareTo(roundTwo.getEndDate()) : startDate) : leagueComparison);
             }
         });
-        uiModel.addAttribute("rounds", values);
+
+        uiModel.addAttribute("rounds", sortedRounds);
         uiModel.addAttribute("leagues", leagueDAO.findAll());
 
         return "page/round/leagueRounds";
@@ -144,15 +153,22 @@ public class LeagueRoundsController {
 
     @Transactional
     @RequestMapping(value = "/createMatches", params = "roundId", method = RequestMethod.POST)
-    public String createMatches(Long roundId) {
+    public String createMatches(Long roundId, RedirectAttributes redirectAttributes) {
         Round round = roundDAO.findById(roundId);
         if (round == null) {
             return "redirect:/errors/403";
         }
-        Map<Long, Player> players = Maps.uniqueIndex(playerDAO.findAllActiveByLeague(round.getLeague()), ModelObject.TO_MAP);
-        List<Division> divisions = divisionSizeService.allocateDivisions(players, matchDAO.findAllInRound(round, 1), round);
-        divisionDAO.update(divisions);
-        playerDAO.update(players.values());
+        List<Division> oldDivisions = divisionDAO.findAllByRound(round);
+        if (oldDivisions.size() > 0) {
+            redirectAttributes.addFlashAttribute("message", "Round " + round.getLeague().getClub().getName() + " - " + round.getLeague().getName() + " - (" + round.getStartDate().toString("yyyy-MM-dd") + " - " + round.getEndDate().toString("yyyy-MM-dd") + ") already has divisions");
+            redirectAttributes.addFlashAttribute("title", "Can't create matches");
+            return "redirect:/message";
+        }
+
+        List<Player> players = playerDAO.findAllActiveByLeague(round.getLeague());
+        divisionDAO.save(divisionSizeService.allocateDivisions(players, matchDAO.findAllInRound(round, 1), round));
+        matchDAO.save(divisionSizeService.createMatches(players));
+        playerDAO.update(players);
 
         return "redirect:/leagueRounds";
     }

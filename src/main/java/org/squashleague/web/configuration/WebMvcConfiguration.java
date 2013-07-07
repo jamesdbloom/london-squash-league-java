@@ -19,6 +19,7 @@ import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.*;
 import org.squashleague.web.interceptor.bundling.AddBundlingModelToViewModelInterceptor;
 import org.squashleague.web.interceptor.bundling.WroModelHolder;
+import org.squashleague.web.interceptor.navigation.NavigationInterceptor;
 import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
 import ro.isdc.wro.manager.factory.WroManagerFactory;
 
@@ -127,6 +128,7 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AddBundlingModelToViewModelInterceptor(wroModelHolder, environment.getProperty("bundling.enabled")));
+        registry.addInterceptor(new NavigationInterceptor());
     }
 
     @Bean

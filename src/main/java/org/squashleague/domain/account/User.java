@@ -10,7 +10,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Player;
-import org.squashleague.domain.league.Round;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

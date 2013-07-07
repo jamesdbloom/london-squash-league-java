@@ -1,4 +1,4 @@
-package org.squashleague.web.controller.login;
+package org.squashleague.web.controller.account;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

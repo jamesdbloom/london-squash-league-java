@@ -288,6 +288,13 @@
                                 <option value="${division.id}" <#if player.currentDivision?? && division.id == player.currentDivision.id>selected="selected"</#if>>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.name}</option>
                             </#list>
                         </select>
+                    <#else>
+                        <select id="league" name="league" required="required" title="${environment.getProperty("validation.player.league")}">
+                            <option value="">${environment.getProperty("message.general.please_select")}</option>
+                            <#list leagues as league>
+                                <option value="${league.id}" <#if player.league?? && league.id == player.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
+                            </#list>
+                        </select>
                     </#if>
                 </td>
                 <td class="last">

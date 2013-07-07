@@ -7,8 +7,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.league.Round;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

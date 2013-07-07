@@ -46,6 +46,15 @@ public abstract class AbstractJpaDAO<T extends ModelObject<T>> {
 
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void save(Collection<T> entities) {
+        for (T entity : entities) {
+            entityManager.persist(entity);
+        }
+        entityManager.flush();
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void update(Collection<T> entities) {
         for (T entity : entities) {
             entityManager.merge(entity);

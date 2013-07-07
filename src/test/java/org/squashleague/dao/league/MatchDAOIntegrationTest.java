@@ -19,9 +19,7 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -162,7 +160,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         matchDAO.save(matchFive);
 
         // when
-        Object[] actualMatches = matchDAO.findAllByUser(userTwo).toArray();
+        Object[] actualMatches = matchDAO.findAllByUser(userTwo, playerTwo.getCurrentDivision().getRound(), 2).toArray();
         try {
             // then
             assertArrayEquals(new Match[]{matchTwo, matchFour}, actualMatches);
@@ -342,12 +340,12 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test(expected = Exception.class)
     public void shouldThrowExceptionWhenSavingNull() {
-        matchDAO.save(null);
+        matchDAO.save((Match) null);
     }
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        matchDAO.update((Match)null);
+        matchDAO.update((Match) null);
     }
 
     @Test(expected = Exception.class)

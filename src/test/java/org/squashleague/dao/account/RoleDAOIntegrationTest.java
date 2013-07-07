@@ -16,9 +16,7 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -240,12 +238,12 @@ public class RoleDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test(expected = Exception.class)
     public void shouldThrowExceptionWhenSavingNull() {
-        roleDAO.save(null);
+        roleDAO.save((Role) null);
     }
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        roleDAO.update((Role)null);
+        roleDAO.update((Role) null);
     }
 
     @Test(expected = Exception.class)

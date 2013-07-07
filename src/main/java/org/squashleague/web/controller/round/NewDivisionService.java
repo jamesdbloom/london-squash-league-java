@@ -1,10 +1,14 @@
 package org.squashleague.web.controller.round;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
@@ -15,29 +19,40 @@ import java.util.*;
 public class NewDivisionService {
     static final int MAX_DIVISIONS = 7;
 
-    @VisibleForTesting
-    Map<Long, Double> sortPlayersByScore(Map<Long, Player> players, List<Match> matches) {
-        final Map<Long, Double> matchScores = new TreeMap<>();
+    public Map<Player, Double> sortPlayersByScore(Collection<Match> matches) {
+        Map<Long, Player> players = new HashMap<>();
         for (Match match : matches) {
-            incrementMap(matchScores, match.getPlayerOne().getId(), match.getPlayerOnePoints());
-            incrementMap(matchScores, match.getPlayerTwo().getId(), match.getPlayerTwoPoints());
+            players.put(match.getPlayerOne().getId(), match.getPlayerOne());
+            players.put(match.getPlayerTwo().getId(), match.getPlayerTwo());
+        }
+        return sortPlayersByScore(players, matches);
+    }
+
+    @VisibleForTesting
+    Map<Player, Double> sortPlayersByScore(Map<Long, Player> players, Collection<Match> matches) {
+        final Map<Player, Double> matchScores = new HashMap<>();
+        for (Match match : matches) {
+            incrementMap(matchScores, match.getPlayerOne(), match.getPlayerOneTotalPoints());
+            incrementMap(matchScores, match.getPlayerTwo(), match.getPlayerTwoTotalPoints());
         }
         // add player who did not have scores entered for any of their matches
         for (Long playerId : players.keySet()) {
-            if (!matchScores.containsKey(playerId)) {
-                matchScores.put(playerId, 0.0);
+            if (!matchScores.containsKey(players.get(playerId))) {
+                matchScores.put(players.get(playerId), 0.0);
             }
         }
         // remove players who are no longer active
-        for (Long playerId : matchScores.keySet()) {
-            if (!players.containsKey(playerId)) {
+        for (Player playerId : new ArrayList<>(matchScores.keySet())) {
+            if (!players.containsKey(playerId.getId())) {
                 matchScores.remove(playerId);
             }
         }
 
-        return ImmutableSortedMap.copyOf(matchScores, new Comparator<Long>() {
-            public int compare(Long a, Long b) {
+        return ImmutableSortedMap.copyOf(matchScores, new Comparator<Player>() {
+            public int compare(Player a, Player b) {
                 if (matchScores.get(a) > matchScores.get(b)) {
+                    return -1;
+                } else if (matchScores.get(a).equals(matchScores.get(b)) && a.getUser().getName().compareTo(b.getUser().getName()) <= 0) {
                     return -1;
                 } else {
                     return 1;
@@ -46,7 +61,7 @@ public class NewDivisionService {
         });
     }
 
-    private void incrementMap(Map<Long, Double> map, Long id, Double value) {
+    private void incrementMap(Map<Player, Double> map, Player id, Double value) {
         if (map.containsKey(id)) {
             map.put(id, map.get(id) + value);
         } else {
@@ -54,30 +69,43 @@ public class NewDivisionService {
         }
     }
 
-    public List<Division> allocateDivisions(Map<Long, Player> players, List<Match> matches, Round round) {
+    public List<Division> allocateDivisions(List<Player> players, List<Match> matches, Round round) {
+        Map<Long, Player> playersById = Maps.uniqueIndex(players, ModelObject.TO_MAP);
         DivisionSize divisionSize = calculationDivisionSizeCharacteristics(players.size());
-        List<Long> sortedPlayerIds = new ArrayList<>(sortPlayersByScore(players, matches).keySet());
-        return allocationDivisions(players, round, divisionSize, sortedPlayerIds);
+        List<Player> sortedPlayers = new ArrayList<>(sortPlayersByScore(playersById, matches).keySet());
+        return allocationDivisions(round, divisionSize, sortedPlayers);
     }
 
     @VisibleForTesting
-    List<Division> allocationDivisions(Map<Long, Player> players, Round round, DivisionSize divisionSizeAllocations, List<Long> sortedPlayerIds) {
+    List<Division> allocationDivisions(Round round, DivisionSize divisionSizeAllocations, List<Player> sortedPlayers) {
         List<Division> divisions = new ArrayList<>();
         int divisionCounter = 0;
         int totalPlayerCounter = 0;
         for (; divisionCounter < (divisionSizeAllocations.noOfFullSizeDivisions + divisionSizeAllocations.noOfSmallerDivisions); divisionCounter++) {
             Division division = new Division().withName(divisionCounter + 1).withRound(round);
-            int maxDivisionPlayer =  totalPlayerCounter + (divisionSizeAllocations.divisionSize - (divisionCounter < divisionSizeAllocations.noOfFullSizeDivisions ? 0 : 1));
+            int maxDivisionPlayer = totalPlayerCounter + (divisionSizeAllocations.divisionSize - (divisionCounter < divisionSizeAllocations.noOfFullSizeDivisions ? 0 : 1));
             for (int divisionPlayerCounter = totalPlayerCounter; divisionPlayerCounter < maxDivisionPlayer; divisionPlayerCounter++, totalPlayerCounter++) {
-                players.get(sortedPlayerIds.get(divisionPlayerCounter)).setCurrentDivision(division);
+                sortedPlayers.get(divisionPlayerCounter).setCurrentDivision(division);
             }
             divisions.add(division);
         }
         return divisions;
     }
 
+    public List<Match> createMatches(Collection<Player> players) {
+        List<Match> matches = new ArrayList<>();
+        Multimap<Division, Player> playersByDivision = ArrayListMultimap.create();
+        for (Player player : players) {
+            playersByDivision.put(player.getCurrentDivision(), player);
+        }
+        for (Division division : playersByDivision.keySet()) {
+            matches.addAll(createMatches(playersByDivision.get(division), division));
+        }
+        return matches;
+    }
+
     @VisibleForTesting
-    List<Match> createMatches(List<Player> players, Division division) {
+    List<Match> createMatches(Collection<Player> players, Division division) {
         List<Match> matches = new ArrayList<>();
         Set<String> playerCombinations = new HashSet<>();
         for (Player playerOne : players) {

@@ -95,8 +95,10 @@ public class Player extends ModelObject<Player> {
         return matches;
     }
 
-    public Player addMatch(Match match) {
-        matches.put(match.getId(), match);
+    public Player withMatches(Collection<Match> matches) {
+        for (Match match : matches) {
+            this.matches.put(match.getId(), match);
+        }
         return this;
     }
 

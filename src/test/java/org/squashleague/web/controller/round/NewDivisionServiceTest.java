@@ -17,7 +17,7 @@ public class NewDivisionServiceTest {
 
     @Test
     public void shouldCreateMatches() {
-         // given
+        // given
         List<Player> players = Arrays.asList(
                 (Player) new Player().withId(0l),
                 (Player) new Player().withId(1l),
@@ -33,7 +33,7 @@ public class NewDivisionServiceTest {
 
         // then
         int numberOfMatch = 0;
-        for(int i = players.size()-1 ; i > 0 ; i--) {
+        for (int i = players.size() - 1; i > 0; i--) {
             numberOfMatch += i;
         }
         List<Match> expectedMatches = Arrays.asList(
@@ -60,14 +60,14 @@ public class NewDivisionServiceTest {
 
     @Test
     public void shouldCreateMatchesWithNoPlayers() {
-       // given
+        // given
         List<Player> players = Arrays.asList();
         Division division = new Division();
 
         // when
         List<Match> matches = new NewDivisionService().createMatches(players, division);
         int numberOfMatch = 0;
-        for(int i = players.size()-1 ; i > 0 ; i--) {
+        for (int i = players.size() - 1; i > 0; i--) {
             numberOfMatch += i;
         }
 
@@ -99,41 +99,40 @@ public class NewDivisionServiceTest {
         );
 
         // when
-        Map<Long, Double> sortedScores = new NewDivisionService().sortPlayersByScore(players, matches);
+        Map<Player, Double> sortedScores = new NewDivisionService().sortPlayersByScore(players, matches);
 
         // then
         assertEquals(Arrays.asList(4.9, 2.5, 2.2, 1.6, 0.0), new ArrayList<>(sortedScores.values()));
-        assertEquals(Arrays.asList(2l, 1l, 3l, 4l, 5l), new ArrayList<>(sortedScores.keySet()));
+        assertEquals(Arrays.asList(players.get(2l), players.get(1l), players.get(3l), players.get(4l), players.get(5l)), new ArrayList<>(sortedScores.keySet()));
     }
 
     @Test
     public void shouldAllocatePlayersToDivisions() {
         // given
         int numberOfPlayers = 20;
-        Map<Long, Player> players = new LinkedHashMap<>();
+        List<Player> sortedPlayers = new ArrayList<>();
         for (long p = 0; p < numberOfPlayers; p++) {
-            players.put(p, (Player) new Player().withId(p));
+            sortedPlayers.add((Player) new Player().withId(p));
         }
         NewDivisionService.DivisionSize divisionSize = new NewDivisionService().calculationDivisionSizeCharacteristics(numberOfPlayers); // 7, 2, 1
-        List<Long> sortedPlayerIds = new ArrayList<>(players.keySet());
         Round round = new Round();
 
         // when
-        List<Division> divisions = new NewDivisionService().allocationDivisions(players, round, divisionSize, sortedPlayerIds);
+        List<Division> divisions = new NewDivisionService().allocationDivisions(round, divisionSize, sortedPlayers);
 
         // then
         assertEquals(3, divisions.size());
-        for (long p = 0; p < 7; p++) {
+        for (int p = 0; p < 7; p++) {
             int divisionName = 1;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
-        for (long p = 7; p < 14; p++) {
+        for (int p = 7; p < 14; p++) {
             int divisionName = 2;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
-        for (long p = 14; p < numberOfPlayers; p++) {
+        for (int p = 14; p < numberOfPlayers; p++) {
             int divisionName = 3;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
     }
 
@@ -141,38 +140,37 @@ public class NewDivisionServiceTest {
     public void shouldAllocatePlayersToDivisionsMultipleSmallerDivisions() {
         // given
         int numberOfPlayers = 37;
-        Map<Long, Player> players = new LinkedHashMap<>();
+        List<Player> sortedPlayers = new ArrayList<>();
         for (long p = 0; p < numberOfPlayers; p++) {
-            players.put(p, (Player) new Player().withId(p));
+            sortedPlayers.add((Player) new Player().withId(p));
         }
         NewDivisionService.DivisionSize divisionSize = new NewDivisionService().calculationDivisionSizeCharacteristics(numberOfPlayers); // 8, 2, 3
-        List<Long> sortedPlayerIds = new ArrayList<>(players.keySet());
         Round round = new Round();
 
         // when
-        List<Division> divisions = new NewDivisionService().allocationDivisions(players, round, divisionSize, sortedPlayerIds);
+        List<Division> divisions = new NewDivisionService().allocationDivisions(round, divisionSize, sortedPlayers);
 
         // then
         assertEquals(5, divisions.size());
-        for (long p = 0; p < 8; p++) {
+        for (int p = 0; p < 8; p++) {
             int divisionName = 1;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
-        for (long p = 8; p < 16; p++) {
+        for (int p = 8; p < 16; p++) {
             int divisionName = 2;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
-        for (long p = 16; p < 23; p++) {
+        for (int p = 16; p < 23; p++) {
             int divisionName = 3;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
-        for (long p = 23; p < 30; p++) {
+        for (int p = 23; p < 30; p++) {
             int divisionName = 4;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
-        for (long p = 30; p < numberOfPlayers; p++) {
+        for (int p = 30; p < numberOfPlayers; p++) {
             int divisionName = 5;
-            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), players.get(p).getCurrentDivision().getName());
+            assertEquals("player: " + p + " in division: " + divisionName, new Integer(divisionName), sortedPlayers.get(p).getCurrentDivision().getName());
         }
     }
 

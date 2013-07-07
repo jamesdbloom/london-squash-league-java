@@ -3,13 +3,8 @@ package org.squashleague.dao.league;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.squashleague.dao.AbstractJpaDAO;
-import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.Division;
-import org.squashleague.domain.league.Player;
-import org.squashleague.domain.league.PlayerStatus;
-import org.squashleague.domain.league.Round;
+import org.squashleague.domain.league.*;
 
 import java.util.List;
 
@@ -24,4 +19,7 @@ public class DivisionDAO extends AbstractJpaDAO<Division> {
         super(Division.class);
     }
 
+    public List<Division> findAllByRound(Round round) {
+        return entityManager.createQuery("from Division as division where division.round.id = " + round.getId(), Division.class).getResultList();
+    }
 }

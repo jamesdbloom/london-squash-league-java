@@ -22,8 +22,8 @@ import org.squashleague.service.security.SpringSecurityUserContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 /**

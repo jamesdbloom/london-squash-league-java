@@ -1,15 +1,13 @@
 package org.squashleague.web.tasks.account;
 
-import com.google.common.collect.Maps;
 import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.account.User;
-import org.squashleague.domain.league.Match;
+import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Player;
+import org.squashleague.domain.league.Round;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -29,18 +27,15 @@ public class LoadUserAccountData implements Callable<User> {
 
     @Override
     public User call() throws Exception {
-        List<Match> matches = matchDAO.findAllByUser(user);
         List<Player> players = playerDAO.findAllByUser(user);
-        Map<Long, Player> playersById = Maps.uniqueIndex(players, ModelObject.TO_MAP);
-        for (Match match : matches) {
-            if (playersById.containsKey(match.getPlayerOne().getId())) {
-                playersById.get(match.getPlayerOne().getId()).addMatch(match);
+        for(Player player : players) {
+            Division currentDivision = player.getCurrentDivision();
+            Round round = null;
+            if(currentDivision != null) {
+                round = currentDivision.getRound();
             }
-            if (playersById.containsKey(match.getPlayerTwo().getId())) {
-                playersById.get(match.getPlayerTwo().getId()).addMatch(match);
-            }
+            player.withMatches(matchDAO.findAllByUser(user, round, 2));
         }
-
         user.setPlayers(players);
         return user;
     }

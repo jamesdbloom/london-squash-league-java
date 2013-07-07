@@ -13,9 +13,7 @@ import org.squashleague.domain.league.Round;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom

@@ -1,7 +1,6 @@
 package org.squashleague.web.controller.account;
 
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,13 +8,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.squashleague.dao.league.LeagueDAO;
 import org.squashleague.dao.league.MatchDAO;
-import org.squashleague.dao.league.PlayerDAO;
-import org.squashleague.dao.league.RoundDAO;
 import org.squashleague.domain.league.Match;
 import org.squashleague.service.http.RequestParser;
-import org.squashleague.service.security.SpringSecurityUserContext;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;

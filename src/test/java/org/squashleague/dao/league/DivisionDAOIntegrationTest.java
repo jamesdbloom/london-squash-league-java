@@ -292,7 +292,7 @@ public class DivisionDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test(expected = Exception.class)
     public void shouldThrowExceptionWhenSavingNull() {
-        divisionDAO.save(null);
+        divisionDAO.save((Division) null);
     }
 
     @Test

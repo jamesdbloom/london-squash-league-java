@@ -12,9 +12,7 @@ import org.squashleague.service.security.AdministratorLoggedInTest;
 
 import javax.annotation.Resource;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author jamesdbloom
@@ -185,12 +183,12 @@ public class ClubDAOIntegrationTest extends AdministratorLoggedInTest {
 
     @Test(expected = Exception.class)
     public void shouldThrowExceptionWhenSavingNull() {
-        clubDAO.save(null);
+        clubDAO.save((Club) null);
     }
 
     @Test
     public void shouldNotThrowExceptionWhenUpdatingNull() {
-        clubDAO.update((Club)null);
+        clubDAO.update((Club) null);
     }
 
     @Test(expected = Exception.class)
