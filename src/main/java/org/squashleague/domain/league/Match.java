@@ -11,7 +11,10 @@ import org.joda.time.DateTime;
 import org.squashleague.domain.ModelObject;
 import org.squashleague.domain.account.User;
 
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;

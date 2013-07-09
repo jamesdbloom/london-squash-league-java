@@ -28,13 +28,13 @@ public class LoadUserAccountData implements Callable<User> {
     @Override
     public User call() throws Exception {
         List<Player> players = playerDAO.findAllByUser(user);
-        for(Player player : players) {
+        for (Player player : players) {
             Division currentDivision = player.getCurrentDivision();
             Round round = null;
-            if(currentDivision != null) {
+            if (currentDivision != null) {
                 round = currentDivision.getRound();
             }
-            player.withMatches(matchDAO.findAllByUser(user, round, 2));
+            player.withMatches(matchDAO.findAllByPlayer(player, round, 2));
         }
         user.setPlayers(players);
         return user;

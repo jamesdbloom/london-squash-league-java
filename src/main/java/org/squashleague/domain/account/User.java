@@ -57,7 +57,6 @@ public class User extends ModelObject<User> {
     @Transient
     private transient Collection<Division> divisions;
 
-
     public boolean showMobileToOpponent() {
         return mobilePrivacy == MobilePrivacy.SHOW_ALL || mobilePrivacy == MobilePrivacy.SHOW_OPPONENTS;
     }

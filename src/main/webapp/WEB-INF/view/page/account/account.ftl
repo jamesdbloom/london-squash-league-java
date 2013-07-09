@@ -11,7 +11,7 @@
 <#macro content_section>
 <h2 class="table_title">Your Details</h2>
 <table>
-    <tbody>
+    <tbody class="strip_rows">
         <tr>
             <th>Name</th>
             <th>Email</th>
@@ -31,7 +31,7 @@
 <form method="post" action="/account/register">
     <@errors.print_errors_list "player"/>
     <table class="action_table">
-        <tbody>
+        <tbody class="strip_rows">
             <tr>
                 <th>Club</th>
                 <th><label for="unregisteredLeagues">League</label></th>
@@ -52,7 +52,7 @@
             </#list>
             <#if (unregisteredLeagues?size > 0)>
                 <tr>
-                    <td class="last" colspan="4">
+                    <td class="last" colspan="3">
                         <select id="unregisteredLeagues" name="league" required="required">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
                             <#list unregisteredLeagues as league>
@@ -60,6 +60,7 @@
                             </#list>
                         </select>
                     </td>
+                    <td class="last hide_on_very_small_screen"></td>
                     <td class="button_column last"><input <#if (user.players?size = 0) >class="submit primary"</#if> type="submit" name="register" value="Register"></td>
                 </tr>
             </#if>
@@ -71,7 +72,7 @@
     <h2 class="table_title" style="margin-top: 1em;">Rounds</h2>
     <div class="errors_messages">
         <p>You are not currently in any rounds for one of the following reasons:</p>
-        <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
+        <ul style="margin: 1em; list-style: disc outside none;">
             <li style="margin-left: 2em;">you are not an active player in any of your leagues,</li>
             <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but a new round has not started yet.</li>
         </ul>
@@ -79,7 +80,7 @@
     <#else>
     <h2 class="table_title">Rounds</h2>
     <table>
-        <tbody>
+        <tbody class="strip_rows">
             <tr>
                 <th>Division</th>
                 <th class="hide_on_small_screen">Status</th>
@@ -96,11 +97,12 @@
             </#list>
         </tbody>
     </table><h2 class="table_title" id="matches">Your Matches</h2>
+        <#assign totalPoints = 0/>
         <#list user.players as player>
             <#if (player.matches?size > 0)>
             <h2 class="table_subtitle">${player.currentDivision.round.league.club.name} &ndash; ${player.currentDivision.round.league.name}</h2>
             <table>
-                <tbody>
+                <tbody class="strip_rows">
                     <tr>
                         <th class="hide_on_very_small_screen">Division</th>
                         <th>Round</th>
@@ -108,17 +110,23 @@
                         <th>Player Two</th>
                         <th class="hide_on_medium_screen">Score Entered</th>
                         <th>Score</th>
+                        <th class="hide_on_very_small_screen">Points</th>
                     </tr>
                     <#list player.matches as match>
+                        <#assign totalPoints = totalPoints + match.playerOneTotalPoints/>
                         <tr>
-                            <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.division.round.league.name} &ndash; ${match.division.round.league.name}</td>
+                            <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.division.name}</td>
                             <td id="match_${player_index}_${match_index}_date">${match.division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.division.round.endDate.toDate()?string("dd MMM yyyy")}</td>
-                            <td id="match_${player_index}_${match_index}_playerOne"><@showContactDetails match.playerOne.user/></td>
-                            <td id="match_${player_index}_${match_index}_playerTwo"><@showContactDetails match.playerTwo.user/></td>
+                            <td id="match_${player_index}_${match_index}_playerOne"><@showContactDetails match.playerOne.user user/></td>
+                            <td id="match_${player_index}_${match_index}_playerTwo"><@showContactDetails match.playerTwo.user user/></td>
                             <td id="match_${player_index}_${match_index}_scoreEntered" class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
                             <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
+                            <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap " class="hide_on_very_small_screen"><@showPoints match match.playerOne.user user/></td>
                         </tr>
                     </#list>
+                    <tr>
+                        <td class="last" colspan="7" style="text-align: right">Total:&nbsp;&nbsp;${totalPoints}</td>
+                    </tr>
                 </tbody>
             </table>
             <div class="standalone_link">
@@ -129,9 +137,51 @@
     </#if>
 </#macro>
 
-<#macro showContactDetails user>
-${user.name}<br>
-    <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a></#if><br><a href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span class="display_on_small_screen">email</span></a>
+<#macro showContactDetails user you>
+    <#if user.id != you.id>
+    ${user.name}<br>
+        <#if user.showMobileToOpponent()><a href="tel:${user.mobile}">${user.mobile}</a><br></#if><a href="mailto:${user.email}" target="_blank"><span class="hide_on_small_screen">${user.email}</span><span class="display_on_small_screen">email</span></a>
+    <#else>
+    You
+    </#if>
+</#macro>
+
+<#macro showPoints match playerOne you>
+    <#if playerOne.id == you.id>
+    <table>
+        <tbody>
+            <tr>
+                <td>(&nbsp;${match.playerOneWonOrLostPoints}</td>
+                <td>+</td>
+                <td>${match.playerOneGamesPoints?string("0.0#")}&nbsp;)</td>
+                <td rowspan="2">=</td>
+                <td rowspan="2">${match.playerOneTotalPoints?string("0.00")}</td>
+            </tr>
+            <tr>
+                <td class="top_border top_border_right"></td>
+                <td class="top_border top_border_across">${match.division.name}</td>
+                <td class="top_border top_border_left"></td>
+            </tr>
+        </tbody>
+    </table>
+    <#else>
+    <table>
+        <tbody>
+            <tr>
+                <td>(&nbsp;${match.playerTwoWonOrLostPoints}</td>
+                <td>+</td>
+                <td>${match.playerTwoGamesPoints?string("0.0#")}&nbsp;)</td>
+                <td rowspan="2">=</td>
+                <td rowspan="2">${match.playerTwoTotalPoints?string("0.00")}</td>
+            </tr>
+            <tr>
+                <td class="top_border top_border_right"></td>
+                <td class="top_border top_border_across">${match.division.name}</td>
+                <td class="top_border top_border_left"></td>
+            </tr>
+        </tbody>
+    </table>
+    </#if>
 </#macro>
 
 <@page_html/>

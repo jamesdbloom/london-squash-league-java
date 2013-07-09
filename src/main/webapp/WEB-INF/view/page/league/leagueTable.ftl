@@ -25,10 +25,10 @@
                 <#assign dateHash = division.round.startDate.hashCode() + "_" + division.round.endDate.hashCode() />
                 <h2 class="table_title page_break" style="margin-top: 2em;">(${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</h2>
             </#if>
-            <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.round.league.name}</h2>
+            <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name}</h2>
             <#--<#if !(print?? && print)>-->
                 <table class="small_screen">
-                    <tbody>
+                    <tbody class="strip_rows">
                         <tr>
                             <th>Player One</th>
                             <th>Player Two</th>
@@ -45,7 +45,7 @@
                 </table>
             <#--</#if>-->
             <table class="league large_screen">
-                <tbody>
+                <tbody class="strip_rows">
                     <tr>
                         <th class="player"></th>
                         <#list division.players as playerColumn>

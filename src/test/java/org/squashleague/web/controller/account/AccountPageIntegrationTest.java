@@ -1,12 +1,19 @@
 package org.squashleague.web.controller.account;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.League;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.PlayerStatus;
+import org.squashleague.domain.league.Round;
 import org.squashleague.web.controller.WebAndDataIntegrationTest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -35,6 +42,37 @@ public class AccountPageIntegrationTest extends WebAndDataIntegrationTest {
             accountPage.hasPlayers(leaguesNoPlayers, playersUserBothDivisions);
             accountPage.hasRounds(rounds);
             accountPage.hasMatches(user, getUserMatches(addLists(matchesDivisionZero), user), getUserMatches(addLists(matchesDivisionOne), user));
+        } finally {
+            securityUserContext.setCurrentUser(LOGGED_IN_USER);
+        }
+    }
+
+    @Test
+    public void shouldDisplayAccountPageForPlayerWithNoDivision() throws Exception {
+        User user = playersNoDivision.get(0).getUser();
+        securityUserContext.setCurrentUser(user);
+
+        try {
+            MvcResult result = mockMvc.perform(get("/account").accept(MediaType.TEXT_HTML))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType("text/html;charset=UTF-8"))
+                    .andReturn();
+
+            final League usersOnlyLeague = playersNoDivision.get(0).getLeague();
+
+            List<League> userUnregisteredLeagues = new ArrayList<>(leagues);
+            userUnregisteredLeagues.remove(usersOnlyLeague);
+
+            AccountPage accountPage = new AccountPage(result);
+            accountPage.hasUserDetails(user);
+            accountPage.hasPlayers(userUnregisteredLeagues, playersNoDivision);
+            accountPage.hasRounds(new ArrayList<>(Collections2.filter(rounds, new Predicate<Round>() {
+                @Override
+                public boolean apply(Round round) {
+                    return round.getLeague().getId().equals(usersOnlyLeague.getId());
+                }
+            })));
+            accountPage.hasMatches(user);
         } finally {
             securityUserContext.setCurrentUser(LOGGED_IN_USER);
         }

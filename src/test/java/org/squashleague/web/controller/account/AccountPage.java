@@ -48,7 +48,7 @@ public class AccountPage {
             assertEquals(player.getLeague().getName(), leagueElement.text());
 
             Element currentDivisionElement = html.select("#player_" + i + "_currentDivision").first();
-            assertEquals(String.valueOf(player.getCurrentDivision().getName()), currentDivisionElement.text());
+            assertEquals(player.getCurrentDivision() != null ? String.valueOf(player.getCurrentDivision().getName()) : "", currentDivisionElement.text());
 
             Element statusElement = html.select("#player_" + i + "_status").first();
             assertEquals(player.getStatus().name(), statusElement.text());
@@ -88,16 +88,16 @@ public class AccountPage {
                 Match match = matches[i].get(j);
 
                 Element divisionElement = html.select("#match_" + i + "_" + j + "_division").first();
-                assertEquals(match.getDivision().getRound().getLeague().getName() + " – " + match.getDivision().getRound().getLeague().getName(), divisionElement.text());
+                assertEquals(match.getDivision().getName().toString(), divisionElement.text());
 
                 Element dateElement = html.select("#match_" + i + "_" + j + "_date").first();
                 assertEquals(match.getDivision().getRound().getStartDate().toString("dd MMM yyyy") + " – " + match.getDivision().getRound().getEndDate().toString("dd MMM yyyy"), dateElement.text());
 
                 Element playerOneElement = html.select("#match_" + i + "_" + j + "_playerOne").first();
-                assertEquals(buildPlayerContactDetails(match.getPlayerOne().getUser()), playerOneElement.text());
+                assertEquals(buildPlayerContactDetails(match.getPlayerOne().getUser(), currentUser), playerOneElement.text());
 
                 Element playerTwoElement = html.select("#match_" + i + "_" + j + "_playerTwo").first();
-                assertEquals(buildPlayerContactDetails(match.getPlayerTwo().getUser()), playerTwoElement.text());
+                assertEquals(buildPlayerContactDetails(match.getPlayerTwo().getUser(), currentUser), playerTwoElement.text());
 
                 Element scoreEnteredElement = html.select("#match_" + i + "_" + j + "_scoreEntered").first();
                 assertEquals((match.getScoreEntered() != null ? match.getScoreEntered().toString("dd MMM yyyy") : ""), scoreEnteredElement.text());
@@ -127,7 +127,11 @@ public class AccountPage {
         return "mailto:" + Joiner.on(",").join(emails);
     }
 
-    private String buildPlayerContactDetails(User user) {
-        return user.getName() + (user.getMobilePrivacy() == MobilePrivacy.SHOW_ALL || user.getMobilePrivacy() == MobilePrivacy.SHOW_OPPONENTS ? " " + user.getMobile() + " " : " ") + user.getEmail() + "email";
+    private String buildPlayerContactDetails(User user, User currentUser) {
+        if (user.equals(currentUser)) {
+            return "You";
+        } else {
+            return user.getName() + (user.getMobilePrivacy() == MobilePrivacy.SHOW_ALL || user.getMobilePrivacy() == MobilePrivacy.SHOW_OPPONENTS ? " " + user.getMobile() + " " : " ") + user.getEmail() + "email";
+        }
     }
 }

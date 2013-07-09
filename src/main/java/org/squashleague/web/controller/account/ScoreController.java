@@ -40,7 +40,8 @@ public class ScoreController {
         uiModel.addAttribute("match", match);
         uiModel.addAttribute("environment", environment);
         uiModel.addAttribute("scorePattern", Match.SCORE_PATTERN);
-        uiModel.addAttribute("referer", requestParser.parseRelativeURI(referer, "/account"));
+        String refererPage = requestParser.parseRelativeURI(referer, "/account");
+        uiModel.addAttribute("referer", (refererPage.contains("score/" + id) ? "/account" : refererPage));
         return "page/account/score";
     }
 

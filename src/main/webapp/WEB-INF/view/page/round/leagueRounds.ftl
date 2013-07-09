@@ -57,7 +57,7 @@
     <h2 class="table_subtitle page_break">${rounds[0].league.club.name} &ndash; ${rounds[0].league.name}</h2>
     <form action="/leagueRounds/createMatches" method="POST">
     <table class="action_table">
-    <tbody>
+    <tbody class="strip_rows">
         <tr>
             <th style="width: 35%;">Status</th>
             <th>Start</th>
@@ -71,7 +71,7 @@
             </table>
                 <h2 class="table_subtitle page_break" style="margin-top: 2em;">${round.league.club.name} &ndash; ${round.league.name}</h2>
             <table class="action_table">
-            <tbody>
+            <tbody class="strip_rows">
                 <tr>
                     <th style="width: 35%;">Status</th>
                     <th>Start</th>

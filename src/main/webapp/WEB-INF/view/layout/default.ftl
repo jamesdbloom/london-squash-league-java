@@ -34,7 +34,7 @@
 </#macro>
 
 <#macro page_meta>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
 <meta name="format-detection" content="telephone=no"/>
 <meta name="description" content="some silly description to have on this page"/>

@@ -79,43 +79,71 @@ public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
         registry.addConverter(
                 new Converter<String, User>() {
                     public User convert(String id) {
-                        return userDAO.findById(Long.parseLong(id));
+                        try {
+                            return userDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
         registry.addConverter(
                 new Converter<String, Club>() {
                     public Club convert(String id) {
-                        return clubDAO.findById(Long.parseLong(id));
+                        try {
+                            return clubDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
         registry.addConverter(
                 new Converter<String, League>() {
                     public League convert(String id) {
-                        return leagueDAO.findById(Long.parseLong(id));
+                        try {
+                            return leagueDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
         registry.addConverter(
                 new Converter<String, Division>() {
                     public Division convert(String id) {
-                        return divisionDAO.findById(Long.parseLong(id));
+                        try {
+                            return divisionDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
         registry.addConverter(
                 new Converter<String, Round>() {
                     public Round convert(String id) {
-                        return roundDAO.findById(Long.parseLong(id));
+                        try {
+                            return roundDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
         registry.addConverter(
                 new Converter<String, Player>() {
                     public Player convert(String id) {
-                        return playerDAO.findById(Long.parseLong(id));
+                        try {
+                            return playerDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
         registry.addConverter(
                 new Converter<String, Match>() {
                     public Match convert(String id) {
-                        return matchDAO.findById(Long.parseLong(id));
+                        try {
+                            return matchDAO.findById(Long.parseLong(id));
+                        } catch (NumberFormatException nfe) {
+                            return null;
+                        }
                     }
                 });
     }

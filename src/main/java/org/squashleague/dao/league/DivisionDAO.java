@@ -4,7 +4,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.squashleague.dao.AbstractJpaDAO;
-import org.squashleague.domain.league.*;
+import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.Round;
 
 import java.util.List;
 

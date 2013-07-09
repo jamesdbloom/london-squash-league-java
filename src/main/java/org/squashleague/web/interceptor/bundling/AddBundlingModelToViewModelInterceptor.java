@@ -3,7 +3,6 @@ package org.squashleague.web.interceptor.bundling;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import ro.isdc.wro.model.WroModel;

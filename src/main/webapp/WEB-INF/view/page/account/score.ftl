@@ -11,7 +11,7 @@
 <#macro content_section>
 <form action="/score" method="POST">
 
-    <p class="message">Please enter the score for your match <strong>${match.playerOne.user.name}</strong> vs <strong>${match.playerOne.user.name}</strong><br/><br/>Please use format X-Y where X is the number of games won by <strong>${match.playerOne.user.name}</strong> and Y is the number of games won by <strong>${match.playerOne.user.name}</strong> for example 3-2.</p>
+    <p class="message">Please enter the score for your match <strong>${match.playerOne.user.name}</strong> vs <strong>${match.playerTwo.user.name}</strong><br/><br/>Please use format X-Y where X is the number of games won by <strong>${match.playerOne.user.name}</strong> and Y is the number of games won by <strong>${match.playerTwo.user.name}</strong> for example 3-2.</p>
 
     <@errors.print_errors_list "score"/>
     <div class="standard_form">

@@ -16,7 +16,6 @@ import org.squashleague.domain.account.User;
 import org.squashleague.service.email.EmailService;
 import org.squashleague.service.security.SpringSecurityUserContext;
 import org.squashleague.service.uuid.UUIDService;
-import org.squashleague.web.controller.account.UpdatePasswordController;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
