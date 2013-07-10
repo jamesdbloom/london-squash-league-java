@@ -117,11 +117,11 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
     }
 
     public Integer getPlayerTwoWonOrLostPoints() {
-        return calculateWonOrLostPoints(getPlayerScore(0), getPlayerScore(1));
+        return calculateWonOrLostPoints(getPlayerScore(1), getPlayerScore(0));
     }
 
     public Double getPlayerTwoGamesPoints() {
-        return calculateGamesPoints(getPlayerScore(0));
+        return calculateGamesPoints(getPlayerScore(1));
     }
 
     private Double calculateTotalPoints(int currentPlayer, int opponent) {

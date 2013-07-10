@@ -125,6 +125,9 @@ public class NewDivisionService {
 
     @VisibleForTesting
     DivisionSize calculationDivisionSizeCharacteristics(int sum) {
+        if (sum <= 5) {
+            return new DivisionSize(sum, 1, 0);
+        }
         DivisionSize divisionSizeValues = calculateDivisionSize(sum, new int[]{8, 7, 6});
         if (divisionSizeValues == null) {
             divisionSizeValues = calculateDivisionSize(sum, new int[]{9});

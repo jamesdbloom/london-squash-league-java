@@ -19,7 +19,7 @@
 
     <div class="standard_form">
         <p>
-            <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="${email!""}" autocorrect="off" autocapitalize="off" autocomplete="off" required="required">
+            <label class="email" for="email">E-mail:</label> <input id="email" type="email" name="email" value="${email!""}" autofocus autocorrect="off" autocapitalize="off" autocomplete="off" required="required">
         </p>
 
         <p>

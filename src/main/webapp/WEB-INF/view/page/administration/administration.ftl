@@ -89,7 +89,8 @@
                 <td class="last hide_on_very_small_screen">
                     <#if (roles?size > 0)>
                         <select id="roles" name="roles" <#if (roles?size > 1)>multiple="multiple"</#if> required="required">
-                            <#if (roles?size <= 1)><option value="">${environment.getProperty("message.general.please_select")}</option></#if>
+                            <#if (roles?size <= 1)>
+                                <option value="">${environment.getProperty("message.general.please_select")}</option></#if>
                             <#list roles as role>
                                 <option value="${role.name}" <#if user.hasRole(role) >selected="selected"</#if>>${role.description}</option>
                             </#list>
@@ -249,7 +250,7 @@
                         </select>
                     </#if>
                 </td>
-                <td class="last"><@spring.formInput  path="division.name" attributes='required="required" pattern=".{5,25}" maxlength="25" title="${environment.getProperty("validation.division.name")}" class="show_validation"'/></td>
+                <td class="last"><@spring.formInput  path="division.name" fieldType="number" attributes='required="required" min="0" maxlength="25" title="${environment.getProperty("validation.division.name")}" class="show_validation"'/></td>
                 <td class="button_column last"><input type="submit" value="save"></td>
             </tr>
         </tbody>
@@ -264,7 +265,7 @@
         <tbody class="strip_rows">
             <tr>
                 <th class="hide_on_small_screen">Id</th>
-                <th><label for="currentDivision">Division</label></th>
+                <th><label for="currentDivision">Division / League</label></th>
                 <th><label for="user">User</label></th>
                 <th class="hide_on_small_screen status">Status</th>
                 <th class="button_column last"></th>
@@ -279,23 +280,22 @@
                 </tr>
             </#list>
             <tr class="create_row" id="create_player">
-                <td class="last hide_on_small_screen"></td>
+                <td class="last hide_on_small_screen"><#if (divisions?size > 0)>Division:<br/></#if>League:</td>
                 <td class="last">
                     <#if (divisions?size > 0)>
-                        <select id="currentDivision" name="currentDivision" required="required" title="${environment.getProperty("validation.player.currentDivision")}">
+                        <select id="currentDivision" name="currentDivision" title="${environment.getProperty("validation.player.currentDivision")}">
                             <option value="">${environment.getProperty("message.general.please_select")}</option>
                             <#list divisions as division>
                                 <option value="${division.id}" <#if player.currentDivision?? && division.id == player.currentDivision.id>selected="selected"</#if>>${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; ${division.name}</option>
                             </#list>
                         </select>
-                    <#else>
-                        <select id="league" name="league" required="required" title="${environment.getProperty("validation.player.league")}">
-                            <option value="">${environment.getProperty("message.general.please_select")}</option>
-                            <#list leagues as league>
-                                <option value="${league.id}" <#if player.league?? && league.id == player.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
-                            </#list>
-                        </select>
                     </#if>
+                    <select id="league" name="league" title="${environment.getProperty("validation.player.league")}">
+                        <option value="">${environment.getProperty("message.general.please_select")}</option>
+                        <#list leagues as league>
+                            <option value="${league.id}" <#if player.league?? && league.id == player.league.id>selected="selected"</#if>>${league.club.name} &ndash; ${league.name}</option>
+                        </#list>
+                    </select>
                 </td>
                 <td class="last">
                     <#if (users?size > 0)>

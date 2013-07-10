@@ -176,6 +176,11 @@ public class NewDivisionServiceTest {
 
     @Test
     public void shouldCalculateDivisionSizes() {
+        assertEquals(new NewDivisionService.DivisionSize(0, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(0));
+        assertEquals(new NewDivisionService.DivisionSize(1, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(1));
+        assertEquals(new NewDivisionService.DivisionSize(2, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(2));
+        assertEquals(new NewDivisionService.DivisionSize(3, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(3));
+        assertEquals(new NewDivisionService.DivisionSize(4, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(4));
         assertEquals(new NewDivisionService.DivisionSize(5, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(5));
         assertEquals(new NewDivisionService.DivisionSize(6, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(6));
         assertEquals(new NewDivisionService.DivisionSize(7, 1, 0), new NewDivisionService().calculationDivisionSizeCharacteristics(7));

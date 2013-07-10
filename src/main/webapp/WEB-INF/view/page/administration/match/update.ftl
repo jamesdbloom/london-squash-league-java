@@ -42,7 +42,7 @@
                 <select id="playerOne" name="playerOne" required="required" title="${environment.getProperty("validation.match.playerOne")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>
                     <#list players as player>
-                        <option value="${player.id}" <#if (match.playerOne?? && match.playerOne.id == player.id)>selected="selected"</#if>>${player.user.name}</option>
+                        <option value="${player.id}" <#if (match.playerOne?? && match.playerOne.id == player.id)>selected="selected"</#if>>${player.currentDivision.name} &ndash; ${player.user.name}</option>
                     </#list>
                 </select> <span class="error_message"></span>
             </#if>
@@ -54,7 +54,7 @@
                 <select id="playerTwo" name="playerTwo" required="required" title="${environment.getProperty("validation.match.playerTwo")}">
                     <option value="">${environment.getProperty("message.general.please_select")}</option>
                     <#list players as player>
-                        <option value="${player.id}" <#if (match.playerTwo?? && match.playerTwo.id == player.id)>selected="selected"</#if>>${player.user.name}</option>
+                        <option value="${player.id}" <#if (match.playerTwo?? && match.playerTwo.id == player.id)>selected="selected"</#if>>${player.currentDivision.name} &ndash; ${player.user.name}</option>
                     </#list>
                 </select> <span class="error_message"></span>
             </#if>

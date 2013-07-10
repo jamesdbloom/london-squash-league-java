@@ -48,7 +48,7 @@
             validation = {
                 filled: ['existingPassword', 'newPassword'],
                 matches: [
-                    {id: 'passwordConfirm', matches: 'password'}
+                    {id: 'passwordConfirm', matches: 'newPassword'}
                 ],
                 onload: errors && errors.password
             };

@@ -26,7 +26,7 @@ password: g1t20php12
 mysql -u db143442 -p -h localhost -D db143442_squash < backup.sql
 
 
-sudo /var/lib/apache-tomcat-7.0.39/bin/shutdown.sh && sudo /var/lib/apache-tomcat-7.0.39/bin/startup.sh && tail -f /var/lib/apache-tomcat-7.0.39/logs/*
+sudo rm -rf /var/lib/apache-tomcat-7.0.39/logs/* && sudo /var/lib/apache-tomcat-7.0.39/bin/shutdown.sh && sudo /var/lib/apache-tomcat-7.0.39/bin/startup.sh && sudo tail -f /var/lib/apache-tomcat-7.0.39/logs/*
 tail -f /var/lib/apache-tomcat-7.0.39/logs/*
 sudo apachectl -k restart
 

@@ -66,7 +66,9 @@ public class Player extends ModelObject<Player> {
 
     public void setCurrentDivision(Division currentDivision) {
         this.currentDivision = currentDivision;
-        this.league = currentDivision.getRound().getLeague();
+        if (currentDivision != null) {
+            this.league = currentDivision.getRound().getLeague();
+        }
     }
 
     public Player withCurrentDivision(Division currentDivision) {
