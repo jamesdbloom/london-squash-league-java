@@ -10,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.User;
@@ -40,6 +41,7 @@ public class RegistrationControllerTest {
     private User user;
     private HttpServletRequest request;
     private Model uiModel;
+    private RedirectAttributes redirectAttributes;
 
     @Before
     public void setupFixture() {
@@ -54,6 +56,7 @@ public class RegistrationControllerTest {
         when(request.getLocalPort()).thenReturn(8080);
 
         uiModel = mock(Model.class);
+        redirectAttributes = mock(RedirectAttributes.class);
     }
 
     @Test
@@ -79,11 +82,13 @@ public class RegistrationControllerTest {
         user.withEmail("jamesdbloom@gmail.com");
 
         // when
-        String page = registrationController.register(user, mock(BindingResult.class), request, uiModel);
+        String page = registrationController.register(user, mock(BindingResult.class), request, uiModel, redirectAttributes);
 
         // then
         verify(userDAO).register(user);
-        assertEquals("redirect:/login", page);
+        verify(redirectAttributes).addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login");
+        verify(redirectAttributes).addFlashAttribute("title", "Account Created");
+        assertEquals("redirect:/message", page);
     }
 
     @Test
@@ -92,11 +97,13 @@ public class RegistrationControllerTest {
         user.withEmail("jamesdbloom@gmail.com");
 
         // when
-        String page = registrationController.register(user, mock(BindingResult.class), request, uiModel);
+        String page = registrationController.register(user, mock(BindingResult.class), request, uiModel, redirectAttributes);
 
         // then
         verify(userDAO).register(user);
-        assertEquals("redirect:/login", page);
+        verify(redirectAttributes).addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login");
+        verify(redirectAttributes).addFlashAttribute("title", "Account Created");
+        assertEquals("redirect:/message", page);
     }
 
     @Test
@@ -105,7 +112,7 @@ public class RegistrationControllerTest {
         user.withEmail("jamesdbloom@gmail.com");
 
         // when
-        registrationController.register(user, mock(BindingResult.class), request, uiModel);
+        registrationController.register(user, mock(BindingResult.class), request, uiModel, redirectAttributes);
 
         // then
         verify(emailService).sendRegistrationMessage(user, request);
@@ -119,7 +126,7 @@ public class RegistrationControllerTest {
         when(bindingResult.hasErrors()).thenReturn(true);
 
         // when
-        String page = registrationController.register(user, bindingResult, request, uiModel);
+        String page = registrationController.register(user, bindingResult, request, uiModel, redirectAttributes);
 
         // then
         verify(uiModel).addAttribute("bindingResult", bindingResult);

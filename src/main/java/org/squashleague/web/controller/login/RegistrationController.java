@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.squashleague.dao.account.UserDAO;
 import org.squashleague.domain.account.MobilePrivacy;
 import org.squashleague.domain.account.Role;
@@ -50,7 +51,7 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid final User user, BindingResult bindingResult, final HttpServletRequest request, Model uiModel) throws MalformedURLException, UnsupportedEncodingException {
+    public String register(@Valid final User user, BindingResult bindingResult, final HttpServletRequest request, Model uiModel, RedirectAttributes redirectAttributes) throws MalformedURLException, UnsupportedEncodingException {
 
         boolean userAlreadyExists = user.getEmail() != null && (userDAO.findByEmail(user.getEmail()) != null);
         if (bindingResult.hasErrors() || userAlreadyExists) {
@@ -68,6 +69,8 @@ public class RegistrationController {
                 .withOneTimeToken(uuidService.generateUUID())
         );
         emailService.sendRegistrationMessage(user, request);
-        return "redirect:/login";
+        redirectAttributes.addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login");
+        redirectAttributes.addFlashAttribute("title", "Account Created");
+        return "redirect:/message";
     }
 }
