@@ -2,6 +2,7 @@ package org.squashleague.service.security;
 
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -28,13 +29,18 @@ public class SpringSecurityAuthenticationProvider implements AuthenticationProvi
     private CredentialValidation credentialValidation;
 
     @Override
-    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
         User user = userDAO.findByEmail(token.getName());
-        if (!credentialValidation.credentialsMatch((CharSequence) token.getCredentials(), user)) {
+        if (user != null && user.getLoginFailures() >= environment.getProperty("login.failures.maximum", Integer.class)) {
+            throw new LockedException(environment.getProperty("validation.user.maxFailures"));
+        } else if (!credentialValidation.credentialsMatch((CharSequence) token.getCredentials(), user)) {
+            if (user != null) {
+                userDAO.incrementLoginFailures(user);
+            }
             throw new UsernameNotFoundException(environment.getProperty("validation.user.invalidCredentials"));
         }
+        userDAO.resetLoginFailures(user);
         return new UsernamePasswordAuthenticationToken(user, user.getPassword(), AuthorityUtils.createAuthorityList(user.getRoleNames()));
     }
 

@@ -1,11 +1,13 @@
 package org.squashleague.service.security;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -17,7 +19,10 @@ import org.squashleague.domain.account.User;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,6 +39,11 @@ public class SpringSecurityAuthenticationProviderTest {
     private CredentialValidation credentialValidation;
     @InjectMocks
     private SpringSecurityAuthenticationProvider springSecurityAuthenticationProvider = new SpringSecurityAuthenticationProvider();
+
+    @Before
+    public void setupFixture(){
+        when(environment.getProperty("login.failures.maximum", Integer.class)).thenReturn(3);
+    }
 
     @Test
     public void shouldAuthenticate() throws AuthenticationException {
@@ -55,6 +65,7 @@ public class SpringSecurityAuthenticationProviderTest {
         // when
         Authentication result = springSecurityAuthenticationProvider.authenticate(token);
         assertEquals(result.getAuthorities(), AuthorityUtils.createAuthorityList(roles));
+        verify(userDAO).resetLoginFailures(eq(user));
     }
 
     @Test(expected = UsernameNotFoundException.class)
@@ -70,6 +81,25 @@ public class SpringSecurityAuthenticationProviderTest {
 
         when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
         when(credentialValidation.credentialsMatch(user.getPassword(), user)).thenReturn(false);
+
+        // when
+        springSecurityAuthenticationProvider.authenticate(token);
+        verify(userDAO).incrementLoginFailures(eq(user));
+    }
+
+    @Test(expected = LockedException.class)
+    public void shouldTestMaxPasswordFailures() throws AuthenticationException {
+        // given
+        User user = new User()
+                .withEmail("email")
+                .withPassword("password");
+
+        UsernamePasswordAuthenticationToken token = mock(UsernamePasswordAuthenticationToken.class);
+        when(token.getName()).thenReturn(user.getEmail());
+        when(token.getCredentials()).thenReturn(user.getPassword());
+
+        when(userDAO.findByEmail(user.getEmail())).thenReturn(user);
+        when(environment.getProperty("login.failures.maximum", Integer.class)).thenReturn(-1);
 
         // when
         springSecurityAuthenticationProvider.authenticate(token);

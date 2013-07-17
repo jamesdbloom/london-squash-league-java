@@ -54,6 +54,7 @@ public class UpdatePasswordControllerTest {
         String oneTimeToken = new UUID().toString();
 
         user = mock(User.class);
+        when(user.resetLoginFailures()).thenReturn(user);
         when(user.withPassword(password)).thenReturn(user);
         when(user.getPassword()).thenReturn(password);
         when(user.withOneTimeToken(oneTimeToken)).thenReturn(user);
@@ -130,7 +131,6 @@ public class UpdatePasswordControllerTest {
         verify(userDAO).updatePassword(user);
         verify(securityUserContext).setCurrentUser(user);
         assertEquals("redirect:/account", page);
-
     }
 
     @Test

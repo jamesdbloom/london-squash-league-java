@@ -17,6 +17,7 @@ public class HSQLApplicationContextInitializer implements ApplicationContextInit
             withProperty("jdbc.url", "jdbc:hsqldb:mem:db143442_squash");
             withProperty("jdbc.username", "sa");
             withProperty("jdbc.password", "");
+            withProperty("jdbc.validationQuery", "");
             withProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
             withProperty("hibernate.show_sql", "false");
             withProperty("hibernate.hbm2ddl.auto", "create-drop");

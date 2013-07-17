@@ -67,6 +67,16 @@ public class UserDAO {
     }
 
     @Transactional
+    public void incrementLoginFailures(User user) {
+        entityManager.createQuery("update User as user set user.loginFailures = '" + (user.getLoginFailures() + 1) + "' where user.email = '" + user.getEmail() + "'").executeUpdate();
+    }
+
+    @Transactional
+    public void resetLoginFailures(User user) {
+        entityManager.createQuery("update User as user set user.loginFailures = 0 where user.email = '" + user.getEmail() + "'").executeUpdate();
+    }
+
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #id")
     public User findById(Long id) {
         try {

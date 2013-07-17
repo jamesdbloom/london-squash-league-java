@@ -14,7 +14,7 @@ public class NavigationInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if (!modelAndView.getViewName().startsWith("redirect:")) {
+        if (modelAndView != null && !modelAndView.getViewName().startsWith("redirect:")) {
             modelAndView.addObject("page", StringUtils.substringAfterLast(request.getRequestURI(), "/"));
         }
     }

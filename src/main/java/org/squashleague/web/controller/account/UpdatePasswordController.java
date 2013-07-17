@@ -57,7 +57,7 @@ public class UpdatePasswordController {
             userDAO.updateOneTimeToken(user.withOneTimeToken(uuidService.generateUUID()));
             emailService.sendUpdatePasswordMessage(user, request);
         }
-        redirectAttributes.addFlashAttribute("message", "Email has been sent");
+        redirectAttributes.addFlashAttribute("message", "An email has been sent to " + email + " with a link to create your password and login");
         redirectAttributes.addFlashAttribute("title", "Message Sent");
         return "redirect:/message";
     }
@@ -108,7 +108,7 @@ public class UpdatePasswordController {
             uiModel.addAttribute("validationErrors", errors);
             return "page/user/updatePassword";
         }
-        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(password)));
+        userDAO.updatePassword(user.withPassword(passwordEncoder.encode(password)).resetLoginFailures());
         securityUserContext.setCurrentUser(user);
         return "redirect:/account";
     }

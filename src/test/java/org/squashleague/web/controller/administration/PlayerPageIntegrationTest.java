@@ -69,7 +69,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
     }
 
     @Test
-    public void shouldGetPageWithDivisionAndLeagueError() throws Exception {
+    public void shouldGetPageWithLeagueError() throws Exception {
         // when
         MvcResult response = mockMvc.perform(post("/" + OBJECT_NAME + "/update")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -87,7 +87,7 @@ public class PlayerPageIntegrationTest extends WebAndDataIntegrationTest {
                 .andReturn();
 
         PlayerUpdatePage playerUpdatePage = new PlayerUpdatePage(response);
-        playerUpdatePage.hasErrors("player", 2);
+        playerUpdatePage.hasErrors("player", 1);
         playerUpdatePage.hasPlayerFields(players.get(0).getId(), players.get(0).getVersion(), players.get(0).getUser().getId(), null, null, players.get(0).getStatus());
     }
 

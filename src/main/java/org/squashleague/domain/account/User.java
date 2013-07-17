@@ -48,6 +48,7 @@ public class User extends ModelObject<User> {
     @JoinColumn
     private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);
     private String password;
+    private int loginFailures = 0;
     private String oneTimeToken;
     // extra domain traversal
     @OneToMany(cascade = CascadeType.ALL)
@@ -56,6 +57,20 @@ public class User extends ModelObject<User> {
     // view collections
     @Transient
     private transient Collection<Division> divisions;
+
+    public int getLoginFailures() {
+        return loginFailures;
+    }
+
+    public User incrementLoginFailures() {
+        loginFailures++;
+        return this;
+    }
+
+    public User resetLoginFailures() {
+        loginFailures = 0;
+        return this;
+    }
 
     public boolean showMobileToOpponent() {
         return mobilePrivacy == MobilePrivacy.SHOW_ALL || mobilePrivacy == MobilePrivacy.SHOW_OPPONENTS;

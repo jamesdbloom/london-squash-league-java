@@ -88,7 +88,9 @@ public class RegistrationPageIntegrationTest extends MockDAOTest {
         )
 
                 // then
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(redirectedUrl("/message"))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(flash().attribute("title", "Account Created"));
 
         User actualUser = userDAO.findByEmail(expectedUser.getEmail());
 

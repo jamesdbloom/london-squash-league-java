@@ -37,8 +37,10 @@ public class AddBundlingModelToViewModelInterceptor extends HandlerInterceptorAd
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        modelAndView.addObject(JS_RESOURCES, getListOfUnbundledResources(ResourceType.JS, wroModelHolder.getWroModel(), request));
-        modelAndView.addObject(CSS_RESOURCES, getListOfUnbundledResources(ResourceType.CSS, wroModelHolder.getWroModel(), request));
+        if (modelAndView != null) {
+            modelAndView.addObject(JS_RESOURCES, getListOfUnbundledResources(ResourceType.JS, wroModelHolder.getWroModel(), request));
+            modelAndView.addObject(CSS_RESOURCES, getListOfUnbundledResources(ResourceType.CSS, wroModelHolder.getWroModel(), request));
+        }
     }
 
     private Map<String, List<String>> getListOfUnbundledResources(ResourceType resourceType, WroModel wroModel, HttpServletRequest request) {
