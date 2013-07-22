@@ -69,7 +69,7 @@ public class RegistrationController {
                 .withOneTimeToken(uuidService.generateUUID())
         );
         emailService.sendRegistrationMessage(user, request);
-        redirectAttributes.addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login");
+        redirectAttributes.addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login, please check your spam folder if you don't see the email within 5 minutes");
         redirectAttributes.addFlashAttribute("title", "Account Created");
         return "redirect:/message";
     }

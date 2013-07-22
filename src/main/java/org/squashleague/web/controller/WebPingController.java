@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class WebPingController {
 
     /*
-    if [ "`curl -k -s -L http://localhost/webping`" != "OK" ]; then echo "down"; fi
+    if [ "`curl -k -s -L http://localhost/webping`" != "OK" ]; then /var/lib/apache-tomcat-7.0.39/bin/shutdown.sh && /var/lib/apache-tomcat-7.0.39/bin/startup.sh; fi
      */
 
     @RequestMapping(method = RequestMethod.GET)

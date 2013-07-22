@@ -86,7 +86,7 @@ public class RegistrationControllerTest {
 
         // then
         verify(userDAO).register(user);
-        verify(redirectAttributes).addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login");
+        verify(redirectAttributes).addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login, please check your spam folder if you don't see the email within 5 minutes");
         verify(redirectAttributes).addFlashAttribute("title", "Account Created");
         assertEquals("redirect:/message", page);
     }
@@ -101,7 +101,7 @@ public class RegistrationControllerTest {
 
         // then
         verify(userDAO).register(user);
-        verify(redirectAttributes).addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login");
+        verify(redirectAttributes).addFlashAttribute("message", "Your account has been created and an email has been sent to " + user.getEmail() + " with a link to create your password and login, please check your spam folder if you don't see the email within 5 minutes");
         verify(redirectAttributes).addFlashAttribute("title", "Account Created");
         assertEquals("redirect:/message", page);
     }

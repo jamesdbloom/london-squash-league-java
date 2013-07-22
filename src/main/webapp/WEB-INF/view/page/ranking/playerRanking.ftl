@@ -28,12 +28,12 @@
             </tbody>
         </table>
         </#list>
-    <div id="no_rounds" class="errors_messages" style="margin: 5em auto;">
-        <p style="margin: 0.25em 0;">Ranking is calculated as follows:</p>
+    <div class="errors_messages" style="margin: 5em auto;">
+        <p style="margin: 0.25em 0;">The points are calculated as follows:</p>
         <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
             <li style="margin-left: 2em;">3 for winning a match</li>
             <li style="margin-left: 2em; margin-top: .25em;">2 for drawing a match</li>
-            <li style="margin-left: 2em; margin-top: .25em;">1 for loosing a match</li>
+            <li style="margin-left: 2em; margin-top: .25em;">1 for playing a match</li>
             <li style="margin-left: 2em; margin-top: .25em;">0.1 for each game won in a match</li>
             <li style="margin-left: 2em; margin-top: .25em;">total score for each match is then divided by the division</li>
             <li style="margin-left: 2em; margin-top: .25em;">division for the next round is then based on ranking for the previous two rounds</li>

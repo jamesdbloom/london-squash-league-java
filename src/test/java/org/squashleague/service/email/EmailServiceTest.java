@@ -17,6 +17,10 @@ import org.squashleague.domain.account.User;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -113,8 +117,8 @@ public class EmailServiceTest {
         String hostName = "hostName";
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getLocalName()).thenReturn(hostName);
-        when(request.getLocalPort()).thenReturn(port);
+        when(request.getHeader("Host")).thenReturn(hostName);
+        when(request.getRemotePort()).thenReturn(port);
 
         String leagueEmail = "info@squash-league.com";
         when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
@@ -149,8 +153,8 @@ public class EmailServiceTest {
         String hostName = "hostName";
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getLocalName()).thenReturn(hostName);
-        when(request.getLocalPort()).thenReturn(port);
+        when(request.getHeader("Host")).thenReturn(hostName);
+        when(request.getRemotePort()).thenReturn(port);
 
         String leagueEmail = "info@squash-league.com";
         when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
@@ -170,5 +174,65 @@ public class EmailServiceTest {
                 "<h1>" + subject + "</h1>\n" +
                 "<p>To update your password please click on the following link <a href=https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + ">https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=" + token + "</a></p>\n" +
                 "</body></html>", mimeMessage.getContent().toString());
+    }
+
+    @Test
+    public void shouldBuildCorrectURL() throws MalformedURLException, UnsupportedEncodingException {
+        // given
+        String hostName = "hostName";
+        int port = 666;
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Host")).thenReturn(hostName);
+        when(request.getRemotePort()).thenReturn(port);
+
+        // when
+        URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
+
+        // then
+        assertEquals("https://" + hostName + ":" + port + "/updatePassword?email=to%40email.com&oneTimeToken=token", actual.toString());
+    }
+
+    @Test
+    public void shouldBuildCorrectURLNoHostHeader() throws MalformedURLException, UnsupportedEncodingException {
+        // given
+        int port = 666;
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRemotePort()).thenReturn(port);
+
+        // when
+        URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
+
+        // then
+        assertEquals("https://www.london-squash-league.com:" + port + "/updatePassword?email=to%40email.com&oneTimeToken=token", actual.toString());
+    }
+
+    @Test
+    public void shouldBuildCorrectURLBlankHostHeader() throws MalformedURLException, UnsupportedEncodingException {
+        // given
+        int port = 666;
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Host")).thenReturn("");
+        when(request.getRemotePort()).thenReturn(port);
+
+        // when
+        URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
+
+        // then
+        assertEquals("https://www.london-squash-league.com:" + port + "/updatePassword?email=to%40email.com&oneTimeToken=token", actual.toString());
+    }
+
+    @Test
+    public void shouldBuildCorrectURLHostHeaderWithPort() throws MalformedURLException, UnsupportedEncodingException {
+        // given
+        String hostName = "hostName:12345";
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Host")).thenReturn(hostName);
+        when(request.getRemotePort()).thenReturn(666);
+
+        // when
+        URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
+
+        // then
+        assertEquals("https://" + hostName + "/updatePassword?email=to%40email.com&oneTimeToken=token", actual.toString());
     }
 }

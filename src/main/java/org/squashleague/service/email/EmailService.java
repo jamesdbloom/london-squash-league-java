@@ -1,6 +1,8 @@
 package org.squashleague.service.email;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -76,11 +78,27 @@ public class EmailService {
         sendMessage(environment.getProperty("email.contact.address"), new String[]{user.getEmail()}, subject, formattedMessage);
     }
 
-    private URL createUrl(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
+    @VisibleForTesting
+    protected URL createUrl(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
+        String hostHeader = request.getHeader("Host");
+        String host = "www.london-squash-league.com";
+        int port = request.getRemotePort();
+        if(!Strings.isNullOrEmpty(hostHeader)) {
+            if(hostHeader.contains(":")) {
+                host = StringUtils.substringBefore(hostHeader, ":");
+                try {
+                    port = Integer.parseInt(StringUtils.substringAfterLast(hostHeader, ":"));
+                } catch (NumberFormatException nfe) {
+                    logger.warn("NumberFormatException parsing port from Host header [" + hostHeader + "]", nfe);
+                }
+            } else {
+                host = hostHeader;
+            }
+        }
         return new URL(
                 "https",
-                request.getLocalName(),
-                request.getLocalPort(),
+                host,
+                port,
                 "/updatePassword?email=" + URLEncoder.encode(user.getEmail(), "UTF-8") + "&oneTimeToken=" + URLEncoder.encode(user.getOneTimeToken(), "UTF-8")
         );
     }

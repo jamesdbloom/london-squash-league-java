@@ -112,6 +112,10 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return calculateGamesPoints(getPlayerScore(0));
     }
 
+    public int getPlayerOneScore() {
+        return getPlayerScore(0);
+    }
+
     public Double getPlayerTwoTotalPoints() {
         return calculateTotalPoints(getPlayerScore(1), getPlayerScore(0));
     }
@@ -122,6 +126,10 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
 
     public Double getPlayerTwoGamesPoints() {
         return calculateGamesPoints(getPlayerScore(1));
+    }
+
+    public int getPlayerTwoScore() {
+        return getPlayerScore(1);
     }
 
     private Double calculateTotalPoints(int currentPlayer, int opponent) {

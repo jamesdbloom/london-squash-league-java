@@ -175,4 +175,27 @@
         </taglib>
     </jsp-config>
 
+    <!-- For monitoring endpoint -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Webping -- no ssl</web-resource-name>
+            <url-pattern>/webping</url-pattern>
+            <url-pattern>/webping/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <!-- All pages must be served over SSL. -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>All resources</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
 </web-app>

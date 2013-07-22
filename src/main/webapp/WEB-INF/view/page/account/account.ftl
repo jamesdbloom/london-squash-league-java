@@ -54,7 +54,7 @@
                 <tr>
                     <td class="last" colspan="3">
                         <select id="unregisteredLeagues" name="league" required="required">
-                            <option value="">${environment.getProperty("message.general.please_select")}</option>
+                            <option value="">${environment.getProperty("message.general.please_select_a_league")}</option>
                             <#list unregisteredLeagues as league>
                                 <option value="${league.id}">${league.club.name}  &ndash; ${league.name}</option>
                             </#list>
@@ -67,7 +67,7 @@
     </table>
 </form>
     <#if (user.players?size = 0) >
-    <p class="errors_messages">You are not registered with any leagues, please select a league from the drop-down and click the register button.</p>
+    <p class="errors_messages">You are not registered with any leagues, please select a league from the drop-down and click the Register button.</p>
     <#elseif (rounds?size = 0) >
     <h2 class="table_title" style="margin-top: 1em;">Rounds</h2>
     <div class="errors_messages">
@@ -116,7 +116,11 @@
                         <th class="hide_on_very_small_screen">Points</th>
                     </tr>
                     <#list player.matches as match>
-                        <#assign totalPoints = totalPoints + match.playerOneTotalPoints/>
+                        <#if match.playerOne.user.id == user.id>
+                            <#assign totalPoints = totalPoints + match.playerOneTotalPoints/>
+                        <#else>
+                            <#assign totalPoints = totalPoints + match.playerTwoTotalPoints/>
+                        </#if>
                         <tr>
                             <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.division.name}</td>
                             <td id="match_${player_index}_${match_index}_date">${match.division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.division.round.endDate.toDate()?string("dd MMM yyyy")}</td>
@@ -135,15 +139,27 @@
             <div class="standalone_link">
                 <a id="mailto_${player_index}" href="mailto:<#list player.allOpponentsEmails as email>${email}<#if email_has_next>,</#if></#list>" target="_blank">email all ${player.currentDivision.round.league.name} &ndash; ${player.currentDivision.name} opponents</a>
             </div>
+            <div class="errors_messages" style="margin: 5em auto;">
+                <p style="margin: 0.25em 0;">The points are calculated as follows:</p>
+                <ul style="margin: 1em; list-style-image: none; list-style-position: outside; list-style-type: disc;">
+                    <li style="margin-left: 2em;">3 for winning a match</li>
+                    <li style="margin-left: 2em; margin-top: .25em;">2 for drawing a match</li>
+                    <li style="margin-left: 2em; margin-top: .25em;">1 for playing a match</li>
+                    <li style="margin-left: 2em; margin-top: .25em;">0.1 for each game won in a match</li>
+                    <li style="margin-left: 2em; margin-top: .25em;">total score for each match is then divided by the division</li>
+                    <li style="margin-left: 2em; margin-top: .25em;">division for the next round is then based on ranking for the previous two rounds</li>
+                </ul>
+                <p style="margin: 0.25em 0;">To view how your individual points are calculated for each match see your <a href="/account#matches">Account</a> page.</p>
+            </div>
             </#if>
         </#list>
         <#if totalNumberOfMatches == 0>
         <div class="errors_messages">
             <p>You currently have no matches for one of the following reasons:</p>
             <ul style="margin: 1em; list-style: disc outside none;">
-                <li style="margin-left: 2em;">you are not an active player in any of your leagues,</li>
-                <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but have no matches because a new round has not started yet.</li>
+                <li style="margin-left: 2em;">you have recently become an active player in a league but have no matches because a new round has not started yet.</li>
                 <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but have no current division because a new round has not started yet.</li>
+                <li style="margin-left: 2em; margin-top: .25em;">you are not an active player in any of your leagues,</li>
             </ul>
         </div>
         </#if>

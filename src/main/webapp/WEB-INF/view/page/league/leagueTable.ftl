@@ -11,7 +11,7 @@
 <#macro content_section>
 <div class="section">
     <#if !(print?? && print)>
-        <div class="standalone_link"><#if showAllDivisions?? && !showAllDivisions><a href="/leagueTable?showAllDivisions=true">View Leagues</a><#else><a href="/leagueTable">View Divisions</a></#if></div>
+        <div class="standalone_link"><#if showAllDivisions?? && !showAllDivisions><a href="/leagueTable?showAllDivisions=true">View your leagues</a><#else><a href="/leagueTable">View your divisions</a></#if></div>
         <div class="standalone_link"><a href="/account#matches">Contact your opponents</a></div>
     </#if>
     <#if user?? >
@@ -38,7 +38,7 @@
                             <tr>
                                 <td id="match_${division_index}_${match_index}_smallScreenPlayerOne">${match.playerOne.user.name}</td>
                                 <td id="match_${division_index}_${match_index}_smallScreenPlayerTwo">${match.playerTwo.user.name}</td>
-                                <@matchCell match true/>
+                                <@matchCell match true true/>
                             </tr>
                         </#list>
                     </tbody>
@@ -58,9 +58,9 @@
                             <#list division.players as playerColumn>
                                 <#if playerRow.id != playerColumn.id >
                                     <#if division.getMatch(playerRow.id, playerColumn.id)?? >
-                                        <@matchCell division.getMatch(playerRow.id, playerColumn.id) false/>
+                                        <@matchCell division.getMatch(playerRow.id, playerColumn.id) true false/>
                                     <#elseif division.getMatch(playerColumn.id, playerRow.id)?? >
-                                        <@matchCell division.getMatch(playerColumn.id, playerRow.id) false/>
+                                        <@matchCell division.getMatch(playerColumn.id, playerRow.id) false false/>
                                     </#if>
                                 <#else>
                                     <td style="white-space: nowrap">X</td>
@@ -87,11 +87,16 @@
         <script>window.print();</script></#if>
 </#macro>
 
-<#macro matchCell match smallScreen>
-    <#if print?? && print>
-        <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;"><#if match.score?? >${match.score}</#if></td>
+<#macro matchCell match row smallScreen>
+    <#if row>
+        <#assign score = match.playerOneScore?string + "-" + match.playerTwoScore?string/>
     <#else>
-        <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;<#if match.isMyMatch(user) > color: #000000;</#if>"><#if match.score?? >${match.score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
+        <#assign score = match.playerTwoScore?string + "-" + match.playerOneScore?string/>
+    </#if>
+    <#if print?? && print>
+        <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;"><#if match.score?? >${score}</#if></td>
+    <#else>
+        <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;<#if match.isMyMatch(user) > color: #000000;</#if>"><#if match.score?? >${score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
     </#if>
 </#macro>
 

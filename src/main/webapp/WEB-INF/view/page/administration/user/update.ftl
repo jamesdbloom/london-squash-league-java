@@ -88,7 +88,7 @@
 <script>
     var errors = errors || {},
             validation = {
-                filled: ['name', 'email', 'mobile', 'password'],
+                filled: ['name', 'email', 'mobile'],
                 changed: ['mobilePrivacy', 'roles'],
                 onload: errors && errors.user
             };

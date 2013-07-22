@@ -106,7 +106,7 @@
     var errors = errors || {},
             validation = {
                 filled: ['startDate', 'endDate'],
-                changed: ['league'],
+                changed: ['leagueId'],
                 onload: errors && errors.round
             };
 </script>

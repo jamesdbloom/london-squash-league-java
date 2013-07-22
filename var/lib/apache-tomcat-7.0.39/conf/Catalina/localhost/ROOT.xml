@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="" docBase="/var/apps/london_squash_league/london_squash_league-1.0-SNAPSHOT" reloadable="false" cachingAllowed="false">
+  <Manager className="org.apache.catalina.session.StandardManager" pathname="" distributable="false" />
+</Context>

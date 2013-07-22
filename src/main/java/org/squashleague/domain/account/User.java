@@ -44,7 +44,7 @@ public class User extends ModelObject<User> {
     private MobilePrivacy mobilePrivacy;
     // login
     @NotNull(message = "{validation.user.roles}")
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn
     private List<Role> roles = Lists.newArrayList(Role.ROLE_ANONYMOUS);
     private String password;
@@ -137,7 +137,14 @@ public class User extends ModelObject<User> {
     }
 
     public boolean hasRole(Role role) {
-        return roles != null && roles.contains(role);
+        if (roles != null) {
+            for (Role userRole : roles) {
+                if (userRole.getName().equals(role.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<Role> getRoles() {

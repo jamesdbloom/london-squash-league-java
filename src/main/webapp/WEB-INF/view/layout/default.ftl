@@ -5,7 +5,7 @@
 <#import "/WEB-INF/view/furniture/navigation.ftl" as navigation />
 
 <#macro page_html>
-    <@compress single_line=true>
+    <#--<@compress single_line=true>-->
         <#escape x as x?html>
             <#if isAjax?? && isAjax>
                 <@page_body/>
@@ -22,7 +22,7 @@
             </html>
             </#if>
         </#escape>
-    </@compress>
+    <#--</@compress>-->
 </#macro>
 
 <#macro page_head>
@@ -106,7 +106,7 @@
     };
 </script>
     <@page_js_inline/>
-<!-- google analytics start --><!-- <script type="text/javascript">
+<!-- google analytics start --><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-32687194-3']);
     _gaq.push(['_trackPageview']);
@@ -118,7 +118,7 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
     })();
-</script>--><!-- google analytics end -->
+</script><!-- google analytics end -->
 </#macro>
 
 <#macro page_js_inline>

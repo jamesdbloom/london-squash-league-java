@@ -1,0 +1,8 @@
+java -cp ../not-yet-commons-ssl-0.3.11.jar org.apache.commons.ssl.KeyStoreBuilder changeit www.london-squash-league.com.key www.london-squash-league.com.crt
+
+        <Connector port="443" protocol="HTTP/1.1" SSLEnabled="true"
+                   maxThreads="200" scheme="https" secure="true"
+                   keystoreFile="/var/certs/london-squash-league/www.london-squash-league.com.jks" keystorePass="changeit"
+                   clientAuth="false" sslProtocol="TLS" />
+
+sudo rm -rf /var/lib/apache-tomcat-7.0.39/logs/* && sudo /var/lib/apache-tomcat-7.0.39/bin/shutdown.sh && sudo /var/lib/apache-tomcat-7.0.39/bin/startup.sh && sudo tail -f /var/lib/apache-tomcat-7.0.39/logs/*

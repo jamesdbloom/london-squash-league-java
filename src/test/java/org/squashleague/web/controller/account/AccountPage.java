@@ -57,7 +57,7 @@ public class AccountPage {
             assertEquals((player.getStatus() == PlayerStatus.ACTIVE ? "Unregister" : "Register"), registerElement.text());
 
             Elements unregisteredLeaguesOptions = html.select("#unregisteredLeagues option");
-            assertEquals("Please select", unregisteredLeaguesOptions.get(0).text());
+            assertEquals("Please select a league...", unregisteredLeaguesOptions.get(0).text());
             for (int j = 1; j < unregisteredLeaguesOptions.size(); j++) {
                 assertEquals(unregisteredLeagues.get(j - 1).getClub().getName() + " – " + unregisteredLeagues.get(j - 1).getName(), unregisteredLeaguesOptions.get(j).text());
             }

@@ -71,7 +71,10 @@ public class UserController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public String update(@Valid User user, BindingResult bindingResult, String referer, Model uiModel) {
         User currentUser = securityUserContext.getCurrentUser();
-        boolean userAlreadyExists = user.getEmail() != null && !currentUser.getEmail().equals(user.getEmail()) && (userDAO.findByEmail(user.getEmail()) != null);
+        boolean userAlreadyExists = false;
+        if(user.getEmail() != null && !(currentUser.getEmail().equals(user.getEmail()) || currentUser.hasRole(Role.ROLE_ADMIN))) {
+            userAlreadyExists = (userDAO.findByEmail(user.getEmail()) != null);
+        }
         if (bindingResult.hasErrors() || userAlreadyExists) {
             setupModel(uiModel);
             if (userAlreadyExists) {
