@@ -43,7 +43,11 @@
     }
 
     .page_break {
-        page-break-before: always;
+        page-break-before: auto;
+    }
+
+    .no_page_break {
+        page-break-inside: avoid;
     }
 
     .no_print {
