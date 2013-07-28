@@ -36,7 +36,12 @@
             <li style="margin-left: 2em; margin-top: .25em;">1 for playing a match</li>
             <li style="margin-left: 2em; margin-top: .25em;">0.1 for each game won in a match</li>
             <li style="margin-left: 2em; margin-top: .25em;">total score for each match is then divided by the division</li>
-            <li style="margin-left: 2em; margin-top: .25em;">division for the next round is then based on ranking for the previous two rounds</li>
+            <li style="margin-left: 2em; margin-top: .25em;">divisions for the next round are allocated:
+                <ul style="list-style-type: circle;">
+                    <li style="margin-left: 2em; margin-top: .25em;">based on points for the previous two rounds (i.e. players with the highest points are allocated to division 1 )</li>
+                    <li style="margin-left: 2em; margin-top: .25em;">players with zero points are allocated alphabetically below all other players</li>
+                </ul>
+            </li>
         </ul>
         <p style="margin: 0.25em 0;">To view how your individual points are calculated for each match see your <a href="/account#matches">Account</a> page.</p>
     </div>

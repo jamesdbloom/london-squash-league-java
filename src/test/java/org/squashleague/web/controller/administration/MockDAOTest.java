@@ -112,6 +112,7 @@ public class MockDAOTest extends AdministratorLoggedInTest {
             Division division = new Division()
                     .withName(d + 1)
                     .withRound(rounds.get(d));
+            rounds.get(d).addDivision(division);
             divisions.add(division);
             divisionDAO.save(division);
         }

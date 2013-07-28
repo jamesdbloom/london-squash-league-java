@@ -35,7 +35,7 @@ public class PlayerDAO extends AbstractJpaDAO<Player> {
     }
 
     public List<Player> findAllActiveByLeague(League league) {
-        return entityManager.createQuery("from Player as player where player.status = " + PlayerStatus.ACTIVE.ordinal() + " and player.league.id = " + league.getId(), Player.class).getResultList();
+        return entityManager.createQuery("from Player as player where player.status = " + PlayerStatus.ACTIVE.ordinal() + " and player.league.id = " + league.getId() + " order by player.user.name", Player.class).getResultList();
     }
 
     @Transactional

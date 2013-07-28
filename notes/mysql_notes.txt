@@ -17,6 +17,7 @@ mysqldump -u squash_app -p -h localhost squash_league > "/var/db_backup/london_s
 
 mysql -u squash_app -p -h localhost -D squash_league < /var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
 mysql -u squash_app -p -h localhost -D squash_league_beta < /var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
+mysql -u squash_app -p -h localhost -D squash_league < /Users/jamesdbloom/git/london_squash_league_java/var/db_backup/london_squash_league/squash_league_13-07-28-14-50-1375037410.sql
 
 // connect to terminal
 
@@ -28,3 +29,10 @@ jdbc driver: com.mysql.jdbc.Driver
 url: jdbc:mysql://localhost
 user: squash_app
 password: g1t20php12
+
+
+// Queries
+
+select * from User join Player on Player.User_id = User.id;
+select User.*, League.Name from User join Player on Player.User_id = User.id join League on Player.League_id = League.id;
+select User.*, League.Name from User join Player on Player.User_id = User.id join League on Player.League_id = League.id where League.Name = "Evening";

@@ -18,6 +18,11 @@
         <#local divisions = user.divisions>
     </#if>
     <#if (divisions?size > 0)>
+        <#if showAllDivisions?? && !showAllDivisions>
+            <div class="message" style="margin: 3em auto 0 auto;">This page is currently displaying <span style="color: darkred;">your</span> divisions in your leagues. &nbsp;&nbsp;To view <span style="color: darkred;">all</span> divisions in your leagues use the <a href="/leagueTable?showAllDivisions=true">View your leagues</a> button above</div>
+        <#else>
+            <div class="message" style="margin: 3em auto 0 auto;">This page is currently displaying <span style="color: darkred;">all</span> divisions in your leagues.  &nbsp;&nbsp;To view <span style="color: darkred;">only your</span> divisions in your leagues use the <a href="/leagueTable?showAllDivisions=true">View your divisions</a> button above</div>
+        </#if>
         <#assign dateHash = divisions[0].round.startDate.hashCode() + "_" + divisions[0].round.endDate.hashCode() />
         <h2 class="table_title">(${divisions[0].round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${divisions[0].round.endDate.toDate()?string("dd MMM yyyy")})</h2>
         <#list divisions as division>
@@ -25,25 +30,23 @@
                 <#assign dateHash = division.round.startDate.hashCode() + "_" + division.round.endDate.hashCode() />
                 <h2 class="table_title page_break" style="margin-top: 2em;">(${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</h2>
             </#if>
-            <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name}</h2>
-            <#--<#if !(print?? && print)>-->
-                <table class="small_screen">
-                    <tbody class="strip_rows">
+            <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; <span class="large_screen">Division </span>${division.name}</h2>
+            <table class="small_screen">
+                <tbody class="strip_rows">
+                    <tr>
+                        <th>Player One</th>
+                        <th>Player Two</th>
+                        <th>Score</th>
+                    </tr>
+                    <#list division.matches as match>
                         <tr>
-                            <th>Player One</th>
-                            <th>Player Two</th>
-                            <th>Score</th>
+                            <td id="match_${division_index}_${match_index}_smallScreenPlayerOne">${match.playerOne.user.name}</td>
+                            <td id="match_${division_index}_${match_index}_smallScreenPlayerTwo">${match.playerTwo.user.name}</td>
+                            <@matchCell match true true/>
                         </tr>
-                        <#list division.matches as match>
-                            <tr>
-                                <td id="match_${division_index}_${match_index}_smallScreenPlayerOne">${match.playerOne.user.name}</td>
-                                <td id="match_${division_index}_${match_index}_smallScreenPlayerTwo">${match.playerTwo.user.name}</td>
-                                <@matchCell match true true/>
-                            </tr>
-                        </#list>
-                    </tbody>
-                </table>
-            <#--</#if>-->
+                    </#list>
+                </tbody>
+            </table>
             <table class="league large_screen">
                 <tbody class="strip_rows">
                     <tr>
@@ -80,7 +83,7 @@
             </ul>
             <p style="margin: 0.75em 0;">For more details use the <a href="/account">account</a> page to check which leagues you are registered for.</p>
 
-            <p style="margin: 0.25em 0;">To view all rounds for the leagues you are a player in (including those you do not have a match in) use the <a href="/leagueTable?showAllDivisions=true">View Leagues</a> button above.</p>
+            <p style="margin: 0.25em 0;">To view all rounds for the leagues you are a player in (including those you do not have a match in) use the <a href="/leagueTable?showAllDivisions=true">View your leagues</a> button above.</p>
         </div>
     </#if>
     <#if print?? && print>

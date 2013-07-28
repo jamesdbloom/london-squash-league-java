@@ -6,11 +6,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.test.web.servlet.MvcResult;
 import org.squashleague.domain.account.User;
+import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -29,11 +31,15 @@ public class LeagueTablePage {
         Elements tableTitleElements = html.select(".table_title");
         Elements tableSubTitleElements = html.select(".table_subtitle");
 
-        for (int i = 0; i < rounds.length; i++) {
-            Round round = rounds[i];
+        for (int r = 0; r < rounds.length; r++) {
+            Round round = rounds[r];
 
-            assertEquals("(" + round.getStartDate().toString("dd MMM yyyy") + " – " + round.getEndDate().toString("dd MMM yyyy") + ")", tableTitleElements.get(i).text());
-            assertEquals(round.getLeague().getClub().getName() + " – " + round.getLeague().getName(), tableSubTitleElements.get(i).text());
+            assertEquals("(" + round.getStartDate().toString("dd MMM yyyy") + " – " + round.getEndDate().toString("dd MMM yyyy") + ")", tableTitleElements.get(r).text());
+            for (int d = 0; d < round.getDivisions().size(); d++) {
+                Division division = ((List<Division>)round.getDivisions()).get(d);
+
+                assertEquals(round.getLeague().getClub().getName() + " – " + round.getLeague().getName() + " – Division " + division.getName(), tableSubTitleElements.get(r + d).text());
+            }
         }
     }
 

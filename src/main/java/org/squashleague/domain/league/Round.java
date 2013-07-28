@@ -13,6 +13,7 @@ import org.squashleague.domain.ModelObject;
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -124,6 +125,14 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
 
     public Round withDivisions(Collection<Division> divisions) {
         setDivisions(divisions);
+        return this;
+    }
+
+    public Round addDivision(Division division) {
+        if(divisions == null){
+            divisions = new ArrayList<>();
+        }
+        divisions.add(division);
         return this;
     }
 

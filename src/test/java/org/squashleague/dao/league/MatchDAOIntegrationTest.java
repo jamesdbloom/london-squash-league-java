@@ -318,7 +318,7 @@ public class MatchDAOIntegrationTest extends AdministratorLoggedInTest {
         Object[] actualMatches = matchDAO.findAll().toArray();
         try {
             // then
-            assertArrayEquals(new Match[]{matchTwo, matchFour}, actualMatches);
+            assertArrayEquals(new Match[]{matchFour, matchTwo}, actualMatches);
         } finally {
             matchDAO.delete(matchOne);
             matchDAO.delete(matchTwo);
