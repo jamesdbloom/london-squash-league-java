@@ -101,7 +101,7 @@ public class MockDAOTest extends AdministratorLoggedInTest {
 
         for (int r = 0; r < 2; r++) {
             Round round = new Round()
-                    .withStartDate(new DateTime().plusDays(r + 1))
+                    .withStartDate(new DateTime().minusDays(r + 1))
                     .withEndDate(new DateTime().plusDays(r + 11))
                     .withLeague(leagues.get(r));
             rounds.add(round);

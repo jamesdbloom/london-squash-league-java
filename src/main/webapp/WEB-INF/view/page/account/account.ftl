@@ -127,7 +127,7 @@
                             <td id="match_${player_index}_${match_index}_playerOne"><@showContactDetails match.playerOne.user user/></td>
                             <td id="match_${player_index}_${match_index}_playerTwo"><@showContactDetails match.playerTwo.user user/></td>
                             <td id="match_${player_index}_${match_index}_scoreEntered" class="hide_on_medium_screen"><#if match.scoreEntered??>${match.scoreEntered.toDate()?string("dd MMM yyyy")}</#if></td>
-                            <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap"><#if match.score?? >${match.score}<#else><a href="/score/${match.id}">enter</a></#if></td>
+                            <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap"><#if match.score?? >${match.score}<#elseif match.canEnterScore() ><a href="/score/${match.id}">enter</a></#if></td>
                             <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap " class="hide_on_very_small_screen"><@showPoints match user/></td>
                         </tr>
                     </#list>
@@ -154,7 +154,6 @@
                         </ul>
                     </li>
                 </ul>
-                <p style="margin: 0.25em 0;">To view how your individual points are calculated for each match see your <a href="/account#matches">Account</a> page.</p>
             </div>
             </#if>
         </#list>

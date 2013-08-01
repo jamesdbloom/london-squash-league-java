@@ -40,7 +40,7 @@
                         <h2 class="table_title page_break" style="margin-top: 2em;">(${division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${division.round.endDate.toDate()?string("dd MMM yyyy")})</h2>
                     </#if>
                 </#if>
-                <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; <span class="large_screen">Division </span>${division.name}</h2>
+                <h2 class="table_subtitle">${division.round.league.club.name} &ndash; ${division.round.league.name} &ndash; <span class="hide_on_medium_screen">Division </span>${division.name}</h2>
                 <table class="small_screen">
                     <tbody class="strip_rows">
                         <tr>
@@ -110,7 +110,7 @@
     <#if print?? && print>
         <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;"><#if match.score?? >${score}</#if></td>
     <#else>
-        <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;<#if match.isMyMatch(user) > color: #000000;</#if>"><#if match.score?? >${score}<#elseif match.isMyMatch(user) ><a href="/score/${match.id}">enter</a></#if></td>
+        <td id="match_${match.playerOne.id}_${match.playerTwo.id}_<#if smallScreen>smallScreen<#else>largeScreen</#if>Score" style="white-space: nowrap;<#if match.isMyMatch(user) > color: #000000;</#if>"><#if match.score?? >${score}<#elseif match.isMyMatch(user) && match.canEnterScore() ><a href="/score/${match.id}">enter</a></#if></td>
     </#if>
 </#macro>
 

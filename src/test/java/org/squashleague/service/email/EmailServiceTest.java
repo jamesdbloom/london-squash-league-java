@@ -118,7 +118,7 @@ public class EmailServiceTest {
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Host")).thenReturn(hostName);
-        when(request.getRemotePort()).thenReturn(port);
+        when(request.getLocalPort()).thenReturn(port);
 
         String leagueEmail = "info@squash-league.com";
         when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
@@ -154,7 +154,7 @@ public class EmailServiceTest {
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Host")).thenReturn(hostName);
-        when(request.getRemotePort()).thenReturn(port);
+        when(request.getLocalPort()).thenReturn(port);
 
         String leagueEmail = "info@squash-league.com";
         when(environment.getProperty("email.contact.address")).thenReturn(leagueEmail);
@@ -183,7 +183,7 @@ public class EmailServiceTest {
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Host")).thenReturn(hostName);
-        when(request.getRemotePort()).thenReturn(port);
+        when(request.getLocalPort()).thenReturn(port);
 
         // when
         URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
@@ -197,7 +197,7 @@ public class EmailServiceTest {
         // given
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getRemotePort()).thenReturn(port);
+        when(request.getLocalPort()).thenReturn(port);
 
         // when
         URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
@@ -212,7 +212,7 @@ public class EmailServiceTest {
         int port = 666;
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Host")).thenReturn("");
-        when(request.getRemotePort()).thenReturn(port);
+        when(request.getLocalPort()).thenReturn(port);
 
         // when
         URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);
@@ -227,7 +227,7 @@ public class EmailServiceTest {
         String hostName = "hostName:12345";
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader("Host")).thenReturn(hostName);
-        when(request.getRemotePort()).thenReturn(666);
+        when(request.getLocalPort()).thenReturn(666);
 
         // when
         URL actual = emailService.createUrl(new User().withEmail("to@email.com").withOneTimeToken("token"), request);

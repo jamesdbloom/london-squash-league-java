@@ -45,6 +45,10 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         return user != null && (playerOne.getUser().getId().equals(user.getId()) || playerTwo.getUser().getId().equals(user.getId()));
     }
 
+    public boolean canEnterScore() {
+        return score == null && division.getRound().inPlay();
+    }
+
     public Player getPlayerOne() {
         return playerOne;
     }

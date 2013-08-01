@@ -4,14 +4,22 @@ CREATE DATABASE squash_league;
 CREATE USER 'squash_app'@'localhost' IDENTIFIED BY 'mypass';
 SET PASSWORD FOR 'squash_app'@'localhost' = PASSWORD('g1t20php12');
 GRANT ALL ON squash_league.* TO 'squash_app'@'localhost';
+FLUSH PRIVILEGES;
 
 CREATE DATABASE squash_league_beta;
 GRANT ALL ON squash_league_beta.* TO 'squash_app'@'localhost';
+FLUSH PRIVILEGES;
+
+CREATE USER 'squash_backup'@'localhost' IDENTIFIED BY 'mypass';
+SET PASSWORD FOR 'squash_backup'@'localhost' = PASSWORD('itchyfr3dsm1th');
+GRANT SELECT ON squash_league.* TO 'squash_backup'@'localhost';
+FLUSH PRIVILEGES;
 
 // backup existing
 
 # locally use: /usr/local/mysql-5.5.27-osx10.6-x86_64/bin/mysqldump
-mysqldump -u squash_app -p -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_`date +"%y-%m-%d-%H-%M-%s"`.sql"
+mysqldump --single-transaction -u squash_app -p -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_`date +"%y-%m-%d-%H-%M-%s"`.sql"
+0 0 * * * mysqldump --single-transaction -u squash_backup --password=itchyfr3dsm1th -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_`date +"%y-%m-%d-%H-%M-%s"`.sql"
 
 // import backup
 

@@ -89,6 +89,11 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
         return status != RoundStatus.INPLAY && status != RoundStatus.FINISHED;
     }
 
+    public boolean inPlay() {
+        RoundStatus status = getStatus();
+        return status == RoundStatus.INPLAY;
+    }
+
     public League getLeague() {
         return league;
     }

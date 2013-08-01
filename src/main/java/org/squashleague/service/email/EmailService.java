@@ -82,7 +82,7 @@ public class EmailService {
     protected URL createUrl(User user, HttpServletRequest request) throws MalformedURLException, UnsupportedEncodingException {
         String hostHeader = request.getHeader("Host");
         String host = "www.london-squash-league.com";
-        int port = request.getRemotePort();
+        int port = request.getLocalPort();
         if(!Strings.isNullOrEmpty(hostHeader)) {
             if(hostHeader.contains(":")) {
                 host = StringUtils.substringBefore(hostHeader, ":");
