@@ -18,8 +18,8 @@ FLUSH PRIVILEGES;
 // backup existing
 
 # locally use: /usr/local/mysql-5.5.27-osx10.6-x86_64/bin/mysqldump
-mysqldump --single-transaction -u squash_app -p -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_`date +"%y-%m-%d-%H-%M-%s"`.sql"
-0 0 * * * mysqldump --single-transaction -u squash_backup --password=itchyfr3dsm1th -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_`date +"%y-%m-%d-%H-%M-%s"`.sql"
+mysqldump --single-transaction -u squash_app -p -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_$(date +%y-%m-%d-%H-%M-%s).sql"
+0 0 * * * mysqldump --single-transaction -u squash_backup --password=itchyfr3dsm1th -h localhost squash_league > "/var/db_backup/london_squash_league/squash_league_$(/bin/date +%y-%m-%d-%H-%M-%s).sql"
 
 // import backup
 
