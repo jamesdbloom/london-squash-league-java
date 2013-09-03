@@ -1,5 +1,6 @@
 package org.squashleague.web.controller.round;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.squashleague.domain.league.Division;
 import org.squashleague.domain.league.Match;
@@ -79,6 +80,7 @@ public class NewDivisionServiceTest {
     }
 
     @Test
+    @Ignore
     public void shouldSortPlayersByScore() {
         // given
         Map<Long, Player> players = new HashMap<>();

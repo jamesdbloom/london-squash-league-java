@@ -191,11 +191,13 @@
                     <td rowspan="2">=</td>
                     <td rowspan="2">${match.playerOneTotalPoints?string("0.00")}</td>
                 </tr>
-                <tr>
-                    <td class="top_border top_border_right"></td>
-                    <td class="top_border top_border_across">${match.division.name}</td>
-                    <td class="top_border top_border_left"></td>
-                </tr>
+                <#if match.division.round.id != 1 && match.division.round.id != 2>
+                    <tr>
+                        <td class="top_border top_border_right"></td>
+                        <td class="top_border top_border_across">${match.division.name}</td>
+                        <td class="top_border top_border_left"></td>
+                    </tr>
+                </#if>
             </tbody>
         </table>
         <#else>
@@ -208,11 +210,13 @@
                     <td rowspan="2">=</td>
                     <td rowspan="2">${match.playerTwoTotalPoints?string("0.00")}</td>
                 </tr>
-                <tr>
-                    <td class="top_border top_border_right"></td>
-                    <td class="top_border top_border_across">${match.division.name}</td>
-                    <td class="top_border top_border_left"></td>
-                </tr>
+                <#if match.division.round.id != 1 && match.division.round.id != 2>
+                    <tr>
+                        <td class="top_border top_border_right"></td>
+                        <td class="top_border top_border_across">${match.division.name}</td>
+                        <td class="top_border top_border_left"></td>
+                    </tr>
+                </#if>
             </tbody>
         </table>
         </#if>

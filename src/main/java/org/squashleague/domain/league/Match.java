@@ -140,6 +140,9 @@ public class Match extends ModelObject<Match> implements Comparable<Match> {
         if (score != null) {
             int wonOrLostPoints = calculateWonOrLostPoints(currentPlayer, opponent);
             double totalPoints = (wonOrLostPoints + calculateGamesPoints(currentPlayer)) / division.getName();
+            if (division.getRound().getId().equals(1l) || division.getRound().getId().equals(2l)) {
+                totalPoints = (wonOrLostPoints + calculateGamesPoints(currentPlayer));
+            }
             return new BigDecimal(totalPoints).setScale(2, RoundingMode.HALF_UP).doubleValue();
         }
         return 0.0;
