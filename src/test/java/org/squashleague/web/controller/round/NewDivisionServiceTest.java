@@ -80,7 +80,6 @@ public class NewDivisionServiceTest {
     }
 
     @Test
-    @Ignore
     public void shouldSortPlayersByScore() {
         // given
         Map<Long, Player> players = new HashMap<>();
@@ -90,7 +89,7 @@ public class NewDivisionServiceTest {
         players.put(4l, (Player) new Player().withId(4l)); // only played one 2:(3 + 0.2)/2 = 3.2/2 = 1.6
         players.put(5l, (Player) new Player().withId(5l)); // no matches = 0
 
-        Division division = new Division().withName(2);
+        Division division = new Division().withName(2).withRound((Round) new Round().withId(3l));
         List<Match> matches = Arrays.asList(
                 new Match().withDivision(division).withPlayerOne(players.get(1l)).withPlayerTwo(players.get(2l)).withScore("0-2"),
                 new Match().withDivision(division).withPlayerOne(players.get(2l)).withPlayerTwo(players.get(1l)).withScore("3-0"),
