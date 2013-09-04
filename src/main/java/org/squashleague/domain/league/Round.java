@@ -178,11 +178,11 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
 
     @Override
     public boolean equals(Object other) {
-        return EqualsBuilder.reflectionEquals(this, other);
+        return EqualsBuilder.reflectionEquals(this, other, "logger", "previousRound", "divisions", "playerSortedByScore");
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return HashCodeBuilder.reflectionHashCode(this, "logger", "previousRound", "divisions", "playerSortedByScore");
     }
 }

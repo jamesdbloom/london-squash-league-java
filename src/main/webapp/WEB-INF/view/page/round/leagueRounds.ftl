@@ -47,6 +47,18 @@
             </#if>
         </p>
 
+        <p class="select">
+            <label for="previousRoundId">Previous Round:</label>
+            <#if (rounds?size > 0)>
+                <select id="previousRoundId" name="previousRoundId" required="required" title="${environment.getProperty("validation.round.previousRound")}">
+                    <option value="">${environment.getProperty("message.general.please_select")}</option>
+                    <#list rounds as round>
+                        <option value="${round.id}" <#if (previousRoundId?? && previousRoundId == round.id)>selected="selected"</#if>>${round.league.club.name} &ndash; ${round.league.name} &ndash; (${round.startDate.toDate()?string("dd MMM yyyy")} - ${round.endDate.toDate()?string("dd MMM yyyy")})</option>
+                    </#list>
+                </select> <span class="error_message"></span>
+            </#if>
+        </p>
+
         <p class="submit">
             <input class="submit primary" type="submit" value="Create Round">
         </p>
@@ -106,7 +118,7 @@
     var errors = errors || {},
             validation = {
                 filled: ['startDate', 'endDate'],
-                changed: ['leagueId'],
+                changed: ['leagueId', 'previousRoundId'],
                 onload: errors && errors.round
             };
 </script>

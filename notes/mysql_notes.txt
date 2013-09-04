@@ -24,6 +24,7 @@ mysqldump --single-transaction -u squash_app -p -h localhost squash_league > "/v
 // import backup
 
 mysql -u squash_app -p -h localhost -D squash_league < /var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
+mysql -u squash_app -p -h localhost -D squash_league < var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
 mysql -u squash_app -p -h localhost -D squash_league_beta < /var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
 mysql -u squash_app -p -h localhost -D squash_league < /Users/jamesdbloom/git/london_squash_league_java/var/db_backup/london_squash_league/squash_league_13-07-28-14-50-1375037410.sql
 

@@ -84,26 +84,44 @@ public class LeagueRoundsController {
     public String create(Long leagueId,
                          @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) DateTime startDate,
                          @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) DateTime endDate,
+                         Long previousRoundId,
                          RedirectAttributes redirectAttributes) {
         League league = leagueDAO.findById(leagueId);
         boolean startDateAfterEndDate = startDate != null && endDate != null && startDate.isAfter(endDate.minusDays(1));
-        if (league == null || startDateAfterEndDate) {
-            List<String> validationErrors = new ArrayList<>();
-            if (league == null) {
-                validationErrors.add(environment.getProperty("validation.round.league"));
+        Round previousRound = roundDAO.findById(previousRoundId);
+
+        List<String> validationErrors = new ArrayList<>();
+        if (previousRound != null) {
+            if (!previousRound.getLeague().getId().equals(league.getId())) {
+                validationErrors.add(environment.getProperty("validation.round.previousRound.sameLeague"));
             }
-            if (startDateAfterEndDate) {
-                validationErrors.add(environment.getProperty("validation.round.startDateAfterEndDate"));
+            if (startDate != null && previousRound.getEndDate().isAfter(startDate.plusDays(1))) {
+                validationErrors.add(environment.getProperty("validation.round.previousRound.endDateBeforeStartDate"));
             }
+        }
+        if (league == null) {
+            validationErrors.add(environment.getProperty("validation.round.league"));
+        }
+        if (startDateAfterEndDate) {
+            validationErrors.add(environment.getProperty("validation.round.startDateAfterEndDate"));
+        }
+        if (!validationErrors.isEmpty()) {
             redirectAttributes.addFlashAttribute("environment", environment);
             redirectAttributes.addFlashAttribute("leagueId", leagueId);
             redirectAttributes.addFlashAttribute("startDate", (startDate != null ? startDate.toString("yyyy-MM-dd") : ""));
             redirectAttributes.addFlashAttribute("endDate", (endDate != null ? endDate.toString("yyyy-MM-dd") : ""));
+            redirectAttributes.addFlashAttribute("previousRoundId", previousRoundId);
             redirectAttributes.addFlashAttribute("validationErrors", validationErrors);
             return "redirect:/leagueRounds";
         }
 
-        roundDAO.save(new Round().withLeague(league).withStartDate(startDate).withEndDate(endDate));
+        roundDAO.save(
+                new Round()
+                        .withLeague(league)
+                        .withPreviousRound(previousRound)
+                        .withStartDate(startDate)
+                        .withEndDate(endDate)
+        );
         return "redirect:/leagueRounds";
     }
 
