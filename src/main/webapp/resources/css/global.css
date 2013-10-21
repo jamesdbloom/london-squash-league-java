@@ -642,8 +642,8 @@ input.show_validation:focus:invalid:not([type="date"]) {
 h2.table_title {
     font-size: 1.75em;
     font-weight: bolder;
-    padding-top: 1em;
-    padding-bottom: 1em;
+    padding-top: 1.5em;
+    padding-bottom: 0.5em;
 }
 
 h2.table_title:first-of-type {

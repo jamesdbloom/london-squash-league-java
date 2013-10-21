@@ -26,7 +26,7 @@ mysqldump --single-transaction -u squash_app -p -h localhost squash_league > "/v
 mysql -u squash_app -p -h localhost -D squash_league < /var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
 mysql -u squash_app -p -h localhost -D squash_league < var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
 mysql -u squash_app -p -h localhost -D squash_league_beta < /var/db_backup/london_squash_league/squash_league_13-07-22-13-32-1374514370.sql
-mysql -u squash_app -p -h localhost -D squash_league < /Users/jamesdbloom/git/london_squash_league_java/var/db_backup/london_squash_league/squash_league_13-07-28-14-50-1375037410.sql
+mysql -u squash_app -p -h localhost -D squash_league_beta < /Users/jamesdbloom/git/london_squash_league_java/var/db_backup/london_squash_league/squash_league_13-07-28-14-50-1375037410.sql
 
 // evening first
 update Round set previousRound_id = 2 where id = 3;
@@ -49,3 +49,25 @@ password: g1t20php12
 select * from User join Player on Player.User_id = User.id;
 select User.*, League.Name from User join Player on Player.User_id = User.id join League on Player.League_id = League.id;
 select User.*, League.Name from User join Player on Player.User_id = User.id join League on Player.League_id = League.id where League.Name = "Evening";
+select database() from dual;
+
+// Unactive players with games and no scores entered
+
+create temporary table temp_table (
+  player_id int
+);
+
+insert into temp_table select Player.id from Player where Player.id IN
+(select Player.id
+  from Player RIGHT JOIN Matches ON Player.id = Matches.playerOne_id or Player.id = Matches.playerTwo_id
+  where Matches.id IN (select Matches.id from Matches where Matches.score IS NULL))
+AND Player.id NOT IN
+(select Player.id
+  from Player RIGHT JOIN Matches ON Player.id = Matches.playerOne_id or Player.id = Matches.playerTwo_id
+  where Matches.id IN (select Matches.id from Matches where Matches.score IS NOT NULL));
+
+update Player set Player.status = 1 where Player.id IN (select temp_table.player_id from temp_table);
+
+drop table temp_table;
+
+select * from temp_table;

@@ -97,7 +97,7 @@
                 </tr>
             </#list>
         </tbody>
-    </table><h2 class="table_title" id="matches">Your Matches</h2>
+    </table><h2 class="table_title" id="matches">Your Matches <span style="font-size: 0.65em;">(for the last two rounds)</span></h2>
         <#assign totalPoints = 0/>
         <#assign totalNumberOfMatches = 0/>
         <#list user.players as player>

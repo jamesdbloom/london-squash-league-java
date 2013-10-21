@@ -94,18 +94,15 @@
         setTimeout(function () {
             <#list jsResources["all"] as jsFile>
                 <#local node = "node_${jsFile_index}">
-                var ${node} =
-                document.createElement('script');
-            ${node}.
-                setAttribute('type', 'text/javascript');
-            ${node}.
-                setAttribute('src', '${jsFile}');
+                var ${node} = document.createElement('script');
+                ${node}.setAttribute('type', 'text/javascript');
+                ${node}.setAttribute('src', '${jsFile}');
                 document.body.appendChild(${node});
             </#list>
         }, 50);
     };
 </script>
-    <@page_js_inline/>
+<@page_js_inline/>
 <!-- google analytics start --><script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-32687194-3']);

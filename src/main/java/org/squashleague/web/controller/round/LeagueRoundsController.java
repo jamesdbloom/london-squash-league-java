@@ -182,7 +182,7 @@ public class LeagueRoundsController {
         }
 
         List<Player> players = playerDAO.findAllActiveByLeague(round.getLeague());
-        divisionDAO.save(divisionSizeService.allocateDivisions(players, matchDAO.findAllInRound(round, 1), round));
+        divisionDAO.save(divisionSizeService.allocateDivisions(players, matchDAO.findAllInRound(round, 2), round));
         matchDAO.save(divisionSizeService.createMatches(players));
         playerDAO.update(players);
 

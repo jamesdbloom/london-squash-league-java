@@ -29,9 +29,10 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
 
     @Transactional
     public List<Match> findAllByPlayer(Player player, Round round, int roundsBack) {
+        List<Long> roundIds = getPreviousRoundIds(round, roundsBack);
         return entityManager.createQuery("from Match as match where " +
                 "(match.playerOne.id = " + player.getId() + " or match.playerTwo.id = " + player.getId() + ")" +
-                (round != null ? " and match.division.round.id in (" + Joiner.on(",").join(getPreviousRoundIds(round, roundsBack)) + ")" : ""), Match.class).getResultList();
+                (round != null ? " and match.division.round.id in (" + Joiner.on(",").join(roundIds) + ")" : ""), Match.class).getResultList();
     }
 
     @Transactional
@@ -58,7 +59,8 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
 
     @Override
     public List<Match> findAll() {
-        return entityManager.createQuery("from Match as match where match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal() + " order by match.playerOne.user.name", Match.class).getResultList();
+        // return entityManager.createQuery("from Match as match where match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal() + " order by match.playerOne.user.name", Match.class).getResultList();
+        return entityManager.createQuery("from Match as match order by match.playerOne.user.name", Match.class).getResultList();
     }
 
     @Override

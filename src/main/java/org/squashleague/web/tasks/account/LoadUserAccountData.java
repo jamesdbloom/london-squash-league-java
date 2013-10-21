@@ -30,11 +30,9 @@ public class LoadUserAccountData implements Callable<User> {
         List<Player> players = playerDAO.findAllByUser(user);
         for (Player player : players) {
             Division currentDivision = player.getCurrentDivision();
-            Round round = null;
             if (currentDivision != null) {
-                round = currentDivision.getRound();
+                player.withMatches(matchDAO.findAllByPlayer(player, currentDivision.getRound(), 2));
             }
-            player.withMatches(matchDAO.findAllByPlayer(player, round, 2));
         }
         user.setPlayers(players);
         return user;

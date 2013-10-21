@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # To launch restarter run command:
-# sudo /var/apps/london_squash_league/london_squash_league-1.0-SNAPSHOT/WEB-INF/classes/webping.sh &
+# sudo /var/apps/london_squash_league/webping.sh &
 
 while true; do
    if [ "`curl -k -s -L --max-time 60 http://localhost/webping`" != "OK" ]; then

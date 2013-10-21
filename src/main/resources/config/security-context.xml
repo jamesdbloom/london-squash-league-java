@@ -22,7 +22,10 @@
 
         <security:logout logout-url="/logout" delete-cookies="JSESSIONID" logout-success-url="/"/>
         <!-- ALL -->
-        <security:intercept-url pattern="/webping" access="permitAll()" requires-channel="http"/>
+        <security:intercept-url pattern="/webping" access="permitAll()" requires-channel="any"/>
+        <security:intercept-url pattern="/Error404.html" access="permitAll()" requires-channel="any"/>
+        <security:intercept-url pattern="/Error500.html" access="permitAll()" requires-channel="any"/>
+        <security:intercept-url pattern="/google087c09d2419b667d.html" access="permitAll()" requires-channel="any"/>
         <security:intercept-url pattern="/favicon.ico" access="permitAll()" requires-channel="https"/>
         <security:intercept-url pattern="/resources/**" access="permitAll()" requires-channel="https"/>
         <security:intercept-url pattern="/bundle/**" access="permitAll()" requires-channel="https"/>

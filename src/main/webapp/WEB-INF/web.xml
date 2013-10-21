@@ -182,6 +182,15 @@
             <url-pattern>/webping</url-pattern>
             <url-pattern>/webping/*</url-pattern>
         </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Error pages -- no ssl</web-resource-name>
+            <url-pattern>/Error404.html</url-pattern>
+            <url-pattern>/Error500.html</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>Google Validation -- no ssl</web-resource-name>
+            <url-pattern>/google087c09d2419b667d.html</url-pattern>
+        </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>
         </user-data-constraint>

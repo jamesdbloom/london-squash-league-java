@@ -18,10 +18,12 @@
         <#local divisions = user.divisions>
     </#if>
     <#if (divisions?size > 0)>
-        <#if showAllDivisions?? && !showAllDivisions>
-            <div class="message" style="margin: 3em auto 0 auto;">This page is currently displaying <span style="color: darkred;">your</span> divisions in your leagues. &nbsp;&nbsp;To view <span style="color: darkred;">all</span> divisions in your leagues use the <a href="/leagueTable?showAllDivisions=true">View your leagues</a> button above</div>
-        <#else>
-            <div class="message" style="margin: 3em auto 0 auto;">This page is currently displaying <span style="color: darkred;">all</span> divisions in your leagues. &nbsp;&nbsp;To view <span style="color: darkred;">only your</span> divisions in your leagues use the <a href="/leagueTable">View your divisions</a> button above</div>
+        <#if !(print?? && print)>
+            <#if showAllDivisions?? && !showAllDivisions>
+                <div class="message" style="margin: 3em auto 0 auto;">This page is currently displaying <span style="color: darkred;">your</span> divisions in your leagues. &nbsp;&nbsp;To view <span style="color: darkred;">all</span> divisions in your leagues use the <a href="/leagueTable?showAllDivisions=true">View your leagues</a> button above</div>
+            <#else>
+                <div class="message" style="margin: 3em auto 0 auto;">This page is currently displaying <span style="color: darkred;">all</span> divisions in your leagues. &nbsp;&nbsp;To view <span style="color: darkred;">only your</span> divisions in your leagues use the <a href="/leagueTable">View your divisions</a> button above</div>
+            </#if>
         </#if>
         <#assign dateHash = divisions[0].round.startDate.hashCode() + "_" + divisions[0].round.endDate.hashCode() />
         <#assign leagueHash = divisions[0].round.league.hashCode() />
