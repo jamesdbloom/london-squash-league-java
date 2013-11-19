@@ -94,7 +94,7 @@
                    <!--SSLVerifyClient="optional" SSLProtocol="TLSv1"/>-->
         <Connector port="443" protocol="HTTP/1.1" SSLEnabled="true"
                    maxThreads="200" scheme="https" secure="true"
-                   keystoreFile="/var/certs/london-squash-league/www.london-squash-league.com.jks" keystorePass="changeit"
+                   keystoreFile="/var/certs/london-squash-league-2014/www.london-squash-league.com.jks" keystorePass="changeit"
                    clientAuth="false" sslProtocol="TLS" />
 
         <!-- Define an AJP 1.3 Connector on port 8009 -->
