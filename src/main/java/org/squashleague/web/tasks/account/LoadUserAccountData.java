@@ -4,10 +4,12 @@ import org.squashleague.dao.league.MatchDAO;
 import org.squashleague.dao.league.PlayerDAO;
 import org.squashleague.domain.account.User;
 import org.squashleague.domain.league.Division;
+import org.squashleague.domain.league.Match;
 import org.squashleague.domain.league.Player;
 import org.squashleague.domain.league.Round;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -31,7 +33,8 @@ public class LoadUserAccountData implements Callable<User> {
         for (Player player : players) {
             Division currentDivision = player.getCurrentDivision();
             if (currentDivision != null) {
-                player.withMatches(matchDAO.findAllByPlayer(player, currentDivision.getRound(), 2));
+                List<Match> matches = matchDAO.findAllByPlayer(player, currentDivision.getRound(), 2);
+                player.withMatches(matches);
             }
         }
         user.setPlayers(players);

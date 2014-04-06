@@ -96,8 +96,8 @@ public class Division extends ModelObject<Division> implements Comparable<Divisi
 
     @Override
     public int compareTo(Division other) {
-        int leagueComparison = round.compareTo(other.round);
-        return (leagueComparison == 0 ? name.compareTo(other.name) : leagueComparison);
+        int roundComparison = round.compareTo(other.round);
+        return (roundComparison == 0 ? name.compareTo(other.name) : roundComparison);
     }
 
     public Division merge(Division division) {

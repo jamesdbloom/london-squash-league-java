@@ -60,7 +60,7 @@ public class MatchDAO extends AbstractJpaDAO<Match> {
     @Override
     public List<Match> findAll() {
         // return entityManager.createQuery("from Match as match where match.playerOne.status = " + PlayerStatus.ACTIVE.ordinal() + " and match.playerTwo.status = " + PlayerStatus.ACTIVE.ordinal() + " order by match.playerOne.user.name", Match.class).getResultList();
-        return entityManager.createQuery("from Match as match order by match.playerOne.user.name", Match.class).getResultList();
+        return entityManager.createQuery("from Match as match order by match.division.round.startDate desc, match.playerOne.user.name", Match.class).getResultList();
     }
 
     @Override

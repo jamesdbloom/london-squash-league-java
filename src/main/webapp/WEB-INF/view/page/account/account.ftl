@@ -97,11 +97,12 @@
                 </tr>
             </#list>
         </tbody>
-    </table><h2 class="table_title" id="matches">Your Matches <span style="font-size: 0.65em;">(for the last two rounds)</span></h2>
-        <#assign totalPoints = 0/>
+    </table>
+    <h2 class="table_title" id="matches">Your Matches <span style="font-size: 0.65em;">(for the current round)</span></h2>
         <#assign totalNumberOfMatches = 0/>
         <#list user.players as player>
-            <#if (player.matches?size > 0) && player.currentDivision??>
+            <#assign matches = player.getMatches(player.currentDivision)>
+            <#if (matches?size > 0) && player.currentDivision??>
                 <#assign totalNumberOfMatches = totalNumberOfMatches + player.matches?size/>
             <h2 class="table_subtitle">${player.currentDivision.round.league.club.name} &ndash; ${player.currentDivision.round.league.name}</h2>
             <table>
@@ -115,12 +116,7 @@
                         <th>Score</th>
                         <th class="hide_on_very_small_screen">Points</th>
                     </tr>
-                    <#list player.matches as match>
-                        <#if match.playerOne.user.id == user.id>
-                            <#assign totalPoints = totalPoints + match.playerOneTotalPoints/>
-                        <#else>
-                            <#assign totalPoints = totalPoints + match.playerTwoTotalPoints/>
-                        </#if>
+                    <#list matches as match>
                         <tr>
                             <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${match.division.name}</td>
                             <td id="match_${player_index}_${match_index}_date">${match.division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.division.round.endDate.toDate()?string("dd MMM yyyy")}</td>
@@ -132,7 +128,7 @@
                         </tr>
                     </#list>
                     <tr>
-                        <td class="last" colspan="7" style="text-align: right">Total:&nbsp;&nbsp;${totalPoints}</td>
+                    <td class="last" colspan="7" style="text-align: right">Total:&nbsp;&nbsp;${player.calculateScore(player.currentDivision)}</td>
                     </tr>
                 </tbody>
             </table>
@@ -159,7 +155,7 @@
         </#list>
         <#if totalNumberOfMatches == 0>
         <div class="errors_messages">
-            <p>You currently have no matches for one of the following reasons:</p>
+            <p>You currently have no matches, for the current round, for one of the following reasons:</p>
             <ul style="margin: 1em; list-style: disc outside none;">
                 <li style="margin-left: 2em;">you have recently become an active player in a league but have no matches because a new round has not started yet.</li>
                 <li style="margin-left: 2em; margin-top: .25em;">you have recently become an active player in a league but have no current division because a new round has not started yet.</li>
@@ -167,6 +163,34 @@
             </ul>
         </div>
         </#if>
+        <h2 class="table_title" id="matches">Match History<span style="font-size: 0.65em;"></span></h2>
+        <#list user.players as player>
+        <#assign matches = player.getMatchesNotInDivision(player.currentDivision)>
+        <#if (matches?size > 0)>
+        <table>
+            <tbody class="strip_rows">
+            <tr>
+                <th class="hide_on_very_small_screen">Division</th>
+                <th>Round</th>
+                <th>Player One</th>
+                <th>Player Two</th>
+                <th>Score</th>
+                <th class="hide_on_very_small_screen">Points</th>
+            </tr>
+            <#list matches as match>
+            <tr>
+                <td id="match_${player_index}_${match_index}_division" class="hide_on_very_small_screen">${player.currentDivision.round.league.club.name} &ndash; ${player.currentDivision.round.league.name} &ndash; ${match.division.name}</td>
+                <td id="match_${player_index}_${match_index}_date">${match.division.round.startDate.toDate()?string("dd MMM yyyy")} &ndash; ${match.division.round.endDate.toDate()?string("dd MMM yyyy")}</td>
+                <td id="match_${player_index}_${match_index}_playerOne">${match.playerOne.user.name}</td>
+                <td id="match_${player_index}_${match_index}_playerTwo">${match.playerTwo.user.name}</td>
+                <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap"><#if match.score?? >${match.score}<#elseif match.canEnterScore() ><a href="/score/${match.id}">enter</a></#if></td>
+                <td id="match_${player_index}_${match_index}_score" style="white-space: nowrap " class="hide_on_very_small_screen"><@showPoints match user/></td>
+            </tr>
+            </#list>
+            </tbody>
+        </table>
+        </#if>
+        </#list>
     </#if>
 </#macro>
 
@@ -184,38 +208,38 @@
         <#if match.playerOne.user.id == you.id>
         <table>
             <tbody>
-                <tr>
-                    <td>(&nbsp;${match.playerOneWonOrLostPoints}</td>
-                    <td>+</td>
-                    <td>${match.playerOneGamesPoints?string("0.0#")}&nbsp;)</td>
-                    <td rowspan="2">=</td>
-                    <td rowspan="2">${match.playerOneTotalPoints?string("0.00")}</td>
-                </tr>
+            <tr>
+                <td>(&nbsp;${match.playerOneWonOrLostPoints}</td>
+                <td>+</td>
+                <td>${match.playerOneGamesPoints?string("0.0#")}&nbsp;)</td>
+                <td rowspan="2">=</td>
+                <td rowspan="2">${match.playerOneTotalPoints?string("0.00")}</td>
+            </tr>
                 <#if match.division.round.id != 1 && match.division.round.id != 2>
-                    <tr>
-                        <td class="top_border top_border_right"></td>
-                        <td class="top_border top_border_across">${match.division.name}</td>
-                        <td class="top_border top_border_left"></td>
-                    </tr>
+                <tr>
+                    <td class="top_border top_border_right"></td>
+                    <td class="top_border top_border_across">${match.division.name}</td>
+                    <td class="top_border top_border_left"></td>
+                </tr>
                 </#if>
             </tbody>
         </table>
         <#else>
         <table>
             <tbody>
-                <tr>
-                    <td>(&nbsp;${match.playerTwoWonOrLostPoints}</td>
-                    <td>+</td>
-                    <td>${match.playerTwoGamesPoints?string("0.0#")}&nbsp;)</td>
-                    <td rowspan="2">=</td>
-                    <td rowspan="2">${match.playerTwoTotalPoints?string("0.00")}</td>
-                </tr>
+            <tr>
+                <td>(&nbsp;${match.playerTwoWonOrLostPoints}</td>
+                <td>+</td>
+                <td>${match.playerTwoGamesPoints?string("0.0#")}&nbsp;)</td>
+                <td rowspan="2">=</td>
+                <td rowspan="2">${match.playerTwoTotalPoints?string("0.00")}</td>
+            </tr>
                 <#if match.division.round.id != 1 && match.division.round.id != 2>
-                    <tr>
-                        <td class="top_border top_border_right"></td>
-                        <td class="top_border top_border_across">${match.division.name}</td>
-                        <td class="top_border top_border_left"></td>
-                    </tr>
+                <tr>
+                    <td class="top_border top_border_right"></td>
+                    <td class="top_border top_border_across">${match.division.name}</td>
+                    <td class="top_border top_border_left"></td>
+                </tr>
                 </#if>
             </tbody>
         </table>

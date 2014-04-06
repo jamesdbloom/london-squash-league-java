@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 /**
  * @author jamesdbloom
@@ -130,7 +131,7 @@ public class EmailService {
                     }
                 });
             } catch (Exception e) {
-                logger.warn("Failed to send " + subject + "email to " + to, e);
+                logger.warn("Failed to send " + subject + "email to " + Arrays.asList(to), e);
             }
         }
 

@@ -1,5 +1,7 @@
 package org.squashleague.domain.league;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -66,7 +68,7 @@ public class Player extends ModelObject<Player> {
 
     public void setCurrentDivision(Division currentDivision) {
         this.currentDivision = currentDivision;
-        if (currentDivision != null) {
+        if (currentDivision != null && currentDivision.getRound() != null) {
             this.league = currentDivision.getRound().getLeague();
         }
     }
@@ -97,11 +99,47 @@ public class Player extends ModelObject<Player> {
         return matches;
     }
 
+    public Collection<Match> getMatches(final Division division) {
+        List<Match> matches = new ArrayList<>(Collections2.filter(this.matches.values(), new Predicate<Match>() {
+            @Override
+            public boolean apply(Match match) {
+                return match.getDivision().getId().equals(division.getId());
+            }
+        }));
+        Collections.sort(matches);
+        return matches;
+    }
+
+    public Collection<Match> getMatchesNotInDivision(final Division division) {
+        List<Match> matches = new ArrayList<>(Collections2.filter(this.matches.values(), new Predicate<Match>() {
+            @Override
+            public boolean apply(Match match) {
+                return !match.getDivision().getId().equals(division.getId());
+            }
+        }));
+        Collections.sort(matches);
+        return matches;
+    }
+
     public Player withMatches(Collection<Match> matches) {
         for (Match match : matches) {
             this.matches.put(match.getId(), match);
         }
         return this;
+    }
+
+    public Double calculateScore(Division division) {
+        Double total = 0.0;
+        for (Match match : matches.values()) {
+            if (match.getDivision().getId().equals(division.getId())) {
+                if (match.getPlayerOne().getId().equals(getId())) {
+                    total += match.getPlayerOneTotalPoints();
+                } else {
+                    total += match.getPlayerTwoTotalPoints();
+                }
+            }
+        }
+        return total;
     }
 
     public List<String> getAllOpponentsEmails() {

@@ -89,17 +89,17 @@ public class RoundTest {
         Club clubOne = new Club().withName("c_a");
         League leagueOne = new League().withName("l_a").withClub(clubOne);
         League leagueTwo = new League().withName("l_b").withClub(clubOne);
-        Round roundOne = new Round().withStartDate(DATE_TIME.plusDays(1)).withEndDate(DATE_TIME).withLeague(leagueOne);
-        Round roundTwo = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME).withLeague(leagueOne);
-        Round roundThree = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME.plusDays(1)).withLeague(leagueOne);
-        Round roundFour = new Round().withStartDate(DATE_TIME.plusDays(4)).withEndDate(DATE_TIME.plusDays(4)).withLeague(leagueOne);
-        Round roundFive = new Round().withStartDate(DATE_TIME).withEndDate(DATE_TIME).withLeague(leagueTwo);
+        Round roundOne = new Round().withStartDate(DATE_TIME.plusDays(1)).withEndDate(DATE_TIME).withLeague(leagueOne); // 4 - start date
+        Round roundTwo = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME.plusDays(1)).withLeague(leagueOne); // 2 - start & end date
+        Round roundThree = new Round().withStartDate(DATE_TIME.plusDays(2)).withEndDate(DATE_TIME).withLeague(leagueOne); // 3 - start & end date
+        Round roundFour = new Round().withStartDate(DATE_TIME.plusDays(4)).withEndDate(DATE_TIME.plusDays(4)).withLeague(leagueOne); // 1 - start date
+        Round roundFive = new Round().withStartDate(DATE_TIME).withEndDate(DATE_TIME).withLeague(leagueTwo); // 5 -- alphabet name of league
 
 
         List<Round> rounds = Arrays.asList(roundFive, roundTwo, roundThree, roundFour, roundOne);
         Collections.sort(rounds);
 
-        assertArrayEquals(new Round[]{roundOne, roundTwo, roundThree, roundFour, roundFive}, rounds.toArray());
+        assertArrayEquals(new Round[]{roundFour, roundTwo, roundThree, roundOne, roundFive}, rounds.toArray());
     }
 
     @Test

@@ -1,11 +1,11 @@
 <#include "/WEB-INF/view/layout/default.ftl" />
 
 <#macro page_title>
-<title>London Squash League - Create Round & Matches</title>
+<title>London Squash League - Player Ranking</title>
 </#macro>
 
 <#macro content_header>
-<div id="header">Leagues</div>
+<div id="header">Player Ranking</div>
 </#macro>
 
 <#macro content_section>

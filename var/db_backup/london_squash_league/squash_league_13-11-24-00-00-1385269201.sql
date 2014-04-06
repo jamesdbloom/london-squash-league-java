@@ -1,0 +1,301 @@
+-- MySQL dump 10.13  Distrib 5.5.30, for Linux (x86_64)
+--
+-- Host: localhost    Database: squash_league
+-- ------------------------------------------------------
+-- Server version	5.5.30
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `Club`
+--
+
+DROP TABLE IF EXISTS `Club`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Club` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `address` varchar(50) NOT NULL,
+  `name` varchar(25) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Club`
+--
+
+LOCK TABLES `Club` WRITE;
+/*!40000 ALTER TABLE `Club` DISABLE KEYS */;
+INSERT INTO `Club` VALUES (1,0,'Chalk Hill Road, Hammersmith, London, W6 8DW','Hammersmith GLL');
+/*!40000 ALTER TABLE `Club` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Division`
+--
+
+DROP TABLE IF EXISTS `Division`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Division` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `name` int(11) NOT NULL,
+  `round_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK199794CD9C7BEB4F` (`round_id`),
+  CONSTRAINT `FK199794CD9C7BEB4F` FOREIGN KEY (`round_id`) REFERENCES `Round` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Division`
+--
+
+LOCK TABLES `Division` WRITE;
+/*!40000 ALTER TABLE `Division` DISABLE KEYS */;
+INSERT INTO `Division` VALUES (1,0,1,2),(2,0,2,2),(3,0,1,1),(4,0,2,1),(5,0,1,3),(6,0,2,3),(7,0,3,3),(8,0,1,4),(9,0,2,4),(10,0,1,6),(11,0,2,6),(12,0,3,6),(13,0,1,5),(14,0,2,5);
+/*!40000 ALTER TABLE `Division` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `League`
+--
+
+DROP TABLE IF EXISTS `League`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `League` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `name` varchar(25) NOT NULL,
+  `club_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK876D3E4F5A00C305` (`club_id`),
+  CONSTRAINT `FK876D3E4F5A00C305` FOREIGN KEY (`club_id`) REFERENCES `Club` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `League`
+--
+
+LOCK TABLES `League` WRITE;
+/*!40000 ALTER TABLE `League` DISABLE KEYS */;
+INSERT INTO `League` VALUES (1,0,'Lunchtime',1),(2,0,'Evening',1);
+/*!40000 ALTER TABLE `League` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Matches`
+--
+
+DROP TABLE IF EXISTS `Matches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Matches` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `score` varchar(255) DEFAULT NULL,
+  `scoreEntered` datetime DEFAULT NULL,
+  `division_id` bigint(20) NOT NULL,
+  `playerOne_id` bigint(20) NOT NULL,
+  `playerTwo_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK9557211327E9AE25` (`division_id`),
+  KEY `FK95572113101128E1` (`playerOne_id`),
+  KEY `FK95572113191CC33B` (`playerTwo_id`),
+  CONSTRAINT `FK95572113101128E1` FOREIGN KEY (`playerOne_id`) REFERENCES `Player` (`id`),
+  CONSTRAINT `FK95572113191CC33B` FOREIGN KEY (`playerTwo_id`) REFERENCES `Player` (`id`),
+  CONSTRAINT `FK9557211327E9AE25` FOREIGN KEY (`division_id`) REFERENCES `Division` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=250 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Matches`
+--
+
+LOCK TABLES `Matches` WRITE;
+/*!40000 ALTER TABLE `Matches` DISABLE KEYS */;
+INSERT INTO `Matches` VALUES (1,0,NULL,NULL,1,24,27),(2,0,NULL,NULL,1,24,15),(3,0,NULL,NULL,1,24,14),(4,0,NULL,NULL,1,24,26),(5,0,NULL,NULL,1,24,25),(6,1,'3-1','2013-08-23 11:29:33',1,24,1),(7,0,NULL,NULL,1,24,4),(8,0,NULL,NULL,1,27,15),(9,0,NULL,NULL,1,27,14),(10,0,NULL,NULL,1,27,26),(11,0,NULL,NULL,1,27,25),(12,0,NULL,NULL,1,27,1),(13,0,NULL,NULL,1,27,4),(14,0,NULL,NULL,1,15,14),(15,0,NULL,NULL,1,15,26),(16,1,'3-2','2013-09-03 19:31:05',1,15,25),(17,1,'3-1','2013-08-30 13:29:16',1,15,1),(18,1,'3-1','2013-08-31 15:27:01',1,15,4),(19,0,NULL,NULL,1,14,26),(20,1,'0-3','2013-09-02 14:27:08',1,14,25),(21,1,'2-3','2013-08-13 06:11:27',1,14,1),(22,1,'1-3','2013-08-12 20:06:21',1,14,4),(23,0,NULL,NULL,1,26,25),(24,1,'1-3','2013-08-07 07:06:10',1,26,1),(25,0,NULL,NULL,1,26,4),(26,1,'3-1','2013-08-26 12:49:26',1,25,1),(27,0,NULL,NULL,1,25,4),(28,1,'0-3','2013-08-05 21:45:51',1,1,4),(29,0,NULL,NULL,2,3,28),(30,0,NULL,NULL,2,3,22),(31,0,NULL,NULL,2,3,11),(32,0,NULL,NULL,2,3,9),(33,1,'3-0','2013-09-02 20:21:47',2,3,16),(34,1,'0-3','2013-08-31 16:04:49',2,3,8),(35,1,'3-1','2013-08-13 11:38:59',2,3,5),(36,0,NULL,NULL,2,28,22),(37,0,NULL,NULL,2,28,11),(38,0,NULL,NULL,2,28,9),(39,0,NULL,NULL,2,28,16),(40,1,'0-3','2013-08-22 21:03:12',2,28,8),(41,1,'0-3','2013-08-29 08:12:23',2,28,5),(42,0,NULL,NULL,2,22,11),(43,1,'0-3','2013-08-23 17:20:50',2,22,9),(44,0,NULL,NULL,2,22,16),(45,1,'0-3','2013-08-24 23:17:42',2,22,8),(46,0,NULL,NULL,2,22,5),(47,0,NULL,NULL,2,11,9),(48,0,NULL,NULL,2,11,16),(49,2,'0-3','2013-08-13 21:54:43',2,11,8),(50,1,'1-3','2013-08-21 08:28:55',2,11,5),(51,0,NULL,NULL,2,9,16),(52,1,'1-3','2013-09-04 18:16:16',2,9,8),(53,1,'3-0','2013-08-06 08:15:28',2,9,5),(54,1,'0-3','2013-08-22 20:53:52',2,16,8),(55,1,'0-3','2013-08-28 08:20:24',2,16,5),(56,1,'3-0','2013-08-22 20:53:10',2,8,5),(57,0,NULL,NULL,3,18,6),(58,0,NULL,NULL,3,18,23),(59,0,NULL,NULL,3,18,12),(60,0,NULL,NULL,3,18,20),(61,1,'0-3','2013-09-03 09:01:21',3,18,2),(62,0,NULL,NULL,3,6,23),(63,1,'3-1','2013-08-13 13:19:53',3,6,12),(64,0,NULL,NULL,3,6,20),(65,1,'1-3','2013-08-19 15:03:36',3,6,2),(66,0,NULL,NULL,3,23,12),(67,0,NULL,NULL,3,23,20),(68,0,NULL,NULL,3,23,2),(69,2,'2-3','2013-08-20 13:14:23',3,12,20),(70,1,'0-3','2013-08-07 13:41:44',3,12,2),(71,1,'2-2','2013-08-15 15:52:04',3,20,2),(72,1,'2-2','2013-08-11 17:25:50',4,17,19),(73,1,'3-0','2013-09-04 09:33:43',4,17,21),(74,0,NULL,NULL,4,17,10),(75,1,'0-3','2013-08-29 17:41:46',4,17,7),(76,0,NULL,NULL,4,17,13),(77,0,NULL,NULL,4,19,21),(78,0,NULL,NULL,4,19,10),(79,1,'0-3','2013-08-30 11:46:55',4,19,7),(80,0,NULL,NULL,4,19,13),(81,0,NULL,NULL,4,21,10),(82,1,'0-3','2013-08-27 22:48:01',4,21,7),(83,0,NULL,NULL,4,21,13),(84,0,NULL,NULL,4,10,7),(85,0,NULL,NULL,4,10,13),(86,1,'1-3','2013-09-02 12:29:23',4,7,13),(87,1,'3-2','2013-09-14 07:09:46',5,15,25),(88,0,NULL,NULL,5,15,1),(89,0,NULL,NULL,5,15,4),(90,1,'3-2','2013-09-14 17:06:14',5,15,8),(91,1,'3-0','2013-09-24 19:13:30',5,15,5),(92,0,NULL,NULL,5,25,1),(93,0,NULL,NULL,5,25,4),(94,0,NULL,NULL,5,25,8),(95,1,'3-1','2013-09-24 08:19:57',5,25,5),(96,1,'0-3','2013-10-05 09:01:04',5,1,4),(97,1,'0-3','2013-10-01 05:04:33',5,1,8),(98,1,'4-1','2013-10-01 05:04:16',5,1,5),(99,0,NULL,NULL,5,4,8),(100,1,'3-0','2013-09-16 21:38:46',5,4,5),(101,1,'3-1','2013-09-18 08:45:30',5,8,5),(102,0,NULL,NULL,7,31,27),(103,0,NULL,NULL,7,31,26),(104,0,NULL,NULL,7,31,28),(105,0,NULL,NULL,7,31,22),(106,0,NULL,NULL,7,31,30),(107,0,NULL,NULL,7,27,26),(108,0,NULL,NULL,7,27,28),(109,0,NULL,NULL,7,27,22),(110,0,NULL,NULL,7,27,30),(111,0,NULL,NULL,7,26,28),(112,0,NULL,NULL,7,26,22),(113,0,NULL,NULL,7,26,30),(114,0,NULL,NULL,7,28,22),(115,0,NULL,NULL,7,28,30),(116,0,NULL,NULL,7,22,30),(117,1,'3-1','2013-09-19 15:08:45',6,24,14),(118,1,'3-0','2013-10-07 11:09:47',6,24,3),(119,0,NULL,NULL,6,24,11),(120,0,NULL,NULL,6,24,9),(121,0,NULL,NULL,6,24,16),(122,1,'3-1','2013-10-09 20:05:46',6,14,3),(123,0,NULL,NULL,6,14,11),(124,0,NULL,NULL,6,14,9),(125,0,NULL,NULL,6,14,16),(126,0,NULL,NULL,6,3,11),(127,1,'1-3','2013-09-27 23:36:35',6,3,9),(128,1,'3-0','2013-09-29 21:41:15',6,3,16),(129,0,NULL,NULL,6,11,9),(130,0,NULL,NULL,6,11,16),(131,0,NULL,NULL,6,9,16),(132,0,NULL,NULL,8,6,17),(133,0,NULL,NULL,8,6,12),(134,0,NULL,NULL,8,6,20),(135,0,NULL,NULL,8,6,2),(136,1,'2-3','2013-10-09 09:42:09',8,6,7),(137,0,NULL,NULL,8,6,13),(138,0,NULL,NULL,8,17,12),(139,0,NULL,NULL,8,17,20),(140,0,NULL,NULL,8,17,2),(141,1,'0-3','2013-10-02 19:03:00',8,17,7),(142,0,NULL,NULL,8,17,13),(143,0,NULL,NULL,8,12,20),(144,0,NULL,NULL,8,12,2),(145,0,NULL,NULL,8,12,7),(146,0,NULL,NULL,8,12,13),(147,0,NULL,NULL,8,20,2),(148,1,'0-3','2013-09-25 17:28:47',8,20,7),(149,0,NULL,NULL,8,20,13),(150,1,'0-3','2013-09-25 17:29:08',8,2,7),(151,0,NULL,NULL,8,2,13),(152,1,'3-1','2013-09-30 08:16:59',8,7,13),(153,0,NULL,NULL,9,23,18),(154,0,NULL,NULL,9,23,19),(155,0,NULL,NULL,9,23,21),(156,0,NULL,NULL,9,23,10),(157,0,NULL,NULL,9,23,29),(158,1,'3-0','2013-10-09 11:16:21',9,18,19),(159,0,NULL,NULL,9,18,21),(160,0,NULL,NULL,9,18,10),(161,1,'0-3','2013-10-10 13:18:59',9,18,29),(162,0,NULL,NULL,9,19,21),(163,0,NULL,NULL,9,19,10),(164,0,NULL,NULL,9,19,29),(165,0,NULL,NULL,9,21,10),(166,0,NULL,NULL,9,21,29),(167,0,NULL,NULL,9,10,29),(168,1,'3-0','2013-11-04 09:56:30',11,24,14),(169,0,NULL,NULL,11,24,26),(170,0,NULL,NULL,11,24,28),(171,0,NULL,NULL,11,24,22),(172,0,NULL,NULL,11,24,11),(173,0,NULL,NULL,11,24,16),(174,1,'3-1','2013-11-07 22:02:25',11,14,26),(175,0,NULL,NULL,11,14,28),(176,0,NULL,NULL,11,14,22),(177,0,NULL,NULL,11,14,11),(178,0,NULL,NULL,11,14,16),(179,0,NULL,NULL,11,26,28),(180,0,NULL,NULL,11,26,22),(181,0,NULL,NULL,11,26,11),(182,0,NULL,NULL,11,26,16),(183,0,NULL,NULL,11,28,22),(184,0,NULL,NULL,11,28,11),(185,0,NULL,NULL,11,28,16),(186,0,NULL,NULL,11,22,11),(187,0,NULL,NULL,11,22,16),(188,0,NULL,NULL,11,11,16),(189,1,'0-2','2013-10-24 19:18:53',12,36,35),(190,0,NULL,NULL,12,36,37),(191,0,NULL,NULL,12,36,38),(192,0,NULL,NULL,12,36,32),(193,0,NULL,NULL,12,36,34),(194,1,'0-3','2013-10-31 07:41:22',12,35,37),(195,1,'0-3','2013-11-22 18:34:30',12,35,38),(196,0,NULL,NULL,12,35,32),(197,0,NULL,NULL,12,35,34),(198,1,'3-0','2013-10-24 06:50:18',12,37,38),(199,1,'3-0','2013-11-14 06:33:08',12,37,32),(200,1,'3-0','2013-11-07 06:38:31',12,37,34),(201,0,NULL,NULL,12,38,32),(202,1,'3-1','2013-11-14 20:45:27',12,38,34),(203,1,'3-0','2013-10-28 22:06:55',12,32,34),(204,1,'1-3','2013-11-17 19:39:41',10,15,25),(205,0,NULL,NULL,10,15,1),(206,0,NULL,NULL,10,15,4),(207,0,NULL,NULL,10,15,3),(208,0,NULL,NULL,10,15,9),(209,0,NULL,NULL,10,15,5),(210,1,'3-1','2013-11-04 21:43:17',10,25,1),(211,0,NULL,NULL,10,25,4),(212,1,'3-0','2013-11-04 16:00:47',10,25,3),(213,0,NULL,NULL,10,25,9),(214,2,'3-0','2013-11-04 09:30:32',10,25,5),(215,0,NULL,NULL,10,1,4),(216,1,'3-2','2013-11-07 05:17:27',10,1,3),(217,0,NULL,NULL,10,1,9),(218,1,'3-0','2013-11-05 23:57:28',10,1,5),(219,0,NULL,NULL,10,4,3),(220,0,NULL,NULL,10,4,9),(221,1,'3-1','2013-11-11 21:59:50',10,4,5),(222,0,NULL,NULL,10,3,9),(223,1,'1-3','2013-11-03 20:16:32',10,3,5),(224,1,'3-1','2013-11-03 20:16:58',10,9,5),(225,0,NULL,NULL,14,33,12),(226,1,'2-3','2013-10-23 09:06:54',14,33,18),(227,0,NULL,NULL,14,33,21),(228,1,'1-3','2013-11-14 14:03:45',14,33,29),(229,0,NULL,NULL,14,12,18),(230,0,NULL,NULL,14,12,21),(231,0,NULL,NULL,14,12,29),(232,0,NULL,NULL,14,18,21),(233,1,'2-3','2013-11-11 17:11:06',14,18,29),(234,0,NULL,NULL,14,21,29),(235,0,NULL,NULL,13,6,17),(236,0,NULL,NULL,13,6,20),(237,0,NULL,NULL,13,6,2),(238,0,NULL,NULL,13,6,19),(239,0,NULL,NULL,13,6,13),(240,0,NULL,NULL,13,17,20),(241,0,NULL,NULL,13,17,2),(242,0,NULL,NULL,13,17,19),(243,0,NULL,NULL,13,17,13),(244,0,NULL,NULL,13,20,2),(245,0,NULL,NULL,13,20,19),(246,0,NULL,NULL,13,20,13),(247,0,NULL,NULL,13,2,19),(248,0,NULL,NULL,13,2,13),(249,0,NULL,NULL,13,19,13);
+/*!40000 ALTER TABLE `Matches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Player`
+--
+
+DROP TABLE IF EXISTS `Player`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Player` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `status` int(11) NOT NULL,
+  `currentDivision_id` bigint(20) DEFAULT NULL,
+  `league_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_Player_1` (`user_id`,`league_id`),
+  UNIQUE KEY `UK_Player_2` (`user_id`,`currentDivision_id`),
+  KEY `FK8EA3870195ECFB0C` (`currentDivision_id`),
+  KEY `FK8EA3870132CB8DA5` (`league_id`),
+  KEY `FK8EA38701F1882E0F` (`user_id`),
+  CONSTRAINT `FK8EA3870132CB8DA5` FOREIGN KEY (`league_id`) REFERENCES `League` (`id`),
+  CONSTRAINT `FK8EA3870195ECFB0C` FOREIGN KEY (`currentDivision_id`) REFERENCES `Division` (`id`),
+  CONSTRAINT `FK8EA38701F1882E0F` FOREIGN KEY (`user_id`) REFERENCES `User` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Player`
+--
+
+LOCK TABLES `Player` WRITE;
+/*!40000 ALTER TABLE `Player` DISABLE KEYS */;
+INSERT INTO `Player` VALUES (1,3,0,10,2,1),(2,3,0,13,1,2),(3,3,0,10,2,3),(4,3,0,10,2,4),(5,3,0,10,2,5),(6,3,0,13,1,8),(7,2,1,8,1,7),(8,2,1,5,2,7),(9,3,0,10,2,9),(10,2,1,9,1,9),(11,3,0,11,2,6),(12,3,0,14,1,10),(13,3,0,13,1,11),(14,3,0,11,2,12),(15,3,0,10,2,14),(16,3,0,11,2,15),(17,4,1,13,1,16),(18,3,0,14,1,17),(19,3,0,13,1,18),(20,3,0,13,1,19),(21,3,0,14,1,21),(22,3,0,11,2,21),(23,2,1,9,1,20),(24,3,0,11,2,22),(25,3,0,10,2,23),(26,3,0,11,2,24),(27,2,1,7,2,25),(28,3,0,11,2,26),(29,2,0,14,1,27),(30,1,1,7,2,29),(31,1,1,7,2,30),(32,1,0,12,2,31),(33,1,0,14,1,30),(34,1,0,12,2,32),(35,1,0,12,2,33),(36,1,0,12,2,34),(37,1,0,12,2,35),(38,1,0,12,2,36),(39,0,0,NULL,1,37),(40,0,0,NULL,2,37),(41,0,0,NULL,2,38),(42,0,0,NULL,2,39),(43,0,0,NULL,2,40);
+/*!40000 ALTER TABLE `Player` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Role`
+--
+
+DROP TABLE IF EXISTS `Role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Role` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `description` varchar(50) NOT NULL,
+  `name` varchar(25) NOT NULL,
+  `club_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_Role_1` (`name`),
+  KEY `FK26F4965A00C305` (`club_id`),
+  CONSTRAINT `FK26F4965A00C305` FOREIGN KEY (`club_id`) REFERENCES `Club` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Role`
+--
+
+LOCK TABLES `Role` WRITE;
+/*!40000 ALTER TABLE `Role` DISABLE KEYS */;
+INSERT INTO `Role` VALUES (1,0,'Administrator Role','ROLE_ADMIN',NULL),(2,0,'Authentication User Role','ROLE_USER',NULL);
+/*!40000 ALTER TABLE `Role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Round`
+--
+
+DROP TABLE IF EXISTS `Round`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Round` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `endDate` datetime NOT NULL,
+  `startDate` datetime NOT NULL,
+  `league_id` bigint(20) NOT NULL,
+  `previousRound_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK4B7C16E32CB8DA5` (`league_id`),
+  KEY `FK4B7C16E543CBF46` (`previousRound_id`),
+  CONSTRAINT `FK4B7C16E32CB8DA5` FOREIGN KEY (`league_id`) REFERENCES `League` (`id`),
+  CONSTRAINT `FK4B7C16E543CBF46` FOREIGN KEY (`previousRound_id`) REFERENCES `Round` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Round`
+--
+
+LOCK TABLES `Round` WRITE;
+/*!40000 ALTER TABLE `Round` DISABLE KEYS */;
+INSERT INTO `Round` VALUES (1,1,'2013-09-06 04:00:00','2013-07-30 04:00:00',1,NULL),(2,1,'2013-09-06 04:00:00','2013-07-30 04:00:00',2,NULL),(3,1,'2013-10-12 04:00:00','2013-09-08 04:00:00',2,2),(4,1,'2013-10-12 04:00:00','2013-09-08 04:00:00',1,1),(5,0,'2013-11-25 05:00:00','2013-10-14 04:00:00',1,4),(6,0,'2013-11-25 05:00:00','2013-10-14 04:00:00',2,3);
+/*!40000 ALTER TABLE `Round` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `User`
+--
+
+DROP TABLE IF EXISTS `User`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `User` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `version` int(11) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `loginFailures` int(11) NOT NULL,
+  `mobile` varchar(255) DEFAULT NULL,
+  `mobilePrivacy` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `oneTimeToken` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_User_1` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `User`
+--
+
+LOCK TABLES `User` WRITE;
+/*!40000 ALTER TABLE `User` DISABLE KEYS */;
+INSERT INTO `User` VALUES (1,12,'jamesdbloom@gmail.com',0,'07515 900 569',1,'James D Bloom','','0f72a1756e47aa4d4068a356d85f4f7d2da59d7045487b9f20d45fb6f73b303d3bd394bd483fe8093381fa8cd82ccfb356174133833d3a6e3f6d5a03532fbfcf66477b4658aa8ed6'),(2,5,'nmalde@bechtel.com',0,'07733260764',1,'Neil Malde','','628b078682d7d65a749814f18799fb93d54346895059111e44dcb8494fff2c13add3bfd830c5a8da12c8d1ee0b7a0c421a7282879292ce5d9ff89df0e36baac8f7ecf7c3b0e0df19'),(3,3,'m.hilton@m3c.co.uk',0,'07826948397',1,'Matt Hilton','','2211016a2511fa83bc23d66272750823a96f45ca6f86521960315a6a7e686e4d31432b7d072784b0151ce1b03cf4e078800c1da26108cbca6a65fb537b7f8e33c1d5c17b35c46cbd'),(4,5,'jk@nowmedical.co.uk',0,'07960585315',2,'John KEEN','','8622d9679c4747e9dd979f73d24ccee7b7d7a785fe11f68c3169d8b620e4fa61de36d8adbbcc6e1e40fc8f6241d17ed6641419d7b44f23c61675b3e2b01d96802670fbd26d3cfedd'),(5,1,'samy.iralour@gmail.com',0,'07587141276',1,'Samy','','bf09b6071ac2a36cbe4088f77f98c7b161d31e03b459c33935ee8f0c3aca956b68be70a2a7a94f7c4ff77d1aaff7400c39ac2bb8435d5cf2d7e975b0d51f1b171ed656148f9142bb'),(6,1,'swantonray@gmail.com',0,'07983530293',2,'Ray Swanton','','8532a7e68c1c1d9381b67900a60dd862148b19236f5b821c7834b2c3ebfff6493ec7cffaacc1fc75ee4f01dc288af1f20b4a975772216e0d3b738f1c825906e1552582788d700977'),(7,2,'swasey.rupert@gmail.com',0,'07906017618',2,'Rupert','','d049465ebd00c4588eebd3b671d2b60a2fb4e2a94ba633c68f9e194a3cef7e40578d0e63aca592033105f9a7f7c06a74aaeefd17c7b3e8e26ca55b8371c6193e93e868ee3f0eb8e2'),(8,5,'alistair.cossins@disney.com',0,'07787 260005',2,'Alistair Cossins','','a71d1d37700e9dbebf6035678d9b0352b95a6797de48f92aad68214ba29c42113c8e33700bf97ce41f74007d340407ee0a67d89f580902bafbccbd23fb02cbd16c3a4efb8d4a2b31'),(9,3,'rlpile@gmail.com',0,'07947 643747',2,'Richard Pile','','deaff3e9e46a2bfa45015d8c6537b069842b1e3dd122d8ae86ee6b053bb37aceb4640bf4d883e6490f44e104d28a4d0b18162f71031cf8812194929a35a0b9ed6d02d2120373dfd2'),(10,1,'jardine.finn@lbhf.gov.uk',0,'07903864846',2,'Jardine Finn','','6f82f4177347b9808c35716c2050be2a017d92f455bc63a2b08ef89e37b00c2c6f7fa750a987f3540e7f5ec468dc73161991e49399affab1089dbc070ec8b65286253918d43ee637'),(11,1,'scott.hands@vodafone.com',2,'07822859394',2,'Scott Hands','','4cd0697304c11fc2eac9fe30b33e37186a34332acd5dac94759a326fc3bcf2cf50e5b8a5f98b368e39a9d5b2ab3ba477640a9bbf061374856846156d8cdfd97c94528df582916f8c'),(12,3,'benoit.obadia@gmail.com',0,'07943934373',2,'Benoit','','bfa9a04fea4a9eef04d9763ce70a443ae5adb7904935b14bfab27d068cbd41c7d47d8bf66ecd57067f7535d5a6406c646cf4464b4671b4f960192ce64424caa356ba1cdaf9b5e512'),(13,1,'timvannispen@gmail.com',0,'07557949594',1,'Tim van Nispen','','5aa2274c5f6bf7291cd5e7f7beb4eb2e0432ded70004ced3a7702c22b81094740192faf02c53b67a383dbaa848df6162c7059265c335e59a73a279782eab43d9a3c550dce4ed2b3d'),(14,3,'benbhall1@gmail.com',0,'07768440727',2,'Ben Hall','','19a052b9f0a69ad91e2a6e0b5c25cecb57d2dc34dc0371ca7a2c7f7335150e2db0fca8a13d4c72b6675646c3a9b95a13f1ad2ddeaac5bff8a48cd355580b0bf1e3514e63d8b88399'),(15,5,'roy.strachan1983@gmail.com',0,'07460939434',1,'Roy Strachan','','9f347b81eba57363f7a0b810d7bdde9048514fff71d3243a9db226604c9af2ddccdd2f1390873fee59d9532237f673135803c8ea4acd029b5f91777f42abcd9b96673fae196c41dc'),(16,1,'cin6304173@aol.com',0,'07787375914',2,'Colin Ingram','','86dfd4dc3b84355ff1cd35b9ba630d3868b489224a3675c993929aa8fd2a4225eabcf5d8a53c1370d04717915f56675b56dc9010f52bdb82764590787cb8a10580305fe0e7e15fd9'),(17,8,'j.townshend@mmu.ac.uk',0,'07950996387',2,'Jules Townshend','','a28d31342bb0b0c71cef9b94f9eca61567e4ec00a458cbf36864ed84c73b87a396c86ae6e82f1ac16caac656d18efb080aabf236cbcf14a9b68abc08c4df25b83e46ccab5fa87b87'),(18,1,'philipmharrison2@gmail.com',0,'07730 822637',2,'Phil Harrison','','50c071bfccab9088633d5fafae3fc36a2f43cb20eac6dc982ece4287df65e18ddb2aa94d83cc56eb19f619db713f678e1328b1afbc1bce15946775547bc749881bd3899e6c91bd08'),(19,1,'lkshoe@yahoo.com',0,'07850 859 265',2,'Larry Shoemaker','','1e29c4f6569a394e364b3781960507f3a6289fd077d65a5abae29878e3cadf12cd10125ece5222df903054d0033e84536e58a8b987750b0da2b1a65cb56b8f457da6a4561fcb88c5'),(20,1,'bretstallwood@hotmail.com',0,'07791513942',1,'Bret','','019e90270783b9ad4a94fd82f35359e995ddcabfcc67bff5cdd0f6083f2495aaff25a3471588cd65dda06c94ec9520e19d1c2cf5c32b03628d87ccb85ed8d6dd4d12ae99a393b9e2'),(21,1,'james.rachael@gmail.com',0,'07760669232',1,'Rachael','','37f0031dffa2faacb64448545147f6b5fbc039ed328be47133ad423dfd653fa8f558604303b281adfbc3ff2c010356b120299bb9b2ad826ca8a845fdab046db18ee2c01a2a130a36'),(22,5,'andrea.caldera@gmail.com',0,'07850404421',2,'Andrea Caldera','','d74221c0864878f8b9717447b80c1eaea1a896d1a6639d1b71f8765ad8783119500508801d59b83bdfc0fc8854bc931267a9b8ce69ee4026a8f07460b436f72df3dfdde6d3295d9c'),(23,9,'david@beguier.com',0,'07770694009',1,'David B-B','','8d5fe1ae4a0e05511aeb11fb525511af5d5d1ddef62af10c8247912ddd7c42482646e98bc11a9367a0e0efa6577b35d2e0bff6c0192bcee25e75f6eee2bb05a4bca9178f9dd3bcfe'),(24,1,'morley_daniel@yahoo.co.uk',0,'07793037582',1,'Dan Morley','','b9ab637060b6b5cec735f0f85e61a8ff700bf481bc5e60b683c0f264e23e78c3ffcbcff21af848abcdf2e82b7028f29df8ba6e11d3bcaf3bcf028153ccea9ea04ac977519118a2e4'),(25,1,'benjamin.j.cochrane@gmail.com',0,'07590505519',2,'Ben Cochrane','','d525b80be594524f41c38dc0185494789dbec3cbd5d1426513505839d96e924a53c3f602e284c314bf9cb5de33c9d4441940be384f6c913a09829c5079b5f9bdfaffab495adc275a'),(26,1,'merlin.fair08@imperial.ac.uk',0,'07596220972',1,'Merlin','','624fd3a85aea5797a1c114ea9e7dd901e544797838af45cca98b0ed3aa024fd0ff5b43cfc365cff7d88f90ab603fa367a1fe432d986a935acda38d4c36c58784a9e37eb519cb3b52'),(27,7,'sean.eastland@disney.com',0,'07867552763',1,'Sean Eastland','','0076f946e014ccb17856eb02c8b275a334970856d8e53230fe5fa0f9e56b284804434ce69737ca2e2a3190a619be11278128ef3f7e9c05b26ddeec8ea3482494ec96bb42e431e260'),(28,1,'thierry.merven@gmail.com',0,'07990593281',1,'Thierry Merven','','9955673a5c646c22cd72e02efeefe5e428ccc4af0b3cc3318e3bd8895cfd7e63fbc6104eedbe81b7b43f252e2839f5c208c276e5de6e8235f4b8d0b29809b98f2ab4383149dfdeb7'),(29,1,'wadenottingham@hotmail.co.uk',0,'07908644571',2,'Wade Nottingham','','ca2c551376467da2fe00db927f8d0dcf640c3aa4614b1d56311b786785e5a39f76402d6e55f314dcf1d108ada1ee097673085357f10ca551a185c8688582872ef59a7f6d9115e190'),(30,1,'a.ruizlin@gmail.com',0,'07900181839',2,'Andres Ruiz','','ec9d39290a49f984e885a93363438426039722e8b95c24d0a703adb70715ef97af18969b1340c74289b2c72517b81da5573ed96c00a326e15b063c67e53a3a14568747962c4bef5d'),(31,7,'pete@funnyfish.co.uk',0,'07780605016',1,'Peter Evans','','4c4cce94176c33fd0060b6aecd0074db32f6c88e3e6bf92822ac791be23196d57dcc92158cbcb5b9bb833d05cb2b840b7bb26f7fe505687f972599d16f91128e6cf549114eefa5b4'),(32,3,'yvan.menant@gmail.com',0,'07425187651',1,'Yvan','','ec31bc138b9e3c78295983518238c49fd2120225486aee7f917b6d0953bfd56127bcd2ce0ad2771e1e2cd37f0c2b2dfaa0e29620845de3dcb504dd80cce7e30925eca57724661e04'),(33,3,'manei_cc@hotmail.com',0,'07746351902',2,'Enmanuel','','c3b62b24f90612e0901381a91059003c93da9990b438a5945c9ae495f93cef0a9727787e6eac2aa1c95598d73b2dd0a137c3325689b55348a794e6db2ff28d419818836fddcf20ad'),(34,1,'andrew.darby2@gmail.com',0,'07922906723',2,'Andrew Darby','','46f99217944920d4ff9dcc1f24cd7bd5ad601577036ceff6f0b403c323760c4feab500929f1f2b96f7499d0f798816a9bb23303355c2c9b1943e14f3d0c2e7f1dc5173c3f2775f19'),(35,2,'mas.julien@yahoo.com',0,'07792994727',2,'Julien Mas','7be9fec0-3444-11e3-93b3-000000000000','8e19ae93bc5d8fa94535a1d44968d23efb22cc61440cb3e787b2882bd0633d32dae69a17a50ec17ea4ca92286e50df98ff59340658921e3ec38852244beae23b9a903c4039dbdf28'),(36,1,'markdnutley@hotmail.com',0,'07828 412354',1,'Mark Nutley','','ca3a3ea0350964625fd48ffb799145646a741368388a8fe7b6e7180f3ab45afe086660acfa14fc60439afac65a12e2f002b19857b178e0a4645576752e45751b6479bb2c075a01f4'),(37,1,'buysilver@gmail.com',0,'07771816708',1,'Anton Saunders','','6723e2c050287280dae93f8d9a1593101d84cb9bc214db4da2fbfb8d84feac7c43de2bf2cf1ce045c29fb242b3d3abd1f1ac0dc17a531c424ed7f9d0fee408824a3c6245a63e02bc'),(38,1,'robert_j_powell@hotmail.co.uk',0,'07990580429',2,'Rob Powell','','0846e67f7b44d3c7110b92e58e5203ab412389a3d1d5188edec0eee676293735764eb79cea6584e76a024f3878f0893b654f17d3cde9911c01411a9d6a08b44d74a896e30cf980c6'),(39,3,'robbiemavor@gmail.com',0,'07984570503',1,'Robert Mavr','','4de91aabc33008cd73d7a693dc2bf2af5c3d984cc0c9f58b58a083ff05e187ce42baf9b850cb637a5fbc9814567950dd5486ca7de2a93cc330fafd5c89824f81aebfb61f895bf574'),(40,1,'adamjessel79@gmail.com',0,'07787 565162',1,'adam jessel','','c90059917297960f202a14233c787c717367322d2cd27403c04f2eb941980a54d2263fe5dbc91edf6adf81a5199294af422e7c03a78010810f01f18fd43d48833e48576de2cda95f');
+/*!40000 ALTER TABLE `User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `User_Role`
+--
+
+DROP TABLE IF EXISTS `User_Role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `User_Role` (
+  `User_id` bigint(20) NOT NULL,
+  `roles_id` bigint(20) NOT NULL,
+  KEY `FK8B9F886AEA75E288` (`roles_id`),
+  KEY `FK8B9F886AF1882E0F` (`User_id`),
+  CONSTRAINT `FK8B9F886AEA75E288` FOREIGN KEY (`roles_id`) REFERENCES `Role` (`id`),
+  CONSTRAINT `FK8B9F886AF1882E0F` FOREIGN KEY (`User_id`) REFERENCES `User` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `User_Role`
+--
+
+LOCK TABLES `User_Role` WRITE;
+/*!40000 ALTER TABLE `User_Role` DISABLE KEYS */;
+INSERT INTO `User_Role` VALUES (1,1),(2,2),(3,2),(4,2),(5,2),(6,2),(7,2),(8,2),(9,2),(10,2),(11,2),(12,2),(13,2),(14,2),(15,2),(16,2),(17,2),(18,2),(19,2),(20,2),(21,2),(22,2),(23,2),(24,2),(25,2),(26,2),(27,2),(28,2),(29,2),(30,2),(31,2),(32,2),(33,2),(34,2),(35,2),(36,2),(37,2),(38,2),(39,2),(40,2);
+/*!40000 ALTER TABLE `User_Role` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2013-11-24  0:00:01

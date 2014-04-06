@@ -134,7 +134,7 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
     }
 
     public Round addDivision(Division division) {
-        if(divisions == null){
+        if (divisions == null) {
             divisions = new ArrayList<>();
         }
         divisions.add(division);
@@ -151,8 +151,10 @@ public class Round extends ModelObject<Round> implements Comparable<Round> {
 
     @Override
     public int compareTo(Round other) {
-        int divisionComparison = league.compareTo(other.league);
-        return (divisionComparison == 0 ? startDate.compareTo(other.startDate) : divisionComparison);
+        int leagueComparison = league.compareTo(other.league);
+        int startDateComparison = other.startDate.compareTo(startDate);
+        int endDateComparison = other.endDate.compareTo(endDate);
+        return (leagueComparison == 0 ? (startDateComparison == 0 ? endDateComparison : startDateComparison) : leagueComparison);
     }
 
     public Round merge(Round round) {

@@ -17,6 +17,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -212,6 +213,7 @@ public class User extends ModelObject<User> {
     }
 
     public void setDivisions(Collection<Division> divisions) {
+        Collections.sort(new ArrayList<>(divisions));
         this.divisions = divisions;
     }
 
